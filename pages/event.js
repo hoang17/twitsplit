@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { firebase, auth } from '../lib/auth'
+import { firebase, auth, login, logout } from '../lib/auth'
 
 export default class Index extends Component {
 
@@ -35,35 +35,19 @@ export default class Index extends Component {
     this.createEvent = this.createEvent.bind(this)
   }
 
-  componentDidMount () {
-    // firebase.initializeApp(config)
-
-    auth()
+  async componentDidMount () {
+    auth(user => {
+      this.setState({ user: user })
+      if (user)
+        this.addDbListener()
+      else if (this.unsubscribe)
+        this.unsubscribe()
+    })
 
     this.db = firebase.firestore()
 
-    if (this.state.user) this.addDbListener()
-
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (user) {
-    //     this.setState({ user: user })
-    //     return user.getIdToken()
-    //       .then((token) => {
-    //         return fetch('/api/login', {
-    //           method: 'POST',
-    //           headers: new Headers({ 'Content-Type': 'application/json' }),
-    //           credentials: 'same-origin',
-    //           body: JSON.stringify({ token })
-    //         })
-    //       }).then((res) => this.addDbListener())
-    //   } else {
-    //     this.setState({ user: null })
-    //     fetch('/api/logout', {
-    //       method: 'POST',
-    //       credentials: 'same-origin'
-    //     }).then(() => firebase.unsubscribe())
-    //   }
-    // })
+    if (this.state.user)
+      this.addDbListener()
   }
 
   addDbListener () {
@@ -98,16 +82,7 @@ export default class Index extends Component {
 
     this.db.collection("events").doc(event.id.toString()).set(event)
 
-    this.setState({ eventName: '' })
-  }
-
-  handleLogin () {
-    var provider = new firebase.auth.GoogleAuthProvider()
-    firebase.auth().signInWithPopup(provider)
-  }
-
-  handleLogout () {
-    firebase.auth().signOut()
+    this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
   }
 
   render () {
@@ -116,8 +91,8 @@ export default class Index extends Component {
     return <div>
       {
         user
-        ? <button onClick={this.handleLogout}>Logout</button>
-        : <button onClick={this.handleLogin}>Login</button>
+        ? <button onClick={logout}>Logout</button>
+        : <button onClick={login}>Login</button>
       }
       {
         user &&
