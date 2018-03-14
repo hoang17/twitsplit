@@ -64,19 +64,18 @@ export default class Index extends Component {
     })
   }
 
-  createEvent (event) {
-    event.preventDefault()
-    const date = new Date().getTime()
+  createEvent() {
+    const id = new Date().getTime().toString()
 
-    var event = {
-      id: date,
+    var data = {
+      id,
       eventName: this.state.eventName,
       eventCode: this.state.eventCode,
       startDate: this.state.startDate.toDate(),
       endDate: this.state.startDate.toDate(),
     }
 
-    fsEvents.doc(event.id.toString()).set(event)
+    fsEvents.set(id, data)
 
     this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
   }
