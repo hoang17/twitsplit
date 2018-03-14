@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -121,7 +121,13 @@ export default class Index extends Component {
           <ul>
             {
               events &&
-              events.map(event => <li key={event.id}>{event.eventName}</li>)
+              events.map(event =>
+                <li key={event.id}>
+                  <Link href={{pathname: '/event-edit', query: { id: event.id }}}>
+                    <a>{event.eventName} - {event.eventCode} - {moment(event.startDate).format('L')} - {moment(event.endDate).format('L')}</a>
+                  </Link>
+                </li>
+              )
             }
           </ul>
         </div>
