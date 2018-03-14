@@ -1,8 +1,15 @@
+// import React from 'react'
+// import Login from '../components/Login'
+// // import Link from 'next/link'
+//
+// export default () => (
+//   <Login />
+// )
+
 import React, { Component } from 'react'
 import Link from 'next/link'
-import Login from '../components/Login'
 import firebase from 'firebase'
-import clientCredentials from '../credentials/client'
+import config from '../credentials/client'
 import 'isomorphic-unfetch'
 
 export default class Index extends Component {
@@ -28,7 +35,7 @@ export default class Index extends Component {
   }
 
   componentDidMount () {
-    firebase.initializeApp(clientCredentials)
+    firebase.initializeApp(config)
 
     if (this.state.user) this.addDbListener()
 
@@ -46,7 +53,6 @@ export default class Index extends Component {
           }).then((res) => this.addDbListener())
       } else {
         this.setState({ user: null })
-        // eslint-disable-next-line no-undef
         fetch('/api/logout', {
           method: 'POST',
           credentials: 'same-origin'
