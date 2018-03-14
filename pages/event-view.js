@@ -8,14 +8,14 @@ import { fsEvents, auth, login, logout } from '../lib/firebase'
 
 export default class EventEdit extends Component {
 
-  static async getInitialProps ({req, query: { id }}) {
+  static async getInitialProps ({req, query: { code }}) {
     const user = req && req.session ? req.session.decodedToken : null
     var event = {}
     if (user) {
-      var doc = await req.fs.collection("events").doc(id).get()
-      event = doc.data()
+      var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
+      event = snapshot.docs[0].data()
     }
-    return { user, id, ...event }
+    return { user, eventCode: code, ...event }
   }
 
   constructor (props) {
@@ -48,8 +48,8 @@ export default class EventEdit extends Component {
   }
 
   addDbListener () {
-    this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
-      var event = doc.data()
+    this.unsubscribe = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
+      event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
     })
   }

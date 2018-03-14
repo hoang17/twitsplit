@@ -65,7 +65,7 @@ export default class EventList extends Component {
   }
 
   saveEvent() {
-    const id = new Date().getTime().toString()
+    const id = new Date().getTime()
 
     var data = {
       id,
