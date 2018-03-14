@@ -2,9 +2,8 @@
   "name": "custom-server-express",
   "version": "1.0.0",
   "scripts": {
-    "dev": "node server.js",
-    "build": "next build",
     "dev": "nodemon -w server.js server.js",
+    "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
@@ -16,17 +15,20 @@
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "firebase-admin": "^5.8.1",
+    "firebase": "^4.11.0",
+    "firebase-admin": "^5.10.0",
     "helmet": "^3.9.0",
+    "isomorphic-unfetch": "^2.0.0",
     "lodash": "^4.17.4",
     "lusca": "^1.5.2",
     "moment": "^2.20.1",
     "morgan": "^1.9.0",
+    "next": "^5.0.0",
     "path": "^0.12.7",
     "person-generator": "^1.0.1",
     "random-profile-generator": "^2.3.0",
-    "next": "^5.0.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "session-file-store": "^1.2.0"
   }
 }

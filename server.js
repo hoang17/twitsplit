@@ -1,4 +1,7 @@
-const express = require('express')
+var express = require('express')
+var session = require('express-session')
+var FileStore = require('session-file-store')(session)
+var admin = require('firebase-admin')
 var compression = require('compression')
 var bodyParser = require('body-parser')
 var morgan = require('morgan')
@@ -11,11 +14,25 @@ var helmet = require('helmet')
 
 dotenv.load({ path: '.env' })
 
+const firebase = admin.initializeApp({
+  credential: admin.credential.cert(require('./credentials/server')),
+  databaseURL: "https://slido-7de82.firebaseio.com",
+}, 'server')
+
 const app = express()
 
 // Express configuration.
 var port = process.env.PORT || 3000
 app.set('port', port)
+app.use(session({
+  secret: 'geheimnis',
+  saveUninitialized: true,
+  store: new FileStore({path: '/tmp/sessions', secret: 'geheimnis'}),
+  resave: false,
+  rolling: true,
+  httpOnly: true,
+  cookie: { maxAge: 604800000 } // week
+}))
 app.use(helmet())
 app.use(compression())
 app.use(morgan('dev'))
@@ -33,8 +50,27 @@ const handle = nx.getRequestHandler()
 
 nx.prepare()
 .then(() => {
-  app.get('/posts/:id', (req, res) => {
-    return nx.render(req, res, '/posts', { id: req.params.id })
+  app.use((req, res, next) => {
+    req.firebaseServer = firebase
+    next()
+  })
+
+  app.post('/api/login', (req, res) => {
+    if (!req.body) return res.sendStatus(400)
+
+    const token = req.body.token
+    firebase.auth().verifyIdToken(token)
+      .then((decodedToken) => {
+        req.session.decodedToken = decodedToken
+        return decodedToken
+      })
+      .then((decodedToken) => res.json({ status: true, decodedToken }))
+      .catch((error) => res.json({ error }))
+  })
+
+  app.post('/api/logout', (req, res) => {
+    req.session.decodedToken = null
+    res.json({ status: true })
   })
 
   app.get('*', (req, res) => {
