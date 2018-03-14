@@ -4,106 +4,102 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, auth, login, logout } from '../lib/firebase'
+import { fsEvents, fsQuestions, init, login, logout } from '../lib/firebase'
 
 export default class EventEdit extends Component {
 
   static async getInitialProps ({req, query: { code }}) {
-    const user = req && req.session ? req.session.decodedToken : null
-    var event = {}
-    if (user) {
-      var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
-      event = snapshot.docs[0].data()
-    }
-    return { user, eventCode: code, ...event }
+    var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
+    var event = snapshot.docs[0].data()
+    var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
+    var questions = snapshot.docs.map(e => e.data())
+    return { eventCode: code, ...event, questions }
   }
 
   constructor (props) {
     super(props)
-    var { user, id, eventName, eventCode, startDate, endDate } = this.props
+    var { id, eventName, eventCode, startDate, endDate, questions } = this.props
     this.state = {
-      user,
       id,
       eventName,
       eventCode,
       startDate,
-      endDate
+      endDate,
+      questions,
+      question: '',
     }
     this.addDbListener = this.addDbListener.bind(this)
-    this.saveEvent = this.saveEvent.bind(this)
-    this.deleteEvent = this.deleteEvent.bind(this)
+    this.saveQuestion = this.saveQuestion.bind(this)
   }
 
   async componentDidMount () {
-    auth(user => {
-      this.setState({ user: user })
-      if (user)
-        this.addDbListener()
-      else if (this.unsubscribe)
-        this.unsubscribe()
-    })
+    init()
+    this.addDbListener()
+  }
 
-    if (this.state.user)
-      this.addDbListener()
+  unsubscribe(){
+    this.unsubEvents()
+    this.unsubQuestions()
   }
 
   addDbListener () {
-    this.unsubscribe = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
+    this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
       event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
     })
+
+    this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(snapshot => {
+      var questions = []
+      snapshot.forEach(function(doc) {
+        questions.push(doc.data())
+      })
+      // snapshot.docChanges.forEach(function(change) {
+      //   if (change.type === "added") {
+      //   }
+      //   if (change.type === "modified") {
+      //   }
+      //   if (change.type === "removed") {
+      //   }
+      // })
+      if (questions) this.setState({ questions })
+    })
   }
 
-  saveEvent() {
-    var { id, eventName, eventCode, startDate, endDate } = this.state
-    fsEvents.update(id, { id, eventName, eventCode, startDate, endDate })
-  }
+  saveQuestion() {
+    const id = new Date().getTime()
+    var data = {
+      id,
+      eventId: this.state.id,
+      text: this.state.question,
+    }
 
-  deleteEvent() {
-    fsEvents.delete(this.state.id)
+    fsQuestions.set(id, data)
+
+    this.setState({ question: '' })
   }
 
   render () {
-    const { user, id, eventName, eventCode, startDate, endDate } = this.state
+    const { id, eventName, eventCode, startDate, endDate, question, questions } = this.state
 
     return <div>
-      {
-        user
-        ? <button onClick={logout}>Logout</button>
-        : <button onClick={login}>Login</button>
-      }
-      {
-        user && id &&
-        <div>
-          <div>Event Name</div>
-          <input
-            type={'text'}
-            onChange={e => this.setState({eventName: e.target.value})}
-            placeholder={'Event Name'}
-            value={eventName}
-          />
-          <div>Start date</div>
-          <DatePicker
-            selected={moment(startDate)}
-            onChange={date => this.setState({startDate: date.toDate()})}
-          />
-          <div>End date</div>
-          <DatePicker
-            selected={moment(endDate)}
-            onChange={date => this.setState({endDate: date.toDate()})}
-          />
-          <div>Event Code</div>
-          <input
-            type={'text'}
-            onChange={e => this.setState({eventCode: e.target.value})}
-            placeholder={'Event Code'}
-            value={eventCode}
-          />
-          <p/>
-          <button onClick={this.saveEvent}>Save Event</button>
-          <button onClick={this.deleteEvent}>Delete Event</button>
-        </div>
-      }
+      <h1>{eventName} - {id}</h1>
+      <div>Ask a Question</div>
+      <input
+        type={'text'}
+        onChange={e => this.setState({question: e.target.value})}
+        placeholder={'Ask a question'}
+        value={question}
+      />
+      <p/>
+      <button onClick={this.saveQuestion}>Send Question</button>
+      <ul>
+        {
+          questions &&
+          questions.map(e =>
+            <li key={e.id}>{e.text}</li>
+          )
+        }
+      </ul>
     </div>
   }
 }
