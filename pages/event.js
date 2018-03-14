@@ -77,7 +77,7 @@ export default class Index extends Component {
 
     fsEvents.set(id, data)
 
-    this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
+    this.setState({ eventName: '', eventCode: '', startDate: moment(), endDate: moment() })
   }
 
   render () {
@@ -92,34 +92,32 @@ export default class Index extends Component {
       {
         user &&
         <div>
-          <form>
-            <div>Event Name</div>
-            <input
-              type={'text'}
-              onChange={e => this.setState({eventName: e.target.value})}
-              placeholder={'Event Name'}
-              value={eventName}
-            />
-            <div>Start date</div>
-            <DatePicker
-              selected={this.state.startDate}
-              onChange={date => this.setState({startDate: date})}
-            />
-            <div>End date</div>
-            <DatePicker
-              selected={this.state.endDate}
-              onChange={date => this.setState({endDate: date})}
-            />
-            <div>Event Code</div>
-            <input
-              type={'text'}
-              onChange={e => this.setState({eventCode: e.target.value})}
-              placeholder={'Event Code'}
-              value={eventCode}
-            />
-            <p/>
-            <button onClick={this.createEvent}>Create Event</button>
-          </form>
+          <div>Event Name</div>
+          <input
+            type={'text'}
+            onChange={e => this.setState({eventName: e.target.value})}
+            placeholder={'Event Name'}
+            value={eventName}
+          />
+          <div>Start date</div>
+          <DatePicker
+            selected={this.state.startDate}
+            onChange={date => this.setState({startDate: date})}
+          />
+          <div>End date</div>
+          <DatePicker
+            selected={this.state.endDate}
+            onChange={date => this.setState({endDate: date})}
+          />
+          <div>Event Code</div>
+          <input
+            type={'text'}
+            onChange={e => this.setState({eventCode: e.target.value})}
+            placeholder={'Event Code'}
+            value={eventCode}
+          />
+          <p/>
+          <button onClick={this.createEvent}>Create Event</button>
           <ul>
             {
               events &&
