@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
-import DatePicker from 'react-datepicker'
-import moment from 'moment'
-import 'react-datepicker/dist/react-datepicker.css'
+import TextareaAutosize from 'react-autosize-textarea'
+
 
 import { fsEvents, fsQuestions, init, login, logout } from '../lib/firebase'
 
@@ -83,13 +81,14 @@ export default class EventEdit extends Component {
 
     return <div>
       <h1>{eventName} - {id}</h1>
-      <div>Ask a Question</div>
-      <input
-        type={'text'}
+      <div>Ask the speaker</div>
+      <TextareaAutosize
         onChange={e => this.setState({question: e.target.value})}
-        placeholder={'Ask a question'}
+        placeholder={'Type your question'}
         value={question}
-      />
+        rows={5}
+        maxRows={10}
+        />
       <p/>
       <button onClick={this.saveQuestion}>Send Question</button>
       <ul>
