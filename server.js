@@ -1,7 +1,7 @@
 var express = require('express')
 var session = require('express-session')
 var FileStore = require('session-file-store')(session)
-var admin = require('firebase-admin')
+var firebase = require('firebase-admin')
 var compression = require('compression')
 var bodyParser = require('body-parser')
 var morgan = require('morgan')
@@ -14,8 +14,8 @@ var helmet = require('helmet')
 
 dotenv.load({ path: '.env' })
 
-const firebase = admin.initializeApp({
-  credential: admin.credential.cert(require('./credentials/server')),
+const firebaseServer = firebase.initializeApp({
+  credential: firebase.credential.cert(require('./credentials/server')),
   databaseURL: "https://slido-7de82.firebaseio.com",
 }, 'server')
 
@@ -51,7 +51,7 @@ const handle = nx.getRequestHandler()
 nx.prepare()
 .then(() => {
   app.use((req, res, next) => {
-    req.firebaseServer = firebase
+    req.firebaseServer = firebaseServer
     next()
   })
 
@@ -59,7 +59,7 @@ nx.prepare()
     if (!req.body) return res.sendStatus(400)
 
     const token = req.body.token
-    firebase.auth().verifyIdToken(token)
+    firebaseServer.auth().verifyIdToken(token)
       .then((decodedToken) => {
         req.session.decodedToken = decodedToken
         return decodedToken
