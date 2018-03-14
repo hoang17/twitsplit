@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import { fsEvents, auth, login, logout } from '../lib/firebase'
 
-export default class Index extends Component {
+export default class EventList extends Component {
 
   static async getInitialProps ({req, query}) {
     const user = req && req.session ? req.session.decodedToken : null
@@ -30,7 +30,7 @@ export default class Index extends Component {
     }
 
     this.addDbListener = this.addDbListener.bind(this)
-    this.createEvent = this.createEvent.bind(this)
+    this.saveEvent = this.saveEvent.bind(this)
   }
 
   async componentDidMount () {
@@ -64,7 +64,7 @@ export default class Index extends Component {
     })
   }
 
-  createEvent() {
+  saveEvent() {
     const id = new Date().getTime().toString()
 
     var data = {
@@ -72,7 +72,7 @@ export default class Index extends Component {
       eventName: this.state.eventName,
       eventCode: this.state.eventCode,
       startDate: this.state.startDate.toDate(),
-      endDate: this.state.startDate.toDate(),
+      endDate: this.state.endDate.toDate(),
     }
 
     fsEvents.set(id, data)
@@ -81,7 +81,7 @@ export default class Index extends Component {
   }
 
   render () {
-    const { user, eventName, eventCode, events } = this.state
+    const { user, eventName, eventCode, startDate, endDate, events } = this.state
 
     return <div>
       {
@@ -101,12 +101,12 @@ export default class Index extends Component {
           />
           <div>Start date</div>
           <DatePicker
-            selected={this.state.startDate}
+            selected={startDate}
             onChange={date => this.setState({startDate: date})}
           />
           <div>End date</div>
           <DatePicker
-            selected={this.state.endDate}
+            selected={endDate}
             onChange={date => this.setState({endDate: date})}
           />
           <div>Event Code</div>
@@ -117,7 +117,7 @@ export default class Index extends Component {
             value={eventCode}
           />
           <p/>
-          <button onClick={this.createEvent}>Create Event</button>
+          <button onClick={this.saveEvent}>Create Event</button>
           <ul>
             {
               events &&
