@@ -51,7 +51,7 @@ const handle = nx.getRequestHandler()
 nx.prepare()
 .then(() => {
   app.use((req, res, next) => {
-    req.firebaseServer = firebaseServer
+    req.fs = firebaseServer.firestore()
     next()
   })
 

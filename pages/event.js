@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
-import 'isomorphic-unfetch'
 
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { firebase, auth, login, logout } from '../lib/auth'
+import { fsEvents, auth, login, logout } from '../lib/firebase'
 
 export default class Index extends Component {
 
@@ -14,7 +12,7 @@ export default class Index extends Component {
     const user = req && req.session ? req.session.decodedToken : null
     var events = []
     if (user) {
-      var snapshot = await req.firebaseServer.firestore().collection("events").get()
+      var snapshot = await req.fs.collection("events").get()
       snapshot.forEach(doc => events.push(doc.data()))
     }
     return { user, events }
@@ -44,14 +42,12 @@ export default class Index extends Component {
         this.unsubscribe()
     })
 
-    this.db = firebase.firestore()
-
     if (this.state.user)
       this.addDbListener()
   }
 
   addDbListener () {
-    this.unsubscribe = this.db.collection('events').onSnapshot(snapshot => {
+    this.unsubscribe = fsEvents.ls().onSnapshot(snapshot => {
       var events = []
       snapshot.forEach(function(doc) {
         events.push(doc.data())
@@ -80,7 +76,7 @@ export default class Index extends Component {
       endDate: this.state.startDate.toDate(),
     }
 
-    this.db.collection("events").doc(event.id.toString()).set(event)
+    fsEvents.doc(event.id.toString()).set(event)
 
     this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
   }
