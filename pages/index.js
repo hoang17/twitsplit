@@ -1,11 +1,3 @@
-// import React from 'react'
-// import Login from '../components/Login'
-// // import Link from 'next/link'
-//
-// export default () => (
-//   <Login />
-// )
-
 import React, { Component } from 'react'
 import Link from 'next/link'
 import firebase from 'firebase'
