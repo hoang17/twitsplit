@@ -28,6 +28,8 @@ export default class EventEdit extends Component {
     }
     this.addDbListener = this.addDbListener.bind(this)
     this.saveQuestion = this.saveQuestion.bind(this)
+    this.likeClick = this.likeClick.bind(this)
+    this.unlikeClick = this.unlikeClick.bind(this)
   }
 
   async componentDidMount () {
@@ -76,6 +78,14 @@ export default class EventEdit extends Component {
     this.setState({ question: '' })
   }
 
+  likeClick(question){
+    fsQuestions.update(question.id, {like: !question.like})
+  }
+
+  unlikeClick(question){
+    fsQuestions.update(question.id, {unlike: !question.unlike})
+  }
+
   render () {
     const { id, eventName, eventCode, startDate, endDate, question, questions } = this.state
 
@@ -95,10 +105,20 @@ export default class EventEdit extends Component {
         {
           questions &&
           questions.map(e =>
-            <li key={e.id}>{e.text}</li>
+            <li key={e.id}>{e.text} <button onClick={ev => this.likeClick(e)} className={e.like?'like':''}>like</button> <button onClick={ev => this.unlikeClick(e)} className={e.unlike?'unlike':''}>unlike</button></li>
           )
         }
       </ul>
+      <style jsx>{`
+        button.like {
+          color: white;
+          background-color:blue;
+        }
+        button.unlike {
+          color: white;
+          background-color:red;
+        }
+      `}</style>
     </div>
   }
 }
