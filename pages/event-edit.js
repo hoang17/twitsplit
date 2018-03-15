@@ -20,15 +20,7 @@ export default class EventEdit extends Component {
 
   constructor (props) {
     super(props)
-    var { user, id, eventName, eventCode, startDate, endDate } = this.props
-    this.state = {
-      user,
-      id,
-      eventName,
-      eventCode,
-      startDate,
-      endDate
-    }
+    this.state = { ...this.props }    
     this.addDbListener = this.addDbListener.bind(this)
     this.saveEvent = this.saveEvent.bind(this)
     this.deleteEvent = this.deleteEvent.bind(this)

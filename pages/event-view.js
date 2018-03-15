@@ -1,35 +1,28 @@
 import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
+import QuestionRow from '../components/QuestionRow'
 
-
-import { fsEvents, fsQuestions, init, login, logout } from '../lib/firebase'
+import { fsLikes, fsEvents, fsQuestions, init, login, logout } from '../lib/firebase'
 
 export default class EventEdit extends Component {
 
   static async getInitialProps ({req, query: { code }}) {
+    var userIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress
     var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
     var event = snapshot.docs[0].data()
     var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
     var questions = snapshot.docs.map(e => e.data())
-    return { eventCode: code, ...event, questions }
+    return { eventCode: code, ...event, questions, userIP }
   }
 
   constructor (props) {
     super(props)
-    var { id, eventName, eventCode, startDate, endDate, questions } = this.props
     this.state = {
-      id,
-      eventName,
-      eventCode,
-      startDate,
-      endDate,
-      questions,
+      ...this.props,
       question: '',
     }
     this.addDbListener = this.addDbListener.bind(this)
     this.saveQuestion = this.saveQuestion.bind(this)
-    this.likeClick = this.likeClick.bind(this)
-    this.unlikeClick = this.unlikeClick.bind(this)
   }
 
   async componentDidMount () {
@@ -61,7 +54,7 @@ export default class EventEdit extends Component {
       //   if (change.type === "removed") {
       //   }
       // })
-      if (questions) this.setState({ questions })
+      this.setState({ questions })
     })
   }
 
@@ -78,16 +71,8 @@ export default class EventEdit extends Component {
     this.setState({ question: '' })
   }
 
-  likeClick(question){
-    fsQuestions.update(question.id, {like: !question.like})
-  }
-
-  unlikeClick(question){
-    fsQuestions.update(question.id, {unlike: !question.unlike})
-  }
-
   render () {
-    const { id, eventName, eventCode, startDate, endDate, question, questions } = this.state
+    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP } = this.state
 
     return <div>
       <h1>{eventName} - {id}</h1>
@@ -103,22 +88,11 @@ export default class EventEdit extends Component {
       <button onClick={this.saveQuestion}>Send Question</button>
       <ul>
         {
-          questions &&
-          questions.map(e =>
-            <li key={e.id}>{e.text} <button onClick={ev => this.likeClick(e)} className={e.like?'like':''}>like</button> <button onClick={ev => this.unlikeClick(e)} className={e.unlike?'unlike':''}>unlike</button></li>
+          questions.map(question =>
+            <QuestionRow key={question.id} userIP={userIP} {...question} />
           )
         }
       </ul>
-      <style jsx>{`
-        button.like {
-          color: white;
-          background-color:blue;
-        }
-        button.unlike {
-          color: white;
-          background-color:red;
-        }
-      `}</style>
     </div>
   }
 }
