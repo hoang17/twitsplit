@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { fsLikes } from '../lib/firebase'
+import { fsLikes } from '../lib/datastore'
 
 export default class QuestionRow extends Component {
 
@@ -19,17 +19,18 @@ export default class QuestionRow extends Component {
     var userIP = this.state.userIP
     var questionId = this.state.id
     var id = userIP.replace(/\./g,'_') + '_' + questionId
-    console.log(id);
+    var likes_count = 1
+    this.setState({ likes_count })
     fsLikes.set(id, {id, userIP, questionId})
-    this.setState({likes_count: this.state.likes_count+1})
   }
 
   unlikeClick(){
     var userIP = this.state.userIP
     var questionId = this.state.id
     var id = userIP.replace(/\./g,'_') + '_' + questionId
+    var likes_count = 0
+    this.setState({ likes_count })
     fsLikes.delete(id)
-    this.setState({likes_count: this.state.likes_count-1})
   }
 
   render () {

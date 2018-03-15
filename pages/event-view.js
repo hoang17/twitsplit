@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import QuestionRow from '../components/QuestionRow'
 
-import { fsLikes, fsEvents, fsQuestions, init, login, logout } from '../lib/firebase'
+import { fsLikes, fsEvents, fsQuestions, init, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 

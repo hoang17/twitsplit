@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
 
-import { fsEvents } from '../lib/firebase'
+import { fsEvents } from '../lib/datastore'
 
 export default class JoinEvent extends Component {
 

@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, auth, login, logout } from '../lib/firebase'
+import { fsEvents, auth, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 
