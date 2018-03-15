@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import QuestionRow from '../components/QuestionRow'
 
-import { fsLikes, fsEvents, fsQuestions, init, login, logout } from '../lib/datastore'
+import { fsLikes, fsEvents, fsQuestions, isLiked, init, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 
@@ -43,18 +43,12 @@ export default class EventEdit extends Component {
 
     this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(snapshot => {
       var questions = []
-      snapshot.forEach(function(doc) {
-        questions.push(doc.data())
+      snapshot.forEach(async doc => {
+        var data = doc.data()
+        data.liked = await isLiked(this.state.userIP, data.id)
+        questions.push(data)
+        this.setState({ questions })
       })
-      // snapshot.docChanges.forEach(function(change) {
-      //   if (change.type === "added") {
-      //   }
-      //   if (change.type === "modified") {
-      //   }
-      //   if (change.type === "removed") {
-      //   }
-      // })
-      this.setState({ questions })
     })
   }
 

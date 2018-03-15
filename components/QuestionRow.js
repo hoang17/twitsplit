@@ -1,54 +1,37 @@
 import React, { Component } from 'react'
 
-import { fsLikes } from '../lib/datastore'
+import { like, fsQuestions } from '../lib/datastore'
 
 export default class QuestionRow extends Component {
 
   constructor (props) {
     super(props)
     this.state = { ...this.props }
-    this.likeClick = this.likeClick.bind(this)
-    this.unlikeClick = this.unlikeClick.bind(this)
+    this.toggleLike = this.toggleLike.bind(this)
   }
 
   componentWillReceiveProps(newProps){
     this.setState({ ...newProps })
   }
 
-  likeClick(){
-    var userIP = this.state.userIP
-    var questionId = this.state.id
-    var id = userIP.replace(/\./g,'_') + '_' + questionId
-    var likes_count = 1
-    this.setState({ likes_count })
-    fsLikes.set(id, {id, userIP, questionId})
-  }
-
-  unlikeClick(){
-    var userIP = this.state.userIP
-    var questionId = this.state.id
-    var id = userIP.replace(/\./g,'_') + '_' + questionId
-    var likes_count = 0
-    this.setState({ likes_count })
-    fsLikes.delete(id)
+  toggleLike(){
+    var { id, userIP, likes_count, liked } = this.state
+    liked = !liked
+    likes_count = likes_count + (liked ? 1 : -1)
+    this.setState({ likes_count, liked })
+    like(userIP, id, likes_count, liked)
+    fsQuestions.update(id, { likes_count })
   }
 
   render () {
-    const { id, text, likes_count } = this.state
+    const { id, text, likes_count, liked } = this.state
 
     return (
       <li key={id}>
-        {text}
-        <button
-          onClick={this.likeClick}
-          className={likes_count?'like':''}>
-          {likes_count} like
-        </button>
-        <button
-          onClick={this.unlikeClick}
-          className={likes_count?'unlike':''}>
-          unlike
-        </button>
+        {text} <button
+                  onClick={this.toggleLike}
+                  className={liked?'unlike':'like'}>
+                  {likes_count} {liked? 'unlike':'like'}</button>
         <style jsx>{`
           button.like {
             color: white;
