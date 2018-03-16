@@ -11,8 +11,8 @@ module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
     if (!userId)
       throw new TypeError('User id can not be empty')
 
-  start = moment(startDate).startOf('day')
-  end = moment(endDate).startOf('day')
+  var start = moment(startDate).startOf('day')
+  var end = moment(endDate).startOf('day')
 
   if (start.diff(end, 'days') > 0)
     throw new TypeError('End date should be equal or greater than start date')

@@ -2,11 +2,18 @@
   "name": "custom-server-express",
   "version": "1.0.0",
   "scripts": {
-    "test": "ava --verbose",
+    "test": "NODE_ENV=test ava --verbose",
+    "test:watch": "NODE_ENV=test ava --watch --verbose",
     "mocha": "mocha --reporter spec",
     "dev": "nodemon -w server.js server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   },
   "dependencies": {
     "@zeit/next-css": "^0.1.4",
@@ -39,7 +46,13 @@
     "style-loader": "^0.20.3"
   },
   "devDependencies": {
+    "@ava/babel-preset-stage-4": "^1.1.0",
     "ava": "^0.25.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "mocha": "^5.0.4",

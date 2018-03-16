@@ -1,6 +1,8 @@
 import test from 'ava'
 
-const Event = require('../models/event')
+// import { fsEvents, init } from '../lib/datastore'
+
+import Event from '../models/event'
 
 test('Event should contain event name', t => {
 	const error = t.throws(() => {
@@ -34,4 +36,25 @@ test('Event end date should be equal or greater than start date', t => {
 	}, TypeError)
 
 	t.is(error.message, 'End date should be equal or greater than start date')
+})
+
+function fn(){
+  throw new TypeError('User id can not be empty')
+}
+test('throws', async t => {
+	await t.throws(async () => {
+		throw new TypeError('🦄');
+	}, {instanceOf: TypeError, message: '🦄'});
+});
+
+test('Event should contain user id', async t => {
+	await t.throws(async () => {
+    // init()
+    // var event = await fsEvents.one()
+    // fn()
+		// Event({userId: '', eventName:'Test Event', eventCode:'1010'})
+    throw new TypeError('User id can not be empty')
+	}, {instanceOf: TypeError, message: 'User id can not be empty'})
+
+	// t.is(error.message, 'User id can not be empty')
 })
