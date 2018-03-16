@@ -48,15 +48,30 @@ export default class QuestionRow extends Component {
   render () {
     const { id, text, likes_count, liked, mark } = this.state
     return (
-      <li key={id}>
-        <span className={mark ? 'highlight':''}> {text} </span>
-        { !this.props.admin && 
+      <li key={id} className={mark ? 'highlight':''}>
+        <div className='txt'>{text}</div>
+        {
+          !this.props.admin &&
           <button
             onClick={this.toggleLike}
             className={liked?'unlike':'like'}>
-            {likes_count} {liked? 'unlike':'like'}</button>}
+            {likes_count} {liked? 'unlike':'like'}</button>
+        }
         <style jsx>{`
-          .highlight{
+          li{
+            display: flex;
+            border-bottom: 1px solid grey;
+            width:500px;
+            align-items:center;
+            padding:10px;
+          }
+          .txt{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            white-space: pre;
+            width:400px;
+          }
+          .highlight .txt{
             background-color:yellow;
           }
           button.like {
@@ -70,11 +85,11 @@ export default class QuestionRow extends Component {
         `}</style>
         { this.props.admin &&
           <span>
-            <a href="#" onClick={this.markQuestion}>[ {mark?'Unmark':'Mark'} ]</a>
-            <a href="#" onClick={this.deleteQuestion}>[ Delete ]</a>
+            <a href="#" onClick={this.deleteQuestion}>[Delete]</a>
             <Link href={{pathname: '/question-edit', query: { id: id }}}>
-              <a>[ Edit ]</a>
+              <a>[Edit]</a>
             </Link>
+            <a href="#" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a>
           </span>
         }
       </li>

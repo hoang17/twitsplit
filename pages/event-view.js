@@ -92,6 +92,7 @@ export default class EventView extends Component {
       <p/>
       <button onClick={this.saveQuestion}>Send Question</button>
       <p/>
+      <h2>Questions</h2>
       Order by
       <button className={sortField=='likes_count'?'active':''} onClick={e => this.sort('likes_count')}>popular</button>
       <button className={sortField=='created'?'active':''} onClick={e => this.sort('created')}>created time</button>

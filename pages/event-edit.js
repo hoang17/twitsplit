@@ -3,7 +3,6 @@ import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import QuestionRow from '../components/QuestionRow'
 import moment from 'moment'
-import jsCookie from 'js-cookie'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { fsEvents, fsQuestions, auth, login, logout } from '../lib/datastore'
@@ -60,7 +59,7 @@ export default class EventEdit extends Component {
 
   saveEvent() {
     var { id, eventName, eventCode, startDate, endDate } = this.state
-    fsEvents.update(id, { id, eventName, eventCode, startDate, endDate })
+    fsEvents.update(id, { eventName, eventCode, startDate, endDate })
   }
 
   deleteEvent() {
@@ -79,6 +78,7 @@ export default class EventEdit extends Component {
       {
         user && eventCode &&
         <div>
+          <h1>{eventName}</h1>
           <div>
             <div>Event Name</div>
             <input
@@ -109,6 +109,7 @@ export default class EventEdit extends Component {
             <button onClick={this.deleteEvent}>Delete Event</button>
           </div>
           <p/>
+          <h2>Questions</h2>
           <ul>
             {
               questions.map(question =>
