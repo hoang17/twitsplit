@@ -45,6 +45,7 @@ export default class QuestionEdit extends Component {
 
   saveQuestion() {
     var { id, text } = this.state
+    if (!text) alert('Question can not empty')
     fsQuestions.update(id, { text })
   }
 
