@@ -13,8 +13,13 @@ export default class EventEdit extends Component {
       var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
       var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
       var event = snapshot.docs[0].data()
-      var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
-      var questions = snapshot.docs.map(e => e.data())
+      var questions = []
+      // var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
+      // for (var doc of snapshot.docs) {
+      //   var data = doc.data()
+      //   data.liked = await isLiked(userIP, data.id, req.fs.collection("likes"))
+      //   questions.push(data)
+      // }
       return { eventCode: code, ...event, questions, userIP }
     }
     var userIP = jsCookie.get('userIP')
@@ -43,14 +48,14 @@ export default class EventEdit extends Component {
     this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
       event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
-      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(snapshot => {
+      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
         var questions = []
-        snapshot.forEach(async doc => {
+        for (var doc of snapshot.docs) {
           var data = doc.data()
           data.liked = await isLiked(this.state.userIP, data.id)
           questions.push(data)
-          this.setState({ questions })
-        })
+        }
+        this.setState({ questions })
       })
     })
   }
