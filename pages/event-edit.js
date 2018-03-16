@@ -1,22 +1,26 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
+import QuestionRow from '../components/QuestionRow'
 import moment from 'moment'
+import jsCookie from 'js-cookie'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
+    var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : jsCookie.get('userIP')
     var event = {}
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
       event = doc.data()
       if (event.userId != user.uid) event = {}
     }
-    return { user, id, ...event }
+    var questions = []
+    return { user, id, ...event, questions, userIP }
   }
 
   constructor (props) {
@@ -44,6 +48,15 @@ export default class EventEdit extends Component {
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       var event = doc.data()
       if (event && event.userId == this.state.user.uid) this.setState({ ...event })
+      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy('likes_count','desc').onSnapshot(async snapshot => {
+        var questions = []
+        for (var doc of snapshot.docs) {
+          var data = doc.data()
+          data.liked = await isLiked(this.state.userIP, data.id)
+          questions.push(data)
+        }
+        this.setState({ questions })
+      })
     })
   }
 
@@ -57,7 +70,7 @@ export default class EventEdit extends Component {
   }
 
   render () {
-    const { user, id, eventName, eventCode, startDate, endDate } = this.state
+    const { user, id, eventName, eventCode, startDate, endDate, questions, userIP } = this.state
 
     return <div>
       {
@@ -68,33 +81,43 @@ export default class EventEdit extends Component {
       {
         user && eventCode &&
         <div>
-          <div>Event Name</div>
-          <input
-            type={'text'}
-            onChange={e => this.setState({eventName: e.target.value})}
-            placeholder={'Event Name'}
-            value={eventName}
-          />
-          <div>Start date</div>
-          <DatePicker
-            selected={moment(startDate)}
-            onChange={date => this.setState({startDate: date.toDate()})}
-          />
-          <div>End date</div>
-          <DatePicker
-            selected={moment(endDate)}
-            onChange={date => this.setState({endDate: date.toDate()})}
-          />
-          <div>Event Code</div>
-          <input
-            type={'text'}
-            onChange={e => this.setState({eventCode: e.target.value})}
-            placeholder={'Event Code'}
-            value={eventCode}
-          />
+          <div>
+            <div>Event Name</div>
+            <input
+              type={'text'}
+              onChange={e => this.setState({eventName: e.target.value})}
+              placeholder={'Event Name'}
+              value={eventName}
+            />
+            <div>Start date</div>
+            <DatePicker
+              selected={moment(startDate)}
+              onChange={date => this.setState({startDate: date.toDate()})}
+            />
+            <div>End date</div>
+            <DatePicker
+              selected={moment(endDate)}
+              onChange={date => this.setState({endDate: date.toDate()})}
+            />
+            <div>Event Code</div>
+            <input
+              type={'text'}
+              onChange={e => this.setState({eventCode: e.target.value})}
+              placeholder={'Event Code'}
+              value={eventCode}
+            />
+            <p/>
+            <button onClick={this.saveEvent}>Save Event</button>
+            <button onClick={this.deleteEvent}>Delete Event</button>
+          </div>
           <p/>
-          <button onClick={this.saveEvent}>Save Event</button>
-          <button onClick={this.deleteEvent}>Delete Event</button>
+          <ul>
+            {
+              questions.map(question =>
+                <QuestionRow key={question.id} userIP={userIP} {...question} />
+              )
+            }
+          </ul>
         </div>
       }
     </div>

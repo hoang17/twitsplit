@@ -4,9 +4,9 @@ import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
 import jsCookie from 'js-cookie'
 
-import { fsLikes, fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
 
-export default class EventEdit extends Component {
+export default class EventView extends Component {
 
   static async getInitialProps ({req, query: { code }}) {
     if (req){
@@ -17,7 +17,6 @@ export default class EventEdit extends Component {
       return { eventCode: code, ...event, questions, userIP }
     }
     var userIP = jsCookie.get('userIP')
-    console.log(userIP);
     return { eventCode: code, questions: [], userIP }
   }
 
