@@ -71,7 +71,8 @@ export default class EventView extends Component {
 
   saveQuestion() {
     var userId = this.state.user ? this.state.user.uid : null
-    var question = Question(this.state.id, this.state.question, userId)
+    var userName = this.state.user ? this.state.user.displayName : null
+    var question = Question(this.state.id, this.state.question, userId, userName)
     fsQuestions.set(question.id, question)
     this.setState({ question: '' })
   }

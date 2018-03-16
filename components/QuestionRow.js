@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
+import moment from 'moment'
 
 import { like, fsQuestions } from '../lib/datastore'
 
@@ -46,10 +47,14 @@ export default class QuestionRow extends Component {
   }
 
   render () {
-    const { id, text, likes_count, liked, mark } = this.state
+    const { id, text, likes_count, liked, mark, userName, created } = this.state
     return (
       <li key={id} className={mark ? 'highlight':''}>
-        <div className='txt'>{text}</div>
+        <div className='question'>
+          <div className='user'>{userName?userName:'Anonymous'}</div>
+          <div className='meta'>{moment(created).fromNow()} - {likes_count} likes</div>
+          <div className='txt'>{text}</div>
+        </div>
         {
           !this.props.admin &&
           <button
@@ -65,11 +70,21 @@ export default class QuestionRow extends Component {
             align-items:center;
             padding:10px;
           }
+          .question{
+            width:400px;
+          }
+          .user{
+            font-weight:bold;
+          }
+          .meta{
+            font-size:80%;
+            color: #999
+          }
           .txt{
+            padding-top:10px
             white-space: pre-wrap;
             word-wrap: break-word;
             white-space: pre;
-            width:400px;
           }
           .highlight .txt{
             background-color:yellow;
