@@ -1,6 +1,6 @@
 import test from 'ava'
 
-// import { fsEvents, init } from '../lib/datastore'
+import { fsEvents, init } from '../lib/datastore'
 
 import Event from '../models/event'
 

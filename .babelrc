@@ -8,12 +8,7 @@
     },
     "test": {
       "presets": [
-        "env",
-        "stage-3",
-        "@ava/stage-4",
-      ],
-      "plugins": [
-        "transform-runtime"
+        "@ava/stage-4"
       ]
     }
   }
