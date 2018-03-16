@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import moment from 'moment'
 
-import { like, fsQuestions } from '../lib/datastore'
+import { like, highlight, fsQuestions } from '../lib/datastore'
 
 export default class QuestionRow extends Component {
 
@@ -30,17 +30,14 @@ export default class QuestionRow extends Component {
   }
 
   async markQuestion(){
-    var { id, mark } = this.state
+    var { id, mark, eventId } = this.state
     mark = !mark
-    if (mark){
-      var docs = await fsQuestions.ls().where('mark','==', true).get()
-      if (docs.size > 2){
-        alert('Maximum highlight amount is 3')
-        return
-      }
+    try {
+      highlight(id, mark, eventId)
+      this.setState({ mark })
+    } catch (e) {
+      alert(e.message)
     }
-    this.setState({ mark })
-    fsQuestions.update(id, { mark })
   }
 
   render () {

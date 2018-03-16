@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, init } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, highlight, init } from '../lib/datastore'
 
 import Event from '../models/event'
 import Question from '../models/question'
@@ -100,25 +100,80 @@ test('Question should not empty', t => {
 })
 
 test('Question should be created', async t => {
-  var question = Question({eventId: '333', text:'This is a test question'})
+  var eventId = '3331'
+  var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
-  fsQuestions.delete(question.id)
   t.deepEqual(question.text, savedQuestion.text)
+  fsQuestions.delete(question.id)
 })
 
-test('Like should be created', async t => {
-  var question = Question({eventId: '333', text:'This is a test question'})
+test('Question should have correct likes', async t => {
+  var eventId = '3332'
+  var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
-  t.deepEqual(question.text, savedQuestion.text)
+  t.deepEqual(question.text, savedQuestion.text, 'question created')
 
-  for (var i = 0; i < 10; i++) {
+  for (var i = 1; i <= 10; i++) {
     var likes = await like({ ...question, liked: true, userIP: 'IP_TEST_'+i })
     question = { ...question, likes, likes_count: Object.keys(likes).length }
   }
+
+  for (var i = 1; i <= 5; i++) {
+    var likes = await like({ ...question, liked: false, userIP: 'IP_TEST_'+i })
+    question = { ...question, likes, likes_count: Object.keys(likes).length }
+  }
+
   var savedQuestion = await fsQuestions.data(question.id)
-  t.is(question.likes_count, savedQuestion.likes_count)
-  t.deepEqual(question.likes, savedQuestion.likes)
+  t.is(question.likes_count, savedQuestion.likes_count, 'likes_count should be 5')
+  t.deepEqual(question.likes, savedQuestion.likes, 'likes should be correct')
   fsQuestions.delete(question.id)
+})
+
+test('Question can only be liked once for each user IP', async t => {
+  var eventId = '3333'
+  var question = Question({eventId, text:'This is a test question'})
+  await saveQuestion(question)
+  var savedQuestion = await fsQuestions.data(question.id)
+  t.deepEqual(question.text, savedQuestion.text, 'question created')
+
+  for (var i = 0; i < 5; i++) {
+    var likes = await like({ ...question, liked: true, userIP: 'IP_TEST' })
+    question = { ...question, likes, likes_count: Object.keys(likes).length }
+  }
+  var savedQuestion = await fsQuestions.data(question.id)
+  t.is(question.likes_count, 1, 'Like count equal 1')
+  t.is(question.likes_count, savedQuestion.likes_count, 'Saved likes_count is 1')
+  t.deepEqual(question.likes, savedQuestion.likes, 'Saved likes is correct')
+  fsQuestions.delete(question.id)
+})
+
+test('Max 3 questions can be highlighted', async t => {
+  var eventId = '3334'
+  var questions = []
+
+  for (var i = 1; i <= 4; i++) {
+    var question = Question({eventId, text:'This is a test question ' + i})
+    await saveQuestion(question)
+    var savedQuestion = await fsQuestions.data(question.id)
+    t.deepEqual(question.text, savedQuestion.text, `Question ${i} created`)
+    questions.push(savedQuestion)
+  }
+
+  for (var i = 0; i < 3; i++) {
+    var question = questions[i]
+    await highlight(question.id, true, question.eventId)
+  }
+
+  var err = await t.throws(async () => {
+    var question = questions[3]
+    await highlight(question.id, true, question.eventId)
+	}, TypeError)
+
+  t.is(err.message, 'Max 3 questions can be highlighted')
+
+  for (var question of questions) {
+    fsQuestions.delete(question.id)
+  }
 })
