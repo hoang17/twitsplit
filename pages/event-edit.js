@@ -6,13 +6,12 @@ import moment from 'moment'
 import jsCookie from 'js-cookie'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, auth, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
-    var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : jsCookie.get('userIP')
     var event = {}
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
@@ -20,7 +19,7 @@ export default class EventEdit extends Component {
       if (event.userId != user.uid) event = {}
     }
     var questions = []
-    return { user, id, ...event, questions, userIP }
+    return { user, id, ...event, questions }
   }
 
   constructor (props) {
@@ -52,7 +51,6 @@ export default class EventEdit extends Component {
         var questions = []
         for (var doc of snapshot.docs) {
           var data = doc.data()
-          data.liked = await isLiked(this.state.userIP, data.id)
           questions.push(data)
         }
         this.setState({ questions })
@@ -70,7 +68,7 @@ export default class EventEdit extends Component {
   }
 
   render () {
-    const { user, id, eventName, eventCode, startDate, endDate, questions, userIP } = this.state
+    const { user, id, eventName, eventCode, startDate, endDate, questions } = this.state
 
     return <div>
       {
@@ -114,7 +112,7 @@ export default class EventEdit extends Component {
           <ul>
             {
               questions.map(question =>
-                <QuestionRow key={question.id} userIP={userIP} {...question} admin={true} />
+                <QuestionRow key={question.id} {...question} admin={true} />
               )
             }
           </ul>
