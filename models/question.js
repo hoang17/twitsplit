@@ -18,7 +18,7 @@ module.exports = ({id, eventId, text, userId, userName}) => {
     likes_count:0,
     mark: false,
     userId: userId ? userId : null,
-    userName: userId ? userId : null,
+    userName: userName ? userName : null,
     created: FieldValue.serverTimestamp()
   }
 }
