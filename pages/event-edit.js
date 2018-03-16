@@ -12,14 +12,20 @@ export default class EventEdit extends Component {
 
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
+    var questions = []
     var event = {}
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
       if (!doc.exists) return {}
       event = doc.data()
       if (event.userId != user.uid) return {}
+
+      var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
+      for (var doc of snapshot.docs) {
+        var data = doc.data()
+        questions.push(data)
+      }
     }
-    var questions = []
     return { user, id, ...event, questions }
   }
 
@@ -51,14 +57,14 @@ export default class EventEdit extends Component {
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       var event = doc.data()
       if (event && event.userId == this.state.user.uid) this.setState({ ...event })
-      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
-        var questions = []
-        for (var doc of snapshot.docs) {
-          var data = doc.data()
-          questions.push(data)
-        }
-        this.setState({ questions })
-      })
+    })
+    this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
+      var questions = []
+      for (var doc of snapshot.docs) {
+        var data = doc.data()
+        questions.push(data)
+      }
+      this.setState({ questions })
     })
   }
 

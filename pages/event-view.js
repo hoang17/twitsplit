@@ -14,6 +14,12 @@ export default class EventView extends Component {
       var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
       var event = snapshot.docs[0].data()
       var questions = []
+      var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).orderBy('likes_count','desc').get()
+      for (var doc of snapshot.docs) {
+        var data = doc.data()
+        data.liked = data.likes && data.likes[userIP]
+        questions.push(data)
+      }
       return { eventCode: code, ...event, questions, userIP }
     }
     var userIP = jsCookie.get('userIP')
