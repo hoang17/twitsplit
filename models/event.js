@@ -23,8 +23,8 @@ module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
     id,
     eventName,
     eventCode,
-    startDate,
-    endDate,
+    startDate: start.toDate(),
+    endDate: end.toDate(),
     userId,
   }
 }

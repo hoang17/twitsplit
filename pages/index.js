@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import { fsEvents, init } from '../lib/datastore'
+import { fsEvents, init, validCode } from '../lib/datastore'
 import moment from 'moment'
 import jsCookie from 'js-cookie'
 
@@ -28,21 +28,12 @@ export default class JoinEvent extends Component {
   }
 
   async joinEvent() {
-    var { eventCode } = this.state
-    var doc = await fsEvents.ls().where('eventCode','==',eventCode).limit(1).get()
-    if (doc.size > 0){
-      var event = doc.docs[0].data()
-      var startDate = moment(event.startDate)
-      var endDate = moment(event.endDate)
-      var today = moment().startOf('day')
-
-      if (today.diff(startDate, 'days') >= 0 && today.diff(endDate, 'days') <= 0){
-        Router.push('/event-view?code='+eventCode)
-      } else {
-        alert('You can not join this event because time not matched')
-      }
-    } else {
-      alert('You can not join this event because event code is not valid')
+    try {
+      var { eventCode } = this.state
+      if (await validCode(eventCode))
+        Router.push('/event-view?code='+eventCode)      
+    } catch (e) {
+      alert(e.message)
     }
   }
 

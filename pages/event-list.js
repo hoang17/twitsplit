@@ -62,7 +62,7 @@ export default class EventList extends Component {
       await saveEvent({userId: user.uid, eventName, eventCode, startDate, endDate})
       this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
     } catch (e) {
-      alert(e)
+      alert(e.message)
     }
   }
 

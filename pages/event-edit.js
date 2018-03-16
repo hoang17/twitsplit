@@ -72,7 +72,7 @@ export default class EventEdit extends Component {
     try {
       await saveEvent(this.state)
     } catch (e) {
-      alert(e)
+      alert(e.message)
     }
   }
 

@@ -82,7 +82,7 @@ export default class EventView extends Component {
       await saveQuestion(null, this.state.id, this.state.question, userId, userName)
       this.setState({ question: '' })
     } catch (e) {
-      alert(e)
+      alert(e.message)
     }
   }
 
