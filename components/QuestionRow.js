@@ -33,7 +33,7 @@ export default class QuestionRow extends Component {
     var { id, mark, eventId } = this.state
     mark = !mark
     try {
-      highlight(id, mark, eventId)
+      await highlight(id, mark, eventId)
       this.setState({ mark })
     } catch (e) {
       alert(e.message)
