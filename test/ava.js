@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, init } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, init } from '../lib/datastore'
 
 import Event from '../models/event'
 import Question from '../models/question'
@@ -44,7 +44,7 @@ test('Event code should be unique', async t => {
 })
 
 test('Event should be created and updated', async t => {
-  var eventCode = '1010'
+  var eventCode = '121121'
   await fsEvents.deleteWhere('eventCode','==',eventCode)
   var startDate = new Date()
   var endDate = new Date()
@@ -58,9 +58,10 @@ test('Event should be created and updated', async t => {
   await saveEvent(event)
 
   var savedEvent = await fsEvents.data(event.id)
-  t.deepEqual(event, savedEvent)
 
   fsEvents.delete(event.id)
+
+  t.deepEqual(event, savedEvent)
 })
 
 test('Event code should not exists', async t => {
@@ -99,20 +100,25 @@ test('Question should not empty', t => {
 })
 
 test('Question should be created', async t => {
-  var eventCode = '151515'
-  await fsEvents.deleteWhere('eventCode','==',eventCode)
-  var startDate = new Date()
-  var endDate = new Date()
-  var event = Event({userId: '111', eventName:'Test Event', eventCode, startDate, endDate})
-  await saveEvent(event)
-  var savedEvent = await fsEvents.data(event.id)
-  t.deepEqual(event, savedEvent)
+  var question = Question({eventId: '333', text:'This is a test question'})
+  await saveQuestion(question)
+  var savedQuestion = await fsQuestions.data(question.id)
+  fsQuestions.delete(question.id)
+  t.deepEqual(question.text, savedQuestion.text)
+})
 
+test('Like should be created', async t => {
   var question = Question({eventId: '333', text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
   t.deepEqual(question.text, savedQuestion.text)
 
+  for (var i = 0; i < 10; i++) {
+    var likes = await like({ ...question, liked: true, userIP: 'IP_TEST_'+i })
+    question = { ...question, likes, likes_count: Object.keys(likes).length }
+  }
+  var savedQuestion = await fsQuestions.data(question.id)
+  t.is(question.likes_count, savedQuestion.likes_count)
+  t.deepEqual(question.likes, savedQuestion.likes)
   fsQuestions.delete(question.id)
-  fsEvents.delete(event.id)
 })

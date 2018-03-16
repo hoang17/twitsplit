@@ -19,16 +19,9 @@ export default class QuestionRow extends Component {
   }
 
   toggleLike(){
-    var { id, userIP, likes_count, liked, likes } = this.state
-    liked = !liked
-    likes_count = likes_count + (liked ? 1 : -1)
-    if (!likes) likes = {}
-    if (liked)
-      likes[userIP] = liked
-    else
-      delete likes[userIP]
-    this.setState({ liked, likes_count, likes })
-    fsQuestions.update(id, { likes_count, likes })
+    this.state.liked = !this.state.liked
+    var likes = like(this.state)
+    this.setState({ liked:this.state.liked, likes_count: Object.keys(likes).length, likes })
   }
 
   deleteQuestion(){

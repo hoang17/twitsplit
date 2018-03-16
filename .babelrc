@@ -8,7 +8,8 @@
     },
     "test": {
       "presets": [
-        "@ava/stage-4"
+        "@ava/stage-4",
+        "@babel/preset-stage-3"
       ]
     }
   }
