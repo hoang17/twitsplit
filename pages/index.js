@@ -60,6 +60,8 @@ export default class JoinEvent extends Component {
       />
       <p/>
       <button onClick={this.joinEvent}>Join Event</button>
+      <p/>
+      <a href="/event-list">Admin</a>
     </div>
   }
 }
