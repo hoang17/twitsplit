@@ -6,16 +6,16 @@ module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
     throw new TypeError('Event name can not be empty')
 
   if (!eventCode)
-    throw 'Event code can not be empty'
+    throw new TypeError('Event code can not be empty')
 
     if (!userId)
-      throw 'User id can not be empty'
+      throw new TypeError('User id can not be empty')
 
   start = moment(startDate).startOf('day')
   end = moment(endDate).startOf('day')
 
   if (start.diff(end, 'days') > 0)
-    throw 'End date should be equal or greater than start date'
+    throw new TypeError('End date should be equal or greater than start date')
 
   id = id ? id : objectid().toString()
 

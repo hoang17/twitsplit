@@ -2,7 +2,7 @@
   "name": "custom-server-express",
   "version": "1.0.0",
   "scripts": {
-    "test": "ava",
+    "test": "ava --verbose",
     "mocha": "mocha --reporter spec",
     "dev": "nodemon -w server.js server.js",
     "build": "next build",
