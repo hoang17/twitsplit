@@ -1,9 +1,17 @@
 var objectid = require('bson-objectid')
-var { FieldValue } = require('../lib/datastore')
 
-module.exports = (eventId, text, userId, userName) => {
+module.exports = (id, eventId, text, userId, userName) => {
+
+  if (!eventId)
+    throw 'Event id can not empty'
+
+  if (!text)
+    throw 'Question can not empty'
+
+  var { FieldValue } = require('../lib/datastore')
+
   return {
-    id: objectid().toString(),
+    id: id ? id : objectid().toString(),
     likes_count:0,
     eventId,
     text,

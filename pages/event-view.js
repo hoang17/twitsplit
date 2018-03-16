@@ -4,7 +4,7 @@ import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
 import jsCookie from 'js-cookie'
 
-import { fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
 
 export default class EventView extends Component {
 
@@ -28,7 +28,7 @@ export default class EventView extends Component {
       sortField: 'likes_count',
     }
     this.addDbListener = this.addDbListener.bind(this)
-    this.saveQuestion = this.saveQuestion.bind(this)
+    this.addQuestion = this.addQuestion.bind(this)
   }
 
   async componentDidMount () {
@@ -69,12 +69,15 @@ export default class EventView extends Component {
     })
   }
 
-  saveQuestion() {
-    var userId = this.state.user ? this.state.user.uid : null
-    var userName = this.state.user ? this.state.user.displayName : null
-    var question = Question(this.state.id, this.state.question, userId, userName)
-    fsQuestions.set(question.id, question)
-    this.setState({ question: '' })
+  async addQuestion() {
+    try {
+      var userId = this.state.user ? this.state.user.uid : null
+      var userName = this.state.user ? this.state.user.displayName : null
+      await saveQuestion(null, this.state.id, this.state.question, userId, userName)
+      this.setState({ question: '' })
+    } catch (e) {
+      alert(e)
+    }
   }
 
   render () {
@@ -91,7 +94,7 @@ export default class EventView extends Component {
         maxRows={10}
         />
       <p/>
-      <button onClick={this.saveQuestion}>Send Question</button>
+      <button onClick={this.addQuestion}>Send Question</button>
       <p/>
       <h2>Questions</h2>
       Order by
