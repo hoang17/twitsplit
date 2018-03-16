@@ -1,12 +1,15 @@
 var objectid = require('bson-objectid')
 var moment = require('moment')
 
-module.exports = (id, userId, eventName, eventCode, startDate, endDate) => {
+module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
   if (!eventName)
-    throw 'Please enter event name'
+    throw new TypeError('Event name can not be empty')
 
   if (!eventCode)
-    throw 'Please enter event code'
+    throw 'Event code can not be empty'
+
+    if (!userId)
+      throw 'User id can not be empty'
 
   start = moment(startDate).startOf('day')
   end = moment(endDate).startOf('day')
