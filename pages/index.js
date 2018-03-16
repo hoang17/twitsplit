@@ -8,11 +8,7 @@ export default class JoinEvent extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      id: '',
-      eventName: '',
       eventCode: '',
-      startDate: '',
-      endDate: ''
     }
     this.joinEvent = this.joinEvent.bind(this)
   }
@@ -22,7 +18,7 @@ export default class JoinEvent extends Component {
   }
 
   render() {
-    const { id, eventName, eventCode, startDate, endDate } = this.state
+    const { eventCode } = this.state
 
     return <div>
       <div>Join Event</div>
