@@ -6,7 +6,7 @@ import QuestionRow from '../components/QuestionRow'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, fsQuestions, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
 export default class EventEdit extends Component {
 
@@ -15,8 +15,9 @@ export default class EventEdit extends Component {
     var event = {}
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
+      if (!doc.exists) return {}
       event = doc.data()
-      if (event.userId != user.uid) event = {}
+      if (event.userId != user.uid) return {}
     }
     var questions = []
     return { user, id, ...event, questions }
@@ -31,6 +32,9 @@ export default class EventEdit extends Component {
   }
 
   async componentDidMount () {
+
+    if (!this.state.id) return
+
     auth(user => {
       this.setState({ user: user })
       if (user)
@@ -58,9 +62,13 @@ export default class EventEdit extends Component {
     })
   }
 
-  updateEvent() {
-    var { id, userId, eventName, eventCode, startDate, endDate } = this.state
-    saveEvent(id, userId, eventName, eventCode, startDate, endDate)
+  async updateEvent() {
+    try {
+      var { id, userId, eventName, eventCode, startDate, endDate } = this.state
+      await saveEvent(id, userId, eventName, eventCode, startDate, endDate)
+    } catch (e) {
+      alert(e)
+    }
   }
 
   deleteEvent() {
@@ -78,7 +86,7 @@ export default class EventEdit extends Component {
         : <button onClick={login}>Login</button>
       }
       {
-        user && eventCode &&
+        user && id &&
         <div>
           <h1>{eventName}</h1>
           <div>

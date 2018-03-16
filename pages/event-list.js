@@ -25,16 +25,12 @@ export default class EventList extends Component {
       events: this.props.events,
       eventName: '',
       eventCode: '',
-      startDate: this.today(),
-      endDate: this.today(),
+      startDate: new Date(),
+      endDate: new Date(),
     }
 
     this.addDbListener = this.addDbListener.bind(this)
     this.addEvent = this.addEvent.bind(this)
-  }
-
-  today(){
-    return moment().startOf('day')
   }
 
   async componentDidMount () {
@@ -64,7 +60,7 @@ export default class EventList extends Component {
     try {
       var { user, eventName, eventCode, startDate, endDate } = this.state
       await saveEvent(null, user.uid, eventName, eventCode, startDate, endDate)
-      this.setState({ eventName: '', eventCode: '', startDate: this.today(), endDate: this.today() })
+      this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
     } catch (e) {
       alert(e)
     }
@@ -91,13 +87,13 @@ export default class EventList extends Component {
           />
           <div>Start date</div>
           <DatePicker
-            selected={startDate}
-            onChange={date => this.setState({startDate: date})}
+            selected={moment(startDate)}
+            onChange={date => this.setState({startDate: date.toDate()})}
           />
           <div>End date</div>
           <DatePicker
-            selected={endDate}
-            onChange={date => this.setState({endDate: date})}
+            selected={moment(endDate)}
+            onChange={date => this.setState({endDate: date.toDate()})}
           />
           <div>Event Code</div>
           <input
