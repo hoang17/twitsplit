@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Router from 'next/router'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import QuestionRow from '../components/QuestionRow'
@@ -25,7 +26,7 @@ export default class EventEdit extends Component {
     super(props)
     this.state = { ...this.props }
     this.addDbListener = this.addDbListener.bind(this)
-    this.saveEvent = this.saveEvent.bind(this)
+    this.updateEvent = this.updateEvent.bind(this)
     this.deleteEvent = this.deleteEvent.bind(this)
   }
 
@@ -57,13 +58,14 @@ export default class EventEdit extends Component {
     })
   }
 
-  saveEvent() {
-    var { id, eventName, eventCode, startDate, endDate } = this.state
-    fsEvents.update(id, { eventName, eventCode, startDate, endDate })
+  updateEvent() {
+    var { id, userId, eventName, eventCode, startDate, endDate } = this.state
+    saveEvent(id, userId, eventName, eventCode, startDate, endDate)
   }
 
   deleteEvent() {
     fsEvents.delete(this.state.id)
+    Router.push('/event-list')
   }
 
   render () {
@@ -105,7 +107,7 @@ export default class EventEdit extends Component {
               value={eventCode}
             />
             <p/>
-            <button onClick={this.saveEvent}>Save Event</button>
+            <button onClick={this.updateEvent}>Save Event</button>
             <button onClick={this.deleteEvent}>Delete Event</button>
           </div>
           <p/>

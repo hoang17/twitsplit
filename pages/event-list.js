@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import Event from '../models/event'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { fsEvents, auth, login, logout } from '../lib/datastore'
+import { fsEvents, saveEvent, auth, login, logout } from '../lib/datastore'
 
 export default class EventList extends Component {
 
@@ -31,7 +30,7 @@ export default class EventList extends Component {
     }
 
     this.addDbListener = this.addDbListener.bind(this)
-    this.saveEvent = this.saveEvent.bind(this)
+    this.addEvent = this.addEvent.bind(this)
   }
 
   today(){
@@ -61,40 +60,13 @@ export default class EventList extends Component {
     })
   }
 
-  async saveEvent() {
-    var { user, eventName, eventCode, startDate, endDate } = this.state
-
-    if (!eventName){
-      alert('Please enter event name')
-      return
-    }
-
-    if (!eventCode){
-      alert('Please enter event code')
-      return
-    }
-
-    startDate = startDate.startOf('day')
-    endDate = endDate.startOf('day')
-
-    if (startDate.diff(endDate, 'days') > 0){
-      alert('End date should be equal or greater than start date')
-      return
-    }
-
-    var doc = await fsEvents.ls().where('eventCode','==',eventCode).limit(1).get()
-    if (doc.size > 0){
-      alert('Event code is not unique. Please enter an unique code')
-    } else {
-      var event = Event(
-        user.uid,
-        eventName,
-        eventCode,
-        startDate.toDate(),
-        endDate.toDate()
-      )
-      fsEvents.set(event.id, event)
+  async addEvent() {
+    try {
+      var { user, eventName, eventCode, startDate, endDate } = this.state
+      await saveEvent(null, user.uid, eventName, eventCode, startDate, endDate)
       this.setState({ eventName: '', eventCode: '', startDate: this.today(), endDate: this.today() })
+    } catch (e) {
+      alert(e)
     }
   }
 
@@ -135,7 +107,7 @@ export default class EventList extends Component {
             value={eventCode}
           />
           <p/>
-          <button onClick={this.saveEvent}>Create Event</button>
+          <button onClick={this.addEvent}>Create Event</button>
           <ul>
             {
               events &&
