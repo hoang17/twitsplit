@@ -17,6 +17,7 @@ export default class EventEdit extends Component {
       return { eventCode: code, ...event, questions, userIP }
     }
     var userIP = jsCookie.get('userIP')
+    console.log(userIP);
     return { eventCode: code, questions: [], userIP }
   }
 

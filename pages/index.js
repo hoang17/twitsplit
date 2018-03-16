@@ -7,13 +7,16 @@ import jsCookie from 'js-cookie'
 export default class JoinEvent extends Component {
 
   static async getInitialProps ({req, query}) {
-    var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
-    return { userIP }
+    if (req){
+      var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
+      return { userIP }
+    }
+    return {}
   }
 
   constructor (props) {
     super(props)
-    jsCookie.set('userIP', props.userIP)
+    if (props.userIP) jsCookie.set('userIP', props.userIP)
     this.state = {
       eventCode: '',
     }
