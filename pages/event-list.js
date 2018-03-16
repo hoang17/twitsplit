@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Event from '../models/event'
 import Link from 'next/link'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
@@ -57,20 +58,17 @@ export default class EventList extends Component {
   }
 
   saveEvent() {
-    const id = new Date().getTime()
-
     var { user, eventName, eventCode, startDate, endDate } = this.state
 
-    var data = {
-      id,
+    var event = Event(
+      user.uid,
       eventName,
       eventCode,
-      startDate: startDate.toDate(),
-      endDate: endDate.toDate(),
-      userId: user.uid,
-    }
+      startDate.toDate(),
+      endDate.toDate()
+    )
 
-    fsEvents.set(id, data)
+    fsEvents.set(event.id, event)
 
     this.setState({ eventName: '', eventCode: '', startDate: moment(), endDate: moment() })
   }

@@ -38,10 +38,6 @@ export default class EventEdit extends Component {
 
     if (this.state.user)
       this.addDbListener()
-
-    if (!this.state.eventCode){
-      alert('Unauthorize access. You can not edit this event')
-    }
   }
 
   addDbListener () {
