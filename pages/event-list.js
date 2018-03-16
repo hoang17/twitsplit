@@ -26,12 +26,16 @@ export default class EventList extends Component {
       events: this.props.events,
       eventName: '',
       eventCode: '',
-      startDate: moment(),
-      endDate: moment(),
+      startDate: this.today(),
+      endDate: this.today(),
     }
 
     this.addDbListener = this.addDbListener.bind(this)
     this.saveEvent = this.saveEvent.bind(this)
+  }
+
+  today(){
+    return moment().startOf('day')
   }
 
   async componentDidMount () {
@@ -70,6 +74,14 @@ export default class EventList extends Component {
       return
     }
 
+    startDate = startDate.startOf('day')
+    endDate = endDate.startOf('day')
+
+    if (startDate.diff(endDate, 'days') > 0){
+      alert('End date should be equal or greater than start date')
+      return
+    }
+
     var doc = await fsEvents.ls().where('eventCode','==',eventCode).limit(1).get()
     if (doc.size > 0){
       alert('Event code is not unique. Please enter an unique code')
@@ -82,7 +94,7 @@ export default class EventList extends Component {
         endDate.toDate()
       )
       fsEvents.set(event.id, event)
-      this.setState({ eventName: '', eventCode: '', startDate: moment(), endDate: moment() })
+      this.setState({ eventName: '', eventCode: '', startDate: this.today(), endDate: this.today() })
     }
   }
 
