@@ -57,20 +57,33 @@ export default class EventList extends Component {
     })
   }
 
-  saveEvent() {
+  async saveEvent() {
     var { user, eventName, eventCode, startDate, endDate } = this.state
 
-    var event = Event(
-      user.uid,
-      eventName,
-      eventCode,
-      startDate.toDate(),
-      endDate.toDate()
-    )
+    if (!eventName){
+      alert('Please enter event name')
+      return
+    }
 
-    fsEvents.set(event.id, event)
+    if (!eventCode){
+      alert('Please enter event code')
+      return
+    }
 
-    this.setState({ eventName: '', eventCode: '', startDate: moment(), endDate: moment() })
+    var doc = await fsEvents.ls().where('eventCode','==',eventCode).limit(1).get()
+    if (doc.size > 0){
+      alert('Event code is not unique. Please enter an unique code')
+    } else {
+      var event = Event(
+        user.uid,
+        eventName,
+        eventCode,
+        startDate.toDate(),
+        endDate.toDate()
+      )
+      fsEvents.set(event.id, event)
+      this.setState({ eventName: '', eventCode: '', startDate: moment(), endDate: moment() })
+    }
   }
 
   render () {
