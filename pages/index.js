@@ -8,16 +8,13 @@ export default class JoinEvent extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      id: null,
-      eventName: null,
-      eventCode: null,
-      startDate: null,
-      endDate: null
+      id: '',
+      eventName: '',
+      eventCode: '',
+      startDate: '',
+      endDate: ''
     }
     this.joinEvent = this.joinEvent.bind(this)
-  }
-
-  async componentDidMount () {
   }
 
   joinEvent() {

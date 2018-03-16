@@ -14,13 +14,14 @@ export default class EventEdit extends Component {
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
       event = doc.data()
+      if (event.userId != user.uid) event = {}
     }
     return { user, id, ...event }
   }
 
   constructor (props) {
     super(props)
-    this.state = { ...this.props }    
+    this.state = { ...this.props }
     this.addDbListener = this.addDbListener.bind(this)
     this.saveEvent = this.saveEvent.bind(this)
     this.deleteEvent = this.deleteEvent.bind(this)
@@ -37,12 +38,16 @@ export default class EventEdit extends Component {
 
     if (this.state.user)
       this.addDbListener()
+
+    if (!this.state.eventCode){
+      alert('Unauthorize access. You can not edit this event')
+    }
   }
 
   addDbListener () {
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       var event = doc.data()
-      if (event) this.setState({ ...event })
+      if (event && event.userId == this.state.user.uid) this.setState({ ...event })
     })
   }
 
@@ -65,7 +70,7 @@ export default class EventEdit extends Component {
         : <button onClick={login}>Login</button>
       }
       {
-        user && id &&
+        user && eventCode &&
         <div>
           <div>Event Name</div>
           <input

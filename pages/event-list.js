@@ -12,7 +12,7 @@ export default class EventList extends Component {
     const user = req && req.session ? req.session.decodedToken : null
     var events = []
     if (user) {
-      var snapshot = await req.fs.collection("events").get()
+      var snapshot = await req.fs.collection("events").where('userId','==',user.uid).get()
       snapshot.forEach(doc => events.push(doc.data()))
     }
     return { user, events }
@@ -47,19 +47,11 @@ export default class EventList extends Component {
   }
 
   addDbListener () {
-    this.unsubscribe = fsEvents.ls().onSnapshot(snapshot => {
+    this.unsubscribe = fsEvents.ls().where('userId','==',this.state.user.uid).onSnapshot(snapshot => {
       var events = []
       snapshot.forEach(function(doc) {
         events.push(doc.data())
       })
-      // snapshot.docChanges.forEach(function(change) {
-      //   if (change.type === "added") {
-      //   }
-      //   if (change.type === "modified") {
-      //   }
-      //   if (change.type === "removed") {
-      //   }
-      // })
       if (events) this.setState({ events })
     })
   }
@@ -67,12 +59,15 @@ export default class EventList extends Component {
   saveEvent() {
     const id = new Date().getTime()
 
+    var { user, eventName, eventCode, startDate, endDate } = this.state
+
     var data = {
       id,
-      eventName: this.state.eventName,
-      eventCode: this.state.eventCode,
-      startDate: this.state.startDate.toDate(),
-      endDate: this.state.endDate.toDate(),
+      eventName,
+      eventCode,
+      startDate: startDate.toDate(),
+      endDate: endDate.toDate(),
+      userId: user.uid,
     }
 
     fsEvents.set(id, data)
