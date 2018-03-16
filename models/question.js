@@ -1,4 +1,5 @@
 var objectid = require('bson-objectid')
+var { FieldValue } = require('../lib/datastore')
 
 module.exports = (eventId, text, userId) => {
   return {
@@ -7,5 +8,6 @@ module.exports = (eventId, text, userId) => {
     eventId,
     text,
     userId,
+    created: FieldValue.serverTimestamp()
   }
 }

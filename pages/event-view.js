@@ -26,6 +26,7 @@ export default class EventEdit extends Component {
     this.state = {
       ...this.props,
       question: '',
+      sortField: 'likes_count',
     }
     this.addDbListener = this.addDbListener.bind(this)
     this.saveQuestion = this.saveQuestion.bind(this)
@@ -43,7 +44,7 @@ export default class EventEdit extends Component {
     this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
       event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
-      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
+      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy('likes_count','desc').onSnapshot(async snapshot => {
         var questions = []
         for (var doc of snapshot.docs) {
           var data = doc.data()
@@ -55,6 +56,20 @@ export default class EventEdit extends Component {
     })
   }
 
+  sort(sortField){
+    this.setState({sortField})
+    if (this.unsubQuestions) this.unsubQuestions()
+    this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy(sortField,'desc').onSnapshot(async snapshot => {
+      var questions = []
+      for (var doc of snapshot.docs) {
+        var data = doc.data()
+        data.liked = await isLiked(this.state.userIP, data.id)
+        questions.push(data)
+      }
+      this.setState({ questions })
+    })
+  }
+
   saveQuestion() {
     var userId = this.state.user ? this.state.user.uid : null
     var question = Question(this.state.id, this.state.question, userId)
@@ -63,10 +78,10 @@ export default class EventEdit extends Component {
   }
 
   render () {
-    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP } = this.state
+    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField } = this.state
 
     return <div>
-      <h1>{eventName} - {id}</h1>
+      <h1>{eventName}</h1>
       <div>Ask the speaker</div>
       <TextareaAutosize
         onChange={e => this.setState({question: e.target.value})}
@@ -77,6 +92,10 @@ export default class EventEdit extends Component {
         />
       <p/>
       <button onClick={this.saveQuestion}>Send Question</button>
+      <p/>
+      Order by
+      <button className={sortField=='likes_count'?'active':''} onClick={e => this.sort('likes_count')}>popular</button>
+      <button className={sortField=='created'?'active':''} onClick={e => this.sort('created')}>created time</button>
       <ul>
         {
           questions.map(question =>
@@ -84,6 +103,12 @@ export default class EventEdit extends Component {
           )
         }
       </ul>
+      <style jsx>{`
+        button.active {
+          color: white;
+          background-color:green;
+        }
+      `}</style>
     </div>
   }
 }
