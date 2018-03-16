@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
+import jsCookie from 'js-cookie'
 
 import { fsLikes, fsEvents, fsQuestions, isLiked, auth, login, logout } from '../lib/datastore'
 
@@ -16,7 +17,8 @@ export default class EventEdit extends Component {
       var questions = snapshot.docs.map(e => e.data())
       return { eventCode: code, ...event, questions, userIP }
     }
-    return { eventCode: code, questions: [] }
+    var userIP = jsCookie.get('userIP')
+    return { eventCode: code, questions: [], userIP }
   }
 
   constructor (props) {
