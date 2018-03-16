@@ -70,8 +70,7 @@ export default class EventEdit extends Component {
 
   async updateEvent() {
     try {
-      var { id, userId, eventName, eventCode, startDate, endDate } = this.state
-      await saveEvent(id, userId, eventName, eventCode, startDate, endDate)
+      await saveEvent(this.state)
     } catch (e) {
       alert(e)
     }

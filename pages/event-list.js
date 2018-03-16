@@ -59,7 +59,7 @@ export default class EventList extends Component {
   async addEvent() {
     try {
       var { user, eventName, eventCode, startDate, endDate } = this.state
-      await saveEvent(null, user.uid, eventName, eventCode, startDate, endDate)
+      await saveEvent({userId: user.uid, eventName, eventCode, startDate, endDate})
       this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
     } catch (e) {
       alert(e)
