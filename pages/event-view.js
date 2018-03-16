@@ -47,7 +47,7 @@ export default class EventView extends Component {
         var questions = []
         for (var doc of snapshot.docs) {
           var data = doc.data()
-          data.liked = await isLiked(this.state.userIP, data.id)
+          data.liked = data.likes && data.likes[this.state.userIP]
           questions.push(data)
         }
         this.setState({ questions })
@@ -62,7 +62,7 @@ export default class EventView extends Component {
       var questions = []
       for (var doc of snapshot.docs) {
         var data = doc.data()
-        data.liked = await isLiked(this.state.userIP, data.id)
+        data.liked = data.likes && data.likes[this.state.userIP]
         questions.push(data)
       }
       this.setState({ questions })

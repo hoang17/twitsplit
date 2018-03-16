@@ -12,6 +12,7 @@ module.exports = (id, eventId, text, userId, userName) => {
 
   return {
     id: id ? id : objectid().toString(),
+    likes: {},
     likes_count:0,
     eventId,
     text,
