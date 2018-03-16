@@ -8,6 +8,7 @@ module.exports = (eventId, text, userId) => {
     eventId,
     text,
     userId,
+    mark: false,
     created: FieldValue.serverTimestamp()
   }
 }

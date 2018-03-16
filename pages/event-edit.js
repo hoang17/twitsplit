@@ -48,7 +48,7 @@ export default class EventEdit extends Component {
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       var event = doc.data()
       if (event && event.userId == this.state.user.uid) this.setState({ ...event })
-      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy('likes_count','desc').onSnapshot(async snapshot => {
+      this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
         var questions = []
         for (var doc of snapshot.docs) {
           var data = doc.data()
@@ -114,7 +114,7 @@ export default class EventEdit extends Component {
           <ul>
             {
               questions.map(question =>
-                <QuestionRow key={question.id} userIP={userIP} {...question} />
+                <QuestionRow key={question.id} userIP={userIP} {...question} admin={true} />
               )
             }
           </ul>
