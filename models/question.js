@@ -1,6 +1,6 @@
 var objectid = require('bson-objectid')
 
-module.exports = (id, eventId, text, userId, userName) => {
+module.exports = ({id, eventId, text, userId, userName}) => {
 
   if (!eventId)
     throw new TypeError('Event id can not empty')
@@ -12,13 +12,13 @@ module.exports = (id, eventId, text, userId, userName) => {
 
   return {
     id: id ? id : objectid().toString(),
+    text,
+    eventId,
     likes: {},
     likes_count:0,
-    eventId,
-    text,
-    userId,
-    userName,
     mark: false,
+    userId: userId ? userId : null,
+    userName: userId ? userId : null,
     created: FieldValue.serverTimestamp()
   }
 }

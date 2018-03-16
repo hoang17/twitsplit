@@ -79,7 +79,7 @@ export default class EventView extends Component {
     try {
       var userId = this.state.user ? this.state.user.uid : null
       var userName = this.state.user ? this.state.user.displayName : null
-      await saveQuestion(null, this.state.id, this.state.question, userId, userName)
+      await saveQuestion({eventId: this.state.id, text: this.state.question, userId, userName})
       this.setState({ question: '' })
     } catch (e) {
       alert(e.message)
