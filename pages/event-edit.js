@@ -7,6 +7,7 @@ import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
+import Snackbar from '../components/Snack'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
@@ -75,18 +76,26 @@ class EventEdit extends Component {
   async updateEvent() {
     try {
       await saveEvent(this.state)
+      this.setState({ snack: true, msg: 'Event has been saved successfully' })
     } catch (e) {
-      alert(e.message)
+      this.setState({ snack: true, msg: e.message })
     }
   }
 
-  deleteEvent() {
-    fsEvents.delete(this.state.id)
-    Router.push('/event-list')
+  async deleteEvent() {
+    if (confirm('Are you sure to delete this event?')){
+      try {
+        await fsEvents.delete(this.state.id)
+        Router.push('/event-list')
+        this.setState({ snack: true, msg: 'Event has been deleted' })
+      } catch (e) {
+        this.setState({ snack: true, msg: e.message })
+      }
+    }
   }
 
   render () {
-    const { user, id, eventName, eventCode, startDate, endDate, questions } = this.state
+    const { user, id, eventName, eventCode, startDate, endDate, questions, snack, msg } = this.state
 
     return <div>
       {
@@ -144,6 +153,7 @@ class EventEdit extends Component {
               text-align: left;
             }
           `}</style>
+          <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
         </div>
       }
     </div>

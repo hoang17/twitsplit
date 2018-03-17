@@ -51,7 +51,10 @@ class QuestionEdit extends Component {
   async saveQuestion() {
     try {
       var { id, text } = this.state
-      if (!text) alert('Question can not empty')
+      if (!text) {
+        this.setState({ snack: true, msg: 'Question can not empty' })
+        return
+      }
       await fsQuestions.update(id, { text })
       this.setState({ snack: true, msg: 'Question has been saved successfully' })
     } catch (e) {

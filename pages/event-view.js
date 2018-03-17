@@ -7,6 +7,7 @@ import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
+import Snackbar from '../components/Snack'
 
 import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
 
@@ -87,13 +88,14 @@ class EventView extends Component {
       var userName = this.state.user ? this.state.user.displayName : null
       await saveQuestion({eventId: this.state.id, text: this.state.question, userId, userName})
       this.setState({ question: '' })
+      this.setState({ snack: true, msg: 'Question has been sent successfully' })
     } catch (e) {
-      alert(e.message)
+      this.setState({ snack: true, msg: e.message })
     }
   }
 
   render () {
-    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField } = this.state
+    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField, snack, msg } = this.state
 
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
@@ -130,6 +132,7 @@ class EventView extends Component {
           background-color:green;
         }
       `}</style>
+      <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
     </div>
   }
 }

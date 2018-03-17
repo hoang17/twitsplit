@@ -7,6 +7,7 @@ import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
+import Snackbar from '../components/Snack'
 
 class JoinEvent extends Component {
 
@@ -36,15 +37,16 @@ class JoinEvent extends Component {
   async joinEvent() {
     try {
       var { eventCode } = this.state
+      if (!eventCode) return
       if (await validCode(eventCode))
         Router.push('/event-view?code='+eventCode)
     } catch (e) {
-      alert(e.message)
+      this.setState({ snack: true, msg: e.message })
     }
   }
 
   render() {
-    const { eventCode } = this.state
+    const { eventCode, snack, msg } = this.state
 
     return <div>
       <Ty variant="display1" gutterBottom>Join Event</Ty>
@@ -61,6 +63,7 @@ class JoinEvent extends Component {
       <Ty variant="subheading" gutterBottom>
         <a href="/event-list">Admin</a>
       </Ty>
+      <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
     </div>
   }
 }

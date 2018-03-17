@@ -8,6 +8,7 @@ import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
+import Snackbar from '../components/Snack'
 
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
 import Paper from 'material-ui/Paper'
@@ -97,14 +98,15 @@ class EventList extends Component {
       var { user, eventName, eventCode, startDate, endDate } = this.state
       await saveEvent({userId: user.uid, eventName, eventCode, startDate, endDate})
       this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
+      this.setState({ snack: true, msg: 'Event has been created successfully' })
     } catch (e) {
-      alert(e.message)
+      this.setState({ snack: true, msg: e.message })
     }
   }
 
   render () {
     const { classes } = this.props
-    const { user, eventName, eventCode, startDate, endDate, events } = this.state
+    const { user, eventName, eventCode, startDate, endDate, events, snack, msg } = this.state
 
     return <div>
       {
@@ -174,6 +176,7 @@ class EventList extends Component {
             <p/>
             <Button variant="raised" color="secondary" onClick={this.addEvent}>Create Event</Button>
           </div>
+          <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
         </div>
       }
     </div>
