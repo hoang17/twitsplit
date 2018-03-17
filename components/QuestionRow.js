@@ -74,7 +74,7 @@ export default class QuestionRow extends Component {
           <button
             onClick={this.toggleLike}
             className={liked?'unlike':'like'}>
-            {likes_count} {liked? 'unlike':'like'}</button>
+            {likes_count} like</button>
         }
         <style jsx>{`
           li{
@@ -106,10 +106,14 @@ export default class QuestionRow extends Component {
           button.like {
             color: white
             background-color:blue
+            width: 50px;
+            height: 44px;
           }
           button.unlike {
             color: white
-            background-color:red
+            background-color:green
+            width: 50px;
+            height: 44px;
           }
         `}</style>
         { this.props.admin &&
