@@ -50,9 +50,6 @@ class EventList extends Component {
       startDate: new Date(),
       endDate: new Date(),
     }
-
-    this.addDbListener = this.addDbListener.bind(this)
-    this.addEvent = this.addEvent.bind(this)
   }
 
   async componentDidMount () {
@@ -68,7 +65,7 @@ class EventList extends Component {
       this.addDbListener()
   }
 
-  addDbListener () {
+  addDbListener = () => {
     this.unsubscribe = fsEvents.ls().where('userId','==',this.state.user.uid).onSnapshot(snapshot => {
       var events = []
       snapshot.forEach(function(doc) {
@@ -78,7 +75,7 @@ class EventList extends Component {
     })
   }
 
-  async addEvent() {
+  addEvent = async () => {
     try {
       var { user, eventName, eventCode, startDate, endDate } = this.state
       await saveEvent({userId: user.uid, eventName, eventCode, startDate, endDate})
@@ -89,7 +86,7 @@ class EventList extends Component {
     }
   }
 
-  render () {
+  render() {
     const { classes } = this.props
     const { user, eventName, eventCode, startDate, endDate, events, snack, msg } = this.state
 

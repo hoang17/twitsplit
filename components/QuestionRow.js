@@ -1,6 +1,14 @@
 import React, { Component } from 'react'
+import Router from 'next/router'
 import Link from 'next/link'
 import moment from 'moment'
+import IconButton from 'material-ui/IconButton'
+import Menu, { MenuItem } from 'material-ui/Menu'
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import EditIcon from 'material-ui-icons/Edit'
+import DeleteIcon from 'material-ui-icons/Delete'
+import HighlightIcon from 'material-ui-icons/Highlight'
+import { ListItemIcon, ListItemText } from 'material-ui/List'
 
 import { like, highlight, fsQuestions } from '../lib/datastore'
 
@@ -8,28 +16,40 @@ export default class QuestionRow extends Component {
 
   constructor (props) {
     super(props)
-    this.state = { ...this.props }
-    this.toggleLike = this.toggleLike.bind(this)
-    this.deleteQuestion = this.deleteQuestion.bind(this)
-    this.markQuestion = this.markQuestion.bind(this)
+    this.state = { ...this.props, anchorEl: null }
+  }
+
+  openMenu = (event) => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  closeMenu = () => {
+    this.setState({ anchorEl: null })
   }
 
   componentWillReceiveProps(newProps){
     this.setState({ ...newProps })
   }
 
-  toggleLike(){
+  toggleLike = () => {
     this.state.liked = !this.state.liked
     var likes = like(this.state)
     this.setState({ liked:this.state.liked, likes_count: Object.keys(likes).length, likes })
   }
 
-  deleteQuestion(){
-    if (confirm('Are you sure to delete this question?'))
-      fsQuestions.delete(this.state.id)
+  editQuestion = () => {
+    Router.push('/question-edit?id='+this.state.id)
+    this.closeMenu()
   }
 
-  async markQuestion(){
+  deleteQuestion = () => {
+    if (confirm('Are you sure to delete this question?'))
+      fsQuestions.delete(this.state.id)
+    this.closeMenu()
+  }
+
+  markQuestion = async () => {
+    this.closeMenu()
     var { id, mark, eventId } = this.state
     mark = !mark
     try {
@@ -41,7 +61,7 @@ export default class QuestionRow extends Component {
   }
 
   render () {
-    const { id, text, likes_count, liked, mark, userName, created } = this.state
+    const { id, text, likes_count, liked, mark, userName, created, anchorEl } = this.state
     return (
       <li key={id} className={mark ? 'highlight':''}>
         <div className='question'>
@@ -58,47 +78,81 @@ export default class QuestionRow extends Component {
         }
         <style jsx>{`
           li{
-            display: flex;
-            border-bottom: 1px solid grey;
-            align-items:center;
-            justify-content: space-between;
-            padding:10px;
+            display: flex
+            border-bottom: 1px solid grey
+            align-items:center
+            justify-content: space-between
+            padding:10px
           }
           .question{
-            width:90%;
+            width:90%
           }
           .user{
-            font-weight:bold;
+            font-weight:bold
           }
           .meta{
-            font-size:80%;
+            font-size:80%
             color: #999
           }
           .txt{
             padding-top:10px
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            white-space: pre;
+            white-space: pre-wrap
+            word-wrap: break-word
+            white-space: pre
           }
           .highlight{
-            background-color:yellow;
+            background-color:yellow
           }
           button.like {
-            color: white;
-            background-color:blue;
+            color: white
+            background-color:blue
           }
           button.unlike {
-            color: white;
-            background-color:red;
+            color: white
+            background-color:red
           }
         `}</style>
         { this.props.admin &&
           <span>
-            <a href="javascript:void" onClick={this.deleteQuestion}>[Delete]</a>
+            <IconButton
+              aria-label="More"
+              aria-owns={anchorEl ? 'simple-menu' : null}
+              aria-haspopup="true"
+              onClick={this.openMenu}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={this.closeMenu}
+            >
+              <MenuItem onClick={this.editQuestion}>
+                <ListItemIcon>
+                  <EditIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Edit" />
+              </MenuItem>
+              <MenuItem onClick={this.markQuestion}>
+                <ListItemIcon>
+                  <HighlightIcon />
+                </ListItemIcon>
+                <ListItemText inset primary={mark?'Unmark':'Mark'} />
+              </MenuItem>
+              <MenuItem onClick={this.deleteQuestion}>
+                <ListItemIcon>
+                  <DeleteIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Delete" />
+              </MenuItem>
+            </Menu>
+
+            {/* <a href="javascript:void" onClick={this.deleteQuestion}>[Delete]</a>
             <Link href={{pathname: '/question-edit', query: { id: id }}}>
               <a>[Edit]</a>
             </Link>
-            <a href="javascript:void" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a>
+            <a href="javascript:void" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a> */}
           </span>
         }
       </li>

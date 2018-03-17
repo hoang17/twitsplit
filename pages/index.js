@@ -27,14 +27,13 @@ class JoinEvent extends Component {
     this.state = {
       eventCode: '',
     }
-    this.joinEvent = this.joinEvent.bind(this)
   }
 
-  async componentDidMount () {
+  componentDidMount = async () => {
     init()
   }
 
-  async joinEvent() {
+  joinEvent = async () => {
     try {
       var { eventCode } = this.state
       if (!eventCode) return

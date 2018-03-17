@@ -37,12 +37,9 @@ class EventEdit extends Component {
   constructor (props) {
     super(props)
     this.state = { ...this.props }
-    this.addDbListener = this.addDbListener.bind(this)
-    this.updateEvent = this.updateEvent.bind(this)
-    this.deleteEvent = this.deleteEvent.bind(this)
   }
 
-  async componentDidMount () {
+  componentDidMount = async () => {
 
     if (!this.state.id) return
 
@@ -58,7 +55,7 @@ class EventEdit extends Component {
       this.addDbListener()
   }
 
-  addDbListener () {
+  addDbListener = () => {
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       var event = doc.data()
       if (event && event.userId == this.state.user.uid) this.setState({ ...event })
@@ -73,7 +70,7 @@ class EventEdit extends Component {
     })
   }
 
-  async updateEvent() {
+  updateEvent = async () =>  {
     try {
       await saveEvent(this.state)
       this.setState({ snack: true, msg: 'Event has been saved successfully' })
@@ -82,7 +79,7 @@ class EventEdit extends Component {
     }
   }
 
-  async deleteEvent() {
+  deleteEvent = async () =>  {
     if (confirm('Are you sure to delete this event?')){
       try {
         await fsEvents.delete(this.state.id)
@@ -94,7 +91,7 @@ class EventEdit extends Component {
     }
   }
 
-  render () {
+  render() {
     const { user, id, eventName, eventCode, startDate, endDate, questions, snack, msg } = this.state
 
     return <div>

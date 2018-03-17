@@ -24,11 +24,9 @@ class QuestionEdit extends Component {
   constructor (props) {
     super(props)
     this.state = { ...this.props, snack: false }
-    this.addDbListener = this.addDbListener.bind(this)
-    this.saveQuestion = this.saveQuestion.bind(this)
   }
 
-  async componentDidMount () {
+  componentDidMount = async () => {
     auth(user => {
       this.setState({ user: user })
       if (user)
@@ -48,7 +46,7 @@ class QuestionEdit extends Component {
     })
   }
 
-  async saveQuestion() {
+  saveQuestion = async () => {
     try {
       var { id, text } = this.state
       if (!text) {

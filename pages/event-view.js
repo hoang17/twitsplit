@@ -42,11 +42,9 @@ class EventView extends Component {
       userName: this.props.user ? this.props.user.displayName : '',
       sortField: 'likes_count',
     }
-    this.addDbListener = this.addDbListener.bind(this)
-    this.addQuestion = this.addQuestion.bind(this)
   }
 
-  async componentDidMount () {
+  componentDidMount = async () => {
     auth(user => {
       this.setState({ user: user, userName: user ? user.displayName : '' })
     })
@@ -54,7 +52,7 @@ class EventView extends Component {
     this.addDbListener()
   }
 
-  addDbListener () {
+  addDbListener = () => {
     this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
       event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
@@ -84,7 +82,7 @@ class EventView extends Component {
     })
   }
 
-  async addQuestion() {
+  addQuestion = async () => {
     try {
       var userId = this.state.user ? this.state.user.uid : null
       var userName = this.state.userName ? this.state.userName : null
