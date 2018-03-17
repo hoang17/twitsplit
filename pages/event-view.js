@@ -17,6 +17,7 @@ class EventView extends Component {
 
   static async getInitialProps ({req, query: { code }}) {
     if (req){
+      var user = req && req.session ? req.session.decodedToken : null
       var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
       var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
       var event = snapshot.docs[0].data()
@@ -27,7 +28,7 @@ class EventView extends Component {
         data.liked = data.likes && data.likes[userIP]
         questions.push(data)
       }
-      return { eventCode: code, ...event, questions, userIP }
+      return { eventCode: code, ...event, questions, userIP, user }
     }
     var userIP = jsCookie.get('userIP')
     return { eventCode: code, questions: [], userIP }
@@ -38,6 +39,7 @@ class EventView extends Component {
     this.state = {
       ...this.props,
       question: '',
+      userName: this.props.user ? this.props.user.displayName : '',
       sortField: 'likes_count',
     }
     this.addDbListener = this.addDbListener.bind(this)
@@ -46,7 +48,7 @@ class EventView extends Component {
 
   async componentDidMount () {
     auth(user => {
-      this.setState({ user: user })
+      this.setState({ user: user, userName: user ? user.displayName : '' })
     })
 
     this.addDbListener()
@@ -85,7 +87,8 @@ class EventView extends Component {
   async addQuestion() {
     try {
       var userId = this.state.user ? this.state.user.uid : null
-      var userName = this.state.user ? this.state.user.displayName : null
+      var userName = this.state.userName ? this.state.userName : null
+      // var userName = this.state.user ? this.state.user.displayName : null
       await saveQuestion({eventId: this.state.id, text: this.state.question, userId, userName})
       this.setState({ question: '' })
       this.setState({ snack: true, msg: 'Question has been sent successfully' })
@@ -95,7 +98,7 @@ class EventView extends Component {
   }
 
   render () {
-    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField, snack, msg } = this.state
+    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, userName, sortField, snack, msg } = this.state
 
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
@@ -109,6 +112,13 @@ class EventView extends Component {
         maxRows={10}
         style={{width:'100%'}}
         />
+      <p/>
+      <TextField
+        value={userName}
+        onChange={e => this.setState({userName: e.target.value})}
+        margin="normal"
+        placeholder="Your name (optional)"
+      />
       <p/>
       <Button variant="raised" color="secondary" onClick={this.addQuestion}>Send Question</Button>
       <p/>
