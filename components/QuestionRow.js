@@ -98,7 +98,7 @@ export default class QuestionRow extends Component {
             padding-top:10px
             white-space: pre-wrap
             word-wrap: break-word
-            white-space: pre
+            overflow:hidden
           }
           .highlight{
             background-color:yellow
@@ -147,12 +147,6 @@ export default class QuestionRow extends Component {
                 <ListItemText inset primary="Delete" />
               </MenuItem>
             </Menu>
-
-            {/* <a href="javascript:void" onClick={this.deleteQuestion}>[Delete]</a>
-            <Link href={{pathname: '/question-edit', query: { id: id }}}>
-              <a>[Edit]</a>
-            </Link>
-            <a href="javascript:void" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a> */}
           </span>
         }
       </li>
