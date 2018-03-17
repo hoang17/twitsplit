@@ -37,10 +37,10 @@ Then open http://localhost:3000/
 
 **Note:** You need to install [Nodemon](https://github.com/remy/nodemon).
 It watches for any changes in your  node.js app and automatically restarts the
-server. Once installed, instead of `node app.js` use `nodemon app.js`. It will
+server. Once installed, instead of `node server.js` use `nodemon server.js`. It will
 save you a lot of time in the long run, because you won't need to manually
 restart the server each time you make a small change in code. To install, run
-`sudo npm install -g nodemon`.
+`sudo npm install -g nodemon` or `yarn global add nodemon`.
 
 
 For production build:
