@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
+import Snackbar from '../components/Snack'
 
 import { fsQuestions, auth, login, logout } from '../lib/datastore'
 
@@ -22,7 +23,7 @@ class QuestionEdit extends Component {
 
   constructor (props) {
     super(props)
-    this.state = { ...this.props }
+    this.state = { ...this.props, snack: false }
     this.addDbListener = this.addDbListener.bind(this)
     this.saveQuestion = this.saveQuestion.bind(this)
   }
@@ -47,14 +48,19 @@ class QuestionEdit extends Component {
     })
   }
 
-  saveQuestion() {
-    var { id, text } = this.state
-    if (!text) alert('Question can not empty')
-    fsQuestions.update(id, { text })
+  async saveQuestion() {
+    try {
+      var { id, text } = this.state
+      if (!text) alert('Question can not empty')
+      await fsQuestions.update(id, { text })
+      this.setState({ snack: true, msg: 'Question has been saved successfully' })
+    } catch (e) {
+      this.setState({ snack: true, msg: e.message })
+    }
   }
 
   render () {
-    const { user, id, text } = this.state
+    const { user, id, text, snack, msg } = this.state
 
     return <div>
       {
@@ -75,6 +81,7 @@ class QuestionEdit extends Component {
           <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
         </div>
       }
+      <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
     </div>
   }
 }
