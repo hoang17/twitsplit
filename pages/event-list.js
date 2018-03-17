@@ -26,21 +26,6 @@ const styles = theme => ({
   },
 })
 
-let id = 0
-function createData(name, calories, fat, carbs, protein) {
-  id += 1
-  return { id, name, calories, fat, carbs, protein }
-}
-
-const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-]
-
-
 class EventList extends Component {
 
   static title = 'Manage Events'
@@ -146,8 +131,7 @@ class EventList extends Component {
               </TableBody>
             </Table>
           </Paper>
-          <div>
-            {/* <Ty variant="display1" gutterBottom>Create Event</Ty> */}
+          <div style={{width:'170px', margin:'0 auto'}}>
             <TextField
               label="Event Name"
               value={eventName}
@@ -162,13 +146,13 @@ class EventList extends Component {
               margin="normal"
             />
             <br/>
-            <div>Start date</div>
+            <div style={{textAlign:'left'}}>Start date</div>
             <DatePicker
               selected={moment(startDate)}
               onChange={date => this.setState({startDate: date.toDate()})}
             />
             <br/>
-            <div>End date</div>
+            <div style={{textAlign:'left'}}>End date</div>
             <DatePicker
               selected={moment(endDate)}
               onChange={date => this.setState({endDate: date.toDate()})}
