@@ -33,7 +33,7 @@ class JoinEvent extends Component {
     init()
   }
 
-  joinEvent = async () => {
+  joinEvent = async (e) => {
     try {
       var { eventCode } = this.state
       if (!eventCode) return
@@ -50,14 +50,16 @@ class JoinEvent extends Component {
     return <div>
       <Ty variant="display1" gutterBottom>Join Event</Ty>
       <Ty>Please enter event code</Ty>
-      <TextField
-        label="Event Code"
-        value={eventCode}
-        onChange={e => this.setState({eventCode: e.target.value})}
-        margin="normal"
-      />
-      <p/>
-      <Button variant="raised" color="secondary" onClick={this.joinEvent}>Join Event</Button>
+      <form onSubmit={(e)=>{e.preventDefault();this.joinEvent()}}>
+        <TextField
+          label="Event Code"
+          value={eventCode}
+          onChange={e => this.setState({eventCode: e.target.value})}
+          margin="normal"
+        />
+        <p/>
+        <Button variant="raised" color="secondary" onClick={this.joinEvent}>Join Event</Button>
+      </form>
       <p/>
       <Ty variant="subheading" gutterBottom>
         <a href="/event-list">Admin</a>
