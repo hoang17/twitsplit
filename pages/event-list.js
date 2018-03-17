@@ -105,7 +105,7 @@ class EventList extends Component {
                   <TableCell numeric>Event Code</TableCell>
                   <TableCell numeric>Start Date</TableCell>
                   <TableCell numeric>End Date</TableCell>
-                  <TableCell numeric>Protein (g)</TableCell>
+                  <TableCell numeric>____________</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
