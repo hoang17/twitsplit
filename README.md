@@ -2,9 +2,13 @@
 
 ### Overview
 
-This project use react.js and next.js for front end rendering and supporting server side rendering.
+This project use React.js and [Next](https://github.com/zeit/next.js) for front end rendering and supporting server side rendering.
 
-Backend using node.js and Firebase for real time database
+Backend using node.js and Firebase is for real time database.
+
+[Ava](https://github.com/avajs/ava) is used for testing framework.
+
+I tried to test all logic of the application in the `test` directory.
 
 ### Installation
 
