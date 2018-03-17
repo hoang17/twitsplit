@@ -41,7 +41,7 @@ class QuestionEdit extends Component {
   addDbListener () {
     this.unsubscribe = fsQuestions.doc(this.state.id).onSnapshot(doc => {
       var question = doc.data()
-      if (question && question.userId == this.state.user.uid) this.setState({ ...question })
+      this.setState({ ...question })
     })
   }
 
