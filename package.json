@@ -40,6 +40,7 @@
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
     "lusca": "^1.5.2",
+    "material-ui": "^1.0.0-beta.37",
     "morgan": "^1.9.0",
     "next": "^5.0.0",
     "path": "^0.12.7",
