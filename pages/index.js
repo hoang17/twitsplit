@@ -11,7 +11,7 @@ import Snackbar from '../components/Snack'
 
 class JoinEvent extends Component {
 
-  static title = 'Join Event'
+  static title = 'Slido'
 
   static async getInitialProps ({req, query}) {
     if (req){
