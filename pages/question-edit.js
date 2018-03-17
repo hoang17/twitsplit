@@ -58,9 +58,7 @@ class QuestionEdit extends Component {
 
     return <div>
       {
-        // user
-        // ? <button onClick={logout}>Logout</button>
-        // : <button onClick={login}>Login</button>
+        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
       }
       {
         user && text &&

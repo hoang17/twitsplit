@@ -6,6 +6,7 @@ import QuestionRow from '../components/QuestionRow'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import withPage from '../lib/withPage'
+import Button from 'material-ui/Button'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
@@ -89,9 +90,7 @@ class EventEdit extends Component {
 
     return <div>
       {
-        // user
-        // ? <button onClick={logout}>Logout</button>
-        // : <button onClick={login}>Login</button>
+        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
       }
       {
         user && id &&
@@ -129,7 +128,9 @@ class EventEdit extends Component {
             <button onClick={this.deleteEvent}>Delete Event</button>
           </div>
           <p/>
-          <h2>Questions</h2>
+          { questions.length > 0 &&
+              <h2>Questions</h2>
+          }
           <ul>
             {
               questions.map(question =>

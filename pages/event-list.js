@@ -108,9 +108,7 @@ class EventList extends Component {
 
     return <div>
       {
-        // user
-        // ? <Button variant="raised" color="secondary" onClick={logout}>Logout</Button>
-        // : <Button variant="raised" color="secondary" onClick={login}>Login</Button>
+        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
       }
       {
         user &&
