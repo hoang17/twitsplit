@@ -12,6 +12,8 @@ RUN yarn install --production --no-progress
 # Copy application files
 COPY . .
 
+RUN yarn build
+
 # Run the container under "node" user by default
 USER node
 
