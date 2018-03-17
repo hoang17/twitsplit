@@ -16,7 +16,6 @@ class QuestionEdit extends Component {
     if (user) {
       var doc = await req.fs.collection("questions").doc(id).get()
       question = doc.data()
-      if (question.userId != user.uid) question = {}
     }
     return { user, id, ...question }
   }
@@ -68,7 +67,7 @@ class QuestionEdit extends Component {
         !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
       }
       {
-        user && text &&
+        user &&
         <div>
           <TextareaAutosize
             onChange={e => this.setState({text: e.target.value})}
