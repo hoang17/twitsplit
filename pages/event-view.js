@@ -4,8 +4,8 @@ import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
 import jsCookie from 'js-cookie'
 import withPage from '../lib/withPage'
+import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 
 import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
@@ -96,7 +96,7 @@ class EventView extends Component {
     const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField } = this.state
 
     return <div>
-      <Typography variant="display1" gutterBottom>{eventName}</Typography>
+      <Ty variant="display1" gutterBottom>{eventName}</Ty>
       <div>Ask the speaker</div>
       <p/>
       <TextareaAutosize

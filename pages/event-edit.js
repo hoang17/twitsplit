@@ -5,10 +5,13 @@ import DatePicker from 'react-datepicker'
 import QuestionRow from '../components/QuestionRow'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
+import withPage from '../lib/withPage'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
-export default class EventEdit extends Component {
+class EventEdit extends Component {
+
+  static title = 'Edit Event'
 
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
@@ -86,15 +89,14 @@ export default class EventEdit extends Component {
 
     return <div>
       {
-        user
-        ? <button onClick={logout}>Logout</button>
-        : <button onClick={login}>Login</button>
+        // user
+        // ? <button onClick={logout}>Logout</button>
+        // : <button onClick={login}>Login</button>
       }
       {
         user && id &&
         <div>
-          <h1>{eventName}</h1>
-          <div>
+          <div style={{textAlign:'left'}}>
             <div>Event Name</div>
             <input
               type={'text'}
@@ -102,22 +104,25 @@ export default class EventEdit extends Component {
               placeholder={'Event Name'}
               value={eventName}
             />
-            <div>Start date</div>
-            <DatePicker
-              selected={moment(startDate)}
-              onChange={date => this.setState({startDate: date.toDate()})}
-            />
-            <div>End date</div>
-            <DatePicker
-              selected={moment(endDate)}
-              onChange={date => this.setState({endDate: date.toDate()})}
-            />
+            <br/>
             <div>Event Code</div>
             <input
               type={'text'}
               onChange={e => this.setState({eventCode: e.target.value})}
               placeholder={'Event Code'}
               value={eventCode}
+            />
+            <br/>
+            <div>Start date</div>
+            <DatePicker
+              selected={moment(startDate)}
+              onChange={date => this.setState({startDate: date.toDate()})}
+            />
+            <br/>
+            <div>End date</div>
+            <DatePicker
+              selected={moment(endDate)}
+              onChange={date => this.setState({endDate: date.toDate()})}
             />
             <p/>
             <button onClick={this.updateEvent}>Save Event</button>
@@ -132,8 +137,16 @@ export default class EventEdit extends Component {
               )
             }
           </ul>
+          <style jsx>{`
+            ul {
+              padding:0;
+              text-align: left;
+            }
+          `}</style>
         </div>
       }
     </div>
   }
 }
+
+export default withPage(EventEdit)

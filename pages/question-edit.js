@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
+import withPage from '../lib/withPage'
+import Button from 'material-ui/Button'
 
 import { fsQuestions, auth, login, logout } from '../lib/datastore'
 
-export default class QuestionEdit extends Component {
+class QuestionEdit extends Component {
+
+  static title = 'Edit Question'
 
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
@@ -54,27 +58,27 @@ export default class QuestionEdit extends Component {
 
     return <div>
       {
-        user
-        ? <button onClick={logout}>Logout</button>
-        : <button onClick={login}>Login</button>
+        // user
+        // ? <button onClick={logout}>Logout</button>
+        // : <button onClick={login}>Login</button>
       }
       {
         user && text &&
         <div>
-          <div>
-            <div>Question</div>
-            <TextareaAutosize
-              onChange={e => this.setState({text: e.target.value})}
-              placeholder={'Enter question'}
-              value={text}
-              rows={5}
-              maxRows={10}
-              />
-            <p/>
-            <button onClick={this.saveQuestion}>Save Question</button>
-          </div>
+          <TextareaAutosize
+            onChange={e => this.setState({text: e.target.value})}
+            placeholder={'Enter question'}
+            value={text}
+            rows={5}
+            maxRows={10}
+            style={{width:'100%'}}
+            />
+          <p/>
+          <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
         </div>
       }
     </div>
   }
 }
+
+export default withPage(QuestionEdit)

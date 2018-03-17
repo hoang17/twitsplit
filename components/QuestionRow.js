@@ -94,11 +94,11 @@ export default class QuestionRow extends Component {
         `}</style>
         { this.props.admin &&
           <span>
-            <a href="#" onClick={this.deleteQuestion}>[Delete]</a>
+            <a href="javascript:void" onClick={this.deleteQuestion}>[Delete]</a>
             <Link href={{pathname: '/question-edit', query: { id: id }}}>
               <a>[Edit]</a>
             </Link>
-            <a href="#" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a>
+            <a href="javascript:void" onClick={this.markQuestion}>[{mark?'Unmark':'Mark'}]</a>
           </span>
         }
       </li>

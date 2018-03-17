@@ -4,8 +4,8 @@ import { fsEvents, init, validCode } from '../lib/datastore'
 import moment from 'moment'
 import jsCookie from 'js-cookie'
 import withPage from '../lib/withPage'
+import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import Typography from 'material-ui/Typography'
 import TextField from 'material-ui/TextField'
 
 class JoinEvent extends Component {
@@ -47,8 +47,8 @@ class JoinEvent extends Component {
     const { eventCode } = this.state
 
     return <div>
-      <Typography variant="display1" gutterBottom>Join Event</Typography>
-      <Typography>Please enter event code</Typography>
+      <Ty variant="display1" gutterBottom>Join Event</Ty>
+      <Ty>Please enter event code</Ty>
       <TextField
         label="Event Code"
         value={eventCode}
@@ -58,9 +58,9 @@ class JoinEvent extends Component {
       <p/>
       <Button variant="raised" color="secondary" onClick={this.joinEvent}>Join Event</Button>
       <p/>
-      <Typography variant="subheading" gutterBottom>
+      <Ty variant="subheading" gutterBottom>
         <a href="/event-list">Admin</a>
-      </Typography>
+      </Ty>
     </div>
   }
 }
