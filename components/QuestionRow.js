@@ -60,12 +60,12 @@ export default class QuestionRow extends Component {
           li{
             display: flex;
             border-bottom: 1px solid grey;
-            width:500px;
             align-items:center;
+            justify-content: space-between;
             padding:10px;
           }
           .question{
-            width:400px;
+            width:90%;
           }
           .user{
             font-weight:bold;
@@ -80,7 +80,7 @@ export default class QuestionRow extends Component {
             word-wrap: break-word;
             white-space: pre;
           }
-          .highlight .txt{
+          .highlight{
             background-color:yellow;
           }
           button.like {

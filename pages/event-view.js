@@ -3,10 +3,16 @@ import TextareaAutosize from 'react-autosize-textarea'
 import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
 import jsCookie from 'js-cookie'
+import withPage from '../lib/withPage'
+import Button from 'material-ui/Button'
+import Typography from 'material-ui/Typography'
+import TextField from 'material-ui/TextField'
 
 import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
 
-export default class EventView extends Component {
+class EventView extends Component {
+
+  static title = 'Questions'
 
   static async getInitialProps ({req, query: { code }}) {
     if (req){
@@ -90,30 +96,35 @@ export default class EventView extends Component {
     const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, sortField } = this.state
 
     return <div>
-      <h1>{eventName}</h1>
+      <Typography variant="display1" gutterBottom>{eventName}</Typography>
       <div>Ask the speaker</div>
+      <p/>
       <TextareaAutosize
         onChange={e => this.setState({question: e.target.value})}
         placeholder={'Type your question'}
         value={question}
         rows={5}
         maxRows={10}
+        style={{width:'100%'}}
         />
       <p/>
-      <button onClick={this.addQuestion}>Send Question</button>
+      <Button variant="raised" color="secondary" onClick={this.addQuestion}>Send Question</Button>
       <p/>
-      <h2>Questions</h2>
-      Order by
       <button className={sortField=='likes_count'?'active':''} onClick={e => this.sort('likes_count')}>popular</button>
       <button className={sortField=='created'?'active':''} onClick={e => this.sort('created')}>created time</button>
       <ul>
         {
+          questions &&
           questions.map(question =>
             <QuestionRow key={question.id} userIP={userIP} {...question} />
           )
         }
       </ul>
       <style jsx>{`
+        ul {
+          padding:0;
+          text-align: left;
+        }
         button.active {
           color: white;
           background-color:green;
@@ -122,3 +133,5 @@ export default class EventView extends Component {
     </div>
   }
 }
+
+export default withPage(EventView)
