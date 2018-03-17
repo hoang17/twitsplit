@@ -1,6 +1,8 @@
 {
-  "name": "custom-server-express",
+  "name": "slido",
   "version": "1.0.0",
+  "author": "Hoang Le <lehuyhoang117@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "test": "NODE_ENV=test ava --verbose",
     "test:watch": "NODE_ENV=test ava --watch --verbose",
