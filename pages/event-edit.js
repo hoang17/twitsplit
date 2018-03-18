@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
 import Snackbar from '../components/Snack'
+import EventEdit from '../components/EventEdit'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
@@ -18,20 +19,20 @@ class EventEditPage extends Component {
   static async getInitialProps ({req, query: { id }}) {
     const user = req && req.session ? req.session.decodedToken : null
     var questions = []
-    var event = {}
+    var event = null
     if (user) {
       var doc = await req.fs.collection("events").doc(id).get()
       if (!doc.exists) return {}
       event = doc.data()
       if (event.userId != user.uid) return {}
 
-      var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).get()
+      var snapshot = await req.fs.collection("questions").where('eventId','==',id).get()
       for (var doc of snapshot.docs) {
         var data = doc.data()
         questions.push(data)
       }
     }
-    return { user, id, ...event, questions }
+    return { user, id, event, questions }
   }
 
   constructor (props) {
@@ -57,10 +58,10 @@ class EventEditPage extends Component {
     var ft = true
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
       // Discard initial loading
-      if (ft && this.state.eventName) { ft = false; return}
+      if (ft && this.state.event) { ft = false; return}
 
       var event = doc.data()
-      if (event && event.userId == this.state.user.uid) this.setState({ ...event })
+      if (event && event.userId == this.state.user.uid) this.setState({ event })
     })
     this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
       // Discard initial loading
@@ -77,7 +78,7 @@ class EventEditPage extends Component {
 
   updateEvent = async () =>  {
     try {
-      await saveEvent(this.state)
+      await saveEvent(this.state.event)
       this.setState({ snack: true, msg: 'Event has been saved successfully' })
     } catch (e) {
       this.setState({ snack: true, msg: e.message })
@@ -97,64 +98,41 @@ class EventEditPage extends Component {
   }
 
   render() {
-    const { user, id, eventName, eventCode, startDate, endDate, questions, snack, msg } = this.state
+    const { user, event, questions, snack, msg } = this.state
 
     return <div>
       {
         !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
       }
       {
-        user && id &&
+        user && event &&
         <div>
-          <div style={{textAlign:'left'}}>
-            <div>Event Name</div>
-            <input
-              type={'text'}
-              onChange={e => this.setState({eventName: e.target.value})}
-              placeholder={'Event Name'}
-              value={eventName}
-            />
-            <br/>
-            <div>Event Code</div>
-            <input
-              type={'text'}
-              onChange={e => this.setState({eventCode: e.target.value})}
-              placeholder={'Event Code'}
-              value={eventCode}
-            />
-            <br/>
-            <div>Start date</div>
-            <DatePicker
-              selected={moment(startDate)}
-              onChange={date => this.setState({startDate: date.toDate()})}
-            />
-            <br/>
-            <div>End date</div>
-            <DatePicker
-              selected={moment(endDate)}
-              onChange={date => this.setState({endDate: date.toDate()})}
-            />
-            <p/>
-            <button onClick={this.updateEvent}>Save Event</button>
-            <button onClick={this.deleteEvent}>Delete Event</button>
-          </div>
+          <EventEdit
+            event={event}
+            onChange={e => this.setState({ event: { ...event, ...e }})}
+            onSave={this.updateEvent}
+            onDelete={this.saveEvent}
+          />
           <p/>
-          { questions.length > 0 &&
+          {
+            questions.length > 0 &&
+            <div>
               <h2>Questions</h2>
+              <ul>
+                {
+                  questions.map(question =>
+                    <QuestionRow key={question.id} {...question} admin={true} />
+                  )
+                }
+              </ul>
+              <style jsx>{`
+                ul {
+                  padding:0;
+                  text-align: left;
+                }
+              `}</style>
+            </div>
           }
-          <ul>
-            {
-              questions.map(question =>
-                <QuestionRow key={question.id} {...question} admin={true} />
-              )
-            }
-          </ul>
-          <style jsx>{`
-            ul {
-              padding:0;
-              text-align: left;
-            }
-          `}</style>
           <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
         </div>
       }
