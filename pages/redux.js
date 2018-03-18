@@ -21,17 +21,17 @@ class Page extends React.Component {
 
     return (
       <div>
-        <div>Hello Redux {isServer}</div>
+        <div>All events: {isServer}</div>
         {
           event.events.map(e =>
-            <div>{e.eventName}</div>
+            <div key={e.id}>{e.eventName}</div>
           )
         }
-        {
+        {/* {
           question.questions.map(e =>
             <div>{e.text}</div>
           )
-        }
+        } */}
       </div>
     )
   }

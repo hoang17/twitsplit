@@ -1,13 +1,9 @@
 import { combineReducers } from 'redux'
-
-// import jsonAPI from './jsonAPI'
-
 import event from './event'
 import question from './question'
 
 export const makeRootReducer = (asyncReducers) => {
   return combineReducers({
-    // jsonAPI,
     event,
     question,
     ...asyncReducers
