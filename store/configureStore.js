@@ -50,4 +50,4 @@ export function configureStore(initialState) {
   return store
 }
 
-export const nextConnect = nextConnectRedux(configureStore)
+// export const nextConnect = nextConnectRedux(configureStore)

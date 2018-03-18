@@ -9,8 +9,8 @@ import { fetchQuestions } from '../actions/question'
 
 class Page extends React.Component {
   static async getInitialProps ({ store, isServer }) {
-    var event = await store.dispatch(fetchEvents())
-    var question = await store.dispatch(fetchQuestions())
+    await store.dispatch(fetchEvents())
+    await store.dispatch(fetchQuestions())
     return { isServer }
   }
 
@@ -22,16 +22,16 @@ class Page extends React.Component {
     return (
       <div>
         <div>Hello Redux {isServer}</div>
-        {/* {
+        {
           event.events.map(e =>
             <div>{e.eventName}</div>
           )
         }
         {
           question.questions.map(e =>
-            <li>{e.eventName}</li>
+            <div>{e.text}</div>
           )
-        } */}
+        }
       </div>
     )
   }
@@ -44,11 +44,6 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-// const mapStateToProps = state => {
-//   console.log(state);
-//   return state
-// }
+export default withRedux(configureStore, (state) => state, mapDispatchToProps)(Page)
 
-// export default withRedux(configureStore, (state) => state, mapDispatchToProps)(Page)
-
-export default nextConnect((state) => state)(Page)
+// export default nextConnect((state) => state)(Page)
