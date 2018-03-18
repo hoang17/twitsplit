@@ -20,7 +20,7 @@ class Page extends React.Component {
   }
 
   render () {
-    var { isServer, event, question } = this.props
+    var { isServer, question } = this.props
 
     // console.log('PROPS', this.props);
 
@@ -31,8 +31,8 @@ class Page extends React.Component {
         </Link>
         <div>All questions: {isServer}</div>
         {
-          question.questions.map(e =>
-            <div key={e.id}>{e.text}</div>
+          question.ids.map(id =>
+            <div key={id}>{question.map[id].text}</div>
           )
         }
       </div>
