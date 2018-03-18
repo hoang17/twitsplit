@@ -7,9 +7,9 @@ import {
   DELETE_QUESTION
 } from '../constants'
 
-export function fetchQuestions() {
+export function fetchQuestions(eventId) {
   return async (dispatch, getState) => {
-    var res = await fsQuestions.ls().get()
+    var res = await fsQuestions.ls().where('eventId','==',eventId).get()
     var questions = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_QUESTIONS, questions })
   }

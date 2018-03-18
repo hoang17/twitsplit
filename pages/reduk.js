@@ -4,17 +4,18 @@ import { bindActionCreators } from 'redux'
 import { configureStore, nextConnect } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
 import { setUser } from '../actions/user'
-import { fetchEvents } from '../actions/event'
+import { fetchEvents, getEvent } from '../actions/event'
 import { fetchQuestions } from '../actions/question'
 import Link from 'next/link'
 
 class Page extends React.Component {
-  static async getInitialProps ({ store, req, query, isServer }) {
+  static async getInitialProps ({ store, req, query: { id }, isServer }) {
     if (req){
       const user = req && req.session ? req.session.decodedToken : null
       store.dispatch(setUser(user))
     }
-    await store.dispatch(fetchQuestions())
+    await store.dispatch(getEvent(id))
+    await store.dispatch(fetchQuestions(id))
     return { isServer }
   }
 

@@ -1,6 +1,6 @@
 import { SET_USER } from '../constants'
 
-const userReducer = (state=null, { type, user }) => {
+const reducer = (state=null, { type, user }) => {
   switch (type) {
     case SET_USER:
       return user
@@ -9,4 +9,4 @@ const userReducer = (state=null, { type, user }) => {
   }
 }
 
-export default userReducer
+export default reducer

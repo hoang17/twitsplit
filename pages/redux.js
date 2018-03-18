@@ -29,13 +29,12 @@ class Page extends React.Component {
 
     return (
       <div>
-        <Link href={{pathname: '/reduk', query: { id: 100 }}}>
-          <a>Next Page</a>
-        </Link>
         <div>All events: {isServer}</div>
         {
-          event.events.map(e =>
-            <div key={e.id}>{e.eventName}</div>
+          event.ids.map(id =>
+            <div key={id}>
+              <Link href={{pathname: '/reduk', query: { id: id }}}><a>{event.map[id].eventName}</a></Link>
+            </div>
           )
         }
         {/* {

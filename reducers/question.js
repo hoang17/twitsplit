@@ -5,7 +5,7 @@ import {
   DELETE_QUESTION
 } from '../constants'
 
-const questionReducer = (state = {questions: []}, { type, questions }) => {
+const reducer = (state = {questions: []}, { type, questions }) => {
   switch (type) {
     case FETCH_QUESTIONS:
       return { ...state, questions }
@@ -14,4 +14,4 @@ const questionReducer = (state = {questions: []}, { type, questions }) => {
   }
 }
 
-export default questionReducer
+export default reducer
