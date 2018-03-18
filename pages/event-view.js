@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
-import TextareaAutosize from 'react-autosize-textarea'
 import QuestionRow from '../components/QuestionRow'
 import Question from '../models/question'
 import jsCookie from 'js-cookie'
 import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
-import Button from 'material-ui/Button'
-import TextField from 'material-ui/TextField'
 import Snackbar from '../components/Snack'
+import QuestionAsk from '../components/QuestionAsk'
 
 import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
 
@@ -86,12 +84,12 @@ class EventView extends Component {
     })
   }
 
-  addQuestion = async () => {
+  submitQuestion = async () => {
     try {
-      var userId = this.state.user ? this.state.user.uid : null
-      var userName = this.state.userName ? this.state.userName : null
-      // var userName = this.state.user ? this.state.user.displayName : null
-      await saveQuestion({eventId: this.state.id, text: this.state.question, userId, userName})
+      var { id, question, userName, user } =  this.state
+      var userId = user ? user.uid : null
+      var userName = userName ? userName : null
+      await saveQuestion({eventId: id, text: question, userId, userName})
       this.setState({ question: '' })
       this.setState({ snack: true, msg: 'Question has been sent successfully' })
     } catch (e) {
@@ -100,29 +98,16 @@ class EventView extends Component {
   }
 
   render () {
-    const { id, eventName, eventCode, startDate, endDate, question, questions, userIP, userName, sortField, snack, msg } = this.state
+    const { id, eventName, question, questions, userIP, userName, sortField, snack, msg } = this.state
 
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
-      <div>Ask the speaker</div>
-      <p/>
-      <TextareaAutosize
-        onChange={e => this.setState({question: e.target.value})}
-        placeholder={'Type your question'}
-        value={question}
-        rows={5}
-        maxRows={10}
-        style={{width:'100%'}}
-        />
-      <p/>
-      <TextField
-        value={userName}
-        onChange={e => this.setState({userName: e.target.value})}
-        margin="normal"
-        placeholder="Your name (optional)"
+      <QuestionAsk
+        question={question}
+        userName={userName}
+        onSubmit={submitQuestion}
+        onChange={e => this.setState(e)}
       />
-      <p/>
-      <Button variant="raised" color="secondary" onClick={this.addQuestion}>Send Question</Button>
       <p/>
       <button className={sortField=='likes_count'?'active':''} onClick={e => this.sort('likes_count')}>popular</button>
       <button className={sortField=='created'?'active':''} onClick={e => this.sort('created')}>created time</button>

@@ -81,9 +81,7 @@ class EventListPage extends Component {
       {
         user &&
         <div>
-          <EventList
-            events={events}
-          />
+          <EventList events={events} />
           <EventCreate
             event={event}
             onChange={e => this.setState({ event: { ...event, ...e }})}
