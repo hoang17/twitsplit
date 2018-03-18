@@ -14,11 +14,7 @@ class Page extends React.Component {
       const user = req && req.session ? req.session.decodedToken : null
       store.dispatch(setUser(user))
     }
-    var { user } = store.getState()
-    if (user){
-      await store.dispatch(fetchEvents(user.uid))
-      // await store.dispatch(fetchQuestions())
-    }
+    await store.dispatch(fetchQuestions())
     return { isServer }
   }
 
@@ -29,20 +25,15 @@ class Page extends React.Component {
 
     return (
       <div>
-        <Link href={{pathname: '/reduk', query: { id: 100 }}}>
-          <a>Next Page</a>
+        <Link href={{pathname: '/redux', query: { id: 99 }}}>
+          <a>Back Page</a>
         </Link>
-        <div>All events: {isServer}</div>
+        <div>All questions: {isServer}</div>
         {
-          event.events.map(e =>
-            <div key={e.id}>{e.eventName}</div>
+          question.questions.map(e =>
+            <div key={e.id}>{e.text}</div>
           )
         }
-        {/* {
-          question.questions.map(e =>
-            <div>{e.text}</div>
-          )
-        } */}
       </div>
     )
   }
@@ -56,5 +47,3 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default withRedux(configureStore, (state) => state, mapDispatchToProps)(Page)
-
-// export default nextConnect((state) => state)(Page)

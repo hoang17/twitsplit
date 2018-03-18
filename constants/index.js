@@ -1,4 +1,4 @@
-export const SET_API_DATA = 'SET_API_DATA'
+export const SET_USER = 'SET_USER'
 
 export const FETCH_EVENTS = 'FETCH_EVENTS'
 export const CREATE_EVENT = 'CREATE_EVENT'

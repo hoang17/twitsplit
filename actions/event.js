@@ -7,9 +7,9 @@ import {
   DELETE_EVENT
 } from '../constants'
 
-export function fetchEvents() {
+export function fetchEvents(userId) {
   return async (dispatch, getState) => {
-    var res = await fsEvents.ls().get()
+    var res = await fsEvents.ls().where('userId','==',userId).get()
     var events = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_EVENTS, events })
   }
