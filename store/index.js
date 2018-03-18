@@ -1,18 +1,16 @@
+// import { VisibilityFilters } from '../constants'
+// import { helloWorld, setMessage } from '../actions/hello'
+// import { getJsonAPI } from '../actions/jsonAPI'
+// import { setClock, startClock, addCount } from '../actions/next'
+// import { setRuntimeVariable } from '../actions/runtime'
+// import { addTodo, toggleTodo, setVisibilityFilter } from '../actions/todo'
+
+import { fetchEvents } from '../actions/event'
+import { fetchQuestions } from '../actions/question'
+
 import configureStore from './configureStore'
 
 let store = configureStore({})
-
-import { VisibilityFilters } from '../constants'
-
-import { helloWorld, setMessage } from '../actions/hello'
-
-import { getJsonAPI } from '../actions/jsonAPI'
-
-import { setClock, startClock, addCount } from '../actions/next'
-
-import { setRuntimeVariable } from '../actions/runtime'
-
-import { addTodo, toggleTodo, setVisibilityFilter } from '../actions/todo'
 
 // Log the initial state
 console.log('INITIAL STATE', store.getState())
@@ -24,9 +22,12 @@ const unsubscribe = store.subscribe(() =>
  
 // Dispatch some actions
 
+store.dispatch(fetchEvents())
+store.dispatch(fetchQuestions())
+
 // store.dispatch(helloWorld())
 // store.dispatch(setMessage('Hi ya!'))
-store.dispatch(getJsonAPI())
+// store.dispatch(getJsonAPI())
 // store.dispatch(setClock())
 // store.dispatch(startClock())
 // store.dispatch(addCount())

@@ -1,7 +1,4 @@
-import {
-  ADD_TODO,
-  TOGGLE_TODO,
-} from '../constants'
+import { ADD_TODO, TOGGLE_TODO } from '../constants'
  
 export default function todos(state = [], action) {
   switch (action.type) {

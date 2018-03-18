@@ -20,3 +20,13 @@ export const TICK = 'TICK'
 export const HELLO_WORLD = 'HELLO_WORLD'
 export const SET_MESSAGE = 'SET_MESSAGE'
 export const SET_API_DATA = 'SET_API_DATA'
+
+export const FETCH_EVENTS = 'FETCH_EVENTS'
+export const CREATE_EVENT = 'CREATE_EVENT'
+export const UPDATE_EVENT = 'UPDATE_EVENT'
+export const DELETE_EVENT = 'DELETE_EVENT'
+
+export const FETCH_QUESTIONS = 'FETCH_QUESTIONS'
+export const CREATE_QUESTION = 'CREATE_QUESTION'
+export const UPDATE_QUESTION = 'UPDATE_QUESTION'
+export const DELETE_QUESTION = 'DELETE_QUESTION'
