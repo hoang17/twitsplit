@@ -36,7 +36,7 @@ class JoinEvent extends Component {
   joinEvent = async (e) => {
     try {
       var { eventCode } = this.state
-      if (!eventCode) return
+      if (!eventCode.trim()) return
       if (await validCode(eventCode))
         Router.push('/event-view?code='+eventCode)
     } catch (e) {

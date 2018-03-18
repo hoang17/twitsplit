@@ -48,7 +48,7 @@ class QuestionEdit extends Component {
   saveQuestion = async () => {
     try {
       var { id, text } = this.state
-      if (!text) {
+      if (!text.trim()) {
         this.setState({ snack: true, msg: 'Question can not empty' })
         return
       }

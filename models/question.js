@@ -2,10 +2,10 @@ var objectid = require('bson-objectid')
 
 module.exports = ({id, eventId, text, userId, userName}) => {
 
-  if (!eventId)
+  if (!eventId.trim())
     throw new TypeError('Event id can not empty')
 
-  if (!text)
+  if (!text.trim())
     throw new TypeError('Question can not empty')
 
   var { FieldValue } = require('../lib/datastore')
