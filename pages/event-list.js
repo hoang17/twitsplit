@@ -1,31 +1,13 @@
 import React, { Component } from 'react'
-import Link from 'next/link'
-import moment from 'moment'
-import { withStyles } from 'material-ui/styles'
 import withPage from '../lib/withPage'
-import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-import TextField from 'material-ui/TextField'
 import Snackbar from '../components/Snack'
 import EventCreate from '../components/EventCreate'
-
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
-import Paper from 'material-ui/Paper'
+import EventList from '../components/EventList'
 
 import { fsEvents, saveEvent, auth, login } from '../lib/datastore'
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  table: {
-    minWidth: 700,
-  },
-})
-
-class EventList extends Component {
+class EventListPage extends Component {
 
   static title = 'Manage Events'
 
@@ -90,7 +72,6 @@ class EventList extends Component {
   }
 
   render() {
-    const { classes } = this.props
     const { user, event, events, snack, msg } = this.state
 
     return <div>
@@ -100,36 +81,9 @@ class EventList extends Component {
       {
         user &&
         <div>
-          <Paper className={classes.root}>
-            <Table className={classes.table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Event Name</TableCell>
-                  <TableCell numeric>Event Code</TableCell>
-                  <TableCell numeric>Start Date</TableCell>
-                  <TableCell numeric>End Date</TableCell>
-                  <TableCell numeric>___________</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                  events.map(n => {
-                  return (
-                    <TableRow key={n.id}>
-                      <TableCell>
-                        <Link href={{pathname: '/event-edit', query: { id: n.id }}}>
-                          <a>{n.eventName}</a>
-                        </Link>
-                      </TableCell>
-                      <TableCell numeric>{n.eventCode}</TableCell>
-                      <TableCell numeric>{moment(n.startDate).format('L')}</TableCell>
-                      <TableCell numeric>{moment(n.endDate).format('L')}</TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </Paper>
+          <EventList
+            events={events}
+          />
           <EventCreate
             event={event}
             onChange={e => this.setState({ event: { ...event, ...e }})}
@@ -142,4 +96,4 @@ class EventList extends Component {
   }
 }
 
-export default withPage(withStyles(styles)(EventList))
+export default withPage(EventListPage)
