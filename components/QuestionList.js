@@ -1,10 +1,11 @@
 import QuestionRow from '../components/QuestionRow'
 
-export default ({ questions, userIP, sortField, sortMap, onSort }) => {
+export default ({ questions, userIP, sortField, sortMap, onSort, admin = false }) => {
 
   return (
     <div>
       {
+        sortMap &&
         sortMap.map(e =>
           <button key={e.id} className={sortField==e.id?'active':''} onClick={() => onSort(e.id)}>{e.name}</button>
         )
@@ -13,7 +14,7 @@ export default ({ questions, userIP, sortField, sortMap, onSort }) => {
         {
           questions &&
           questions.map(e =>
-            <QuestionRow key={e.id} userIP={userIP} {...e} />
+            <QuestionRow key={e.id} admin={admin} userIP={userIP} {...e} />
           )
         }
       </ul>

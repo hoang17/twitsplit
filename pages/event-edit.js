@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import QuestionRow from '../components/QuestionRow'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
 import Snackbar from '../components/Snack'
 import EventEdit from '../components/EventEdit'
+import QuestionList from '../components/QuestionList'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login } from '../lib/datastore'
 
@@ -110,25 +110,10 @@ class EventEditPage extends Component {
             onDelete={this.deleteEvent}
           />
           <p/>
-          {
-            questions.length > 0 &&
-            <div>
-              <h2>Questions</h2>
-              <ul>
-                {
-                  questions.map(question =>
-                    <QuestionRow key={question.id} {...question} admin={true} />
-                  )
-                }
-              </ul>
-              <style jsx>{`
-                ul {
-                  padding:0;
-                  text-align: left;
-                }
-              `}</style>
-            </div>
-          }
+          <QuestionList
+            questions={questions}
+            admin={true}
+          />
           <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
         </div>
       }
