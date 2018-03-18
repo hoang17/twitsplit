@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { configureStore, nextConnect } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
 import { setUser } from '../actions/user'
-import { fetchEvents, getEvent } from '../actions/event'
+import { getEvent } from '../actions/event'
 import { fetchQuestions } from '../actions/question'
 import Link from 'next/link'
 
@@ -26,13 +26,13 @@ class Page extends React.Component {
 
     return (
       <div>
-        <Link href={{pathname: '/redux', query: { id: 99 }}}>
+        <Link href={{pathname: '/redux'}}>
           <a>Back Page</a>
         </Link>
         <div>All questions: {isServer}</div>
         {
-          question.ids.map(id =>
-            <div key={id}>{question.map[id].text}</div>
+          question.byId.map(id =>
+            <div key={id}>{question.byHash[id].text}</div>
           )
         }
       </div>
@@ -42,7 +42,6 @@ class Page extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchEvents: bindActionCreators(fetchEvents, dispatch),
     fetchQuestions: bindActionCreators(fetchQuestions, dispatch)
   }
 }

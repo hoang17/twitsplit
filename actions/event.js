@@ -43,7 +43,7 @@ export function obsEvents(userId) {
 export function getEvent(id) {
   return async (dispatch, getState) => {
     var state = getState()
-    var event = state.event.map[id]
+    var event = state.event.byHash[id]
     if (!event)
       event = await fsEvents.data(id)
     return dispatch({ type: GET_EVENT, event })

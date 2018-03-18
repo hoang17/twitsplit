@@ -2,6 +2,7 @@ import { fsQuestions, saveQuestion } from '../lib/datastore'
 
 import {
   FETCH_QUESTIONS,
+  OBSERVE_QUESTIONS,
   GET_QUESTION,
   CREATE_QUESTION,
   UPDATE_QUESTION,
@@ -16,6 +17,27 @@ export function fetchQuestions(eventId) {
   }
 }
 
+export function obsQuestions(eventId) {
+  return (dispatch, getState) => {
+    fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
+      snapshot.docChanges.forEach(function(change) {
+          switch (change.type) {
+            case 'added':
+              dispatch({ type: CREATE_QUESTION, question: change.doc.data() })
+              break;
+            case 'modified':
+              dispatch({ type: UPDATE_QUESTION, question: change.doc.data() })
+              break;
+            case 'removed':
+              dispatch({ type: DELETE_QUESTION, question: change.doc.data() })
+              break;
+            default:
+          }
+      })
+    })
+  }
+}
+
 export function getQuestion(id) {
   return async (dispatch, getState) => {
     var state = getState()
@@ -24,4 +46,16 @@ export function getQuestion(id) {
       question = await fsQuestions.data(id)
     return dispatch({ type: GET_QUESTION, question })
   }
+}
+
+export function createQuestion(question){
+  return dispatch => saveQuestion(question)
+}
+
+export function updateQuestion(question){
+  return dispatch => saveQuestion(question)
+}
+
+export function deleteQuestion(id){
+  return dispatch => fsQuestions.delete(id)
 }
