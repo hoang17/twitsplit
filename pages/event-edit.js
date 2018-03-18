@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
 import Router from 'next/router'
-import Link from 'next/link'
-import DatePicker from 'react-datepicker'
 import QuestionRow from '../components/QuestionRow'
-import moment from 'moment'
-import 'react-datepicker/dist/react-datepicker.css'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
 import Snackbar from '../components/Snack'
 import EventEdit from '../components/EventEdit'
 
-import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, auth, login } from '../lib/datastore'
 
 class EventEditPage extends Component {
 
@@ -111,7 +107,7 @@ class EventEditPage extends Component {
             event={event}
             onChange={e => this.setState({ event: { ...event, ...e }})}
             onSave={this.updateEvent}
-            onDelete={this.saveEvent}
+            onDelete={this.deleteEvent}
           />
           <p/>
           {

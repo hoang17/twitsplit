@@ -1,19 +1,18 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-import DatePicker from 'react-datepicker'
 import moment from 'moment'
-import 'react-datepicker/dist/react-datepicker.css'
 import { withStyles } from 'material-ui/styles'
 import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
 import Snackbar from '../components/Snack'
+import EventCreate from '../components/EventCreate'
 
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
 import Paper from 'material-ui/Paper'
 
-import { fsEvents, saveEvent, auth, login, logout } from '../lib/datastore'
+import { fsEvents, saveEvent, auth, login } from '../lib/datastore'
 
 const styles = theme => ({
   root: {
@@ -45,10 +44,12 @@ class EventList extends Component {
     this.state = {
       user: this.props.user,
       events: this.props.events,
-      eventName: '',
-      eventCode: '',
-      startDate: new Date(),
-      endDate: new Date(),
+      event: {
+        eventName: '',
+        eventCode: '',
+        startDate: new Date(),
+        endDate: new Date(),
+      }
     }
   }
 
@@ -76,11 +77,12 @@ class EventList extends Component {
     })
   }
 
-  addEvent = async () => {
+  createEvent = async () => {
     try {
-      var { user, eventName, eventCode, startDate, endDate } = this.state
-      await saveEvent({userId: user.uid, eventName, eventCode, startDate, endDate})
-      this.setState({ eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() })
+      var { user, event } = this.state
+      event.userId = user.uid
+      await saveEvent(event)
+      this.setState({event: { eventName: '', eventCode: '', startDate: new Date(), endDate: new Date() }})
       this.setState({ snack: true, msg: 'Event has been created successfully' })
     } catch (e) {
       this.setState({ snack: true, msg: e.message })
@@ -89,7 +91,7 @@ class EventList extends Component {
 
   render() {
     const { classes } = this.props
-    const { user, eventName, eventCode, startDate, endDate, events, snack, msg } = this.state
+    const { user, event, events, snack, msg } = this.state
 
     return <div>
       {
@@ -128,35 +130,11 @@ class EventList extends Component {
               </TableBody>
             </Table>
           </Paper>
-          <div style={{width:'170px', margin:'0 auto'}}>
-            <TextField
-              label="Event Name"
-              value={eventName}
-              onChange={e => this.setState({eventName: e.target.value})}
-              margin="normal"
-            />
-            <br/>
-            <TextField
-              label="Event Code"
-              value={eventCode}
-              onChange={e => this.setState({eventCode: e.target.value})}
-              margin="normal"
-            />
-            <br/>
-            <div style={{textAlign:'left'}}>Start date</div>
-            <DatePicker
-              selected={moment(startDate)}
-              onChange={date => this.setState({startDate: date.toDate()})}
-            />
-            <br/>
-            <div style={{textAlign:'left'}}>End date</div>
-            <DatePicker
-              selected={moment(endDate)}
-              onChange={date => this.setState({endDate: date.toDate()})}
-            />
-            <p/>
-            <Button variant="raised" color="secondary" onClick={this.addEvent}>Create Event</Button>
-          </div>
+          <EventCreate
+            event={event}
+            onChange={e => this.setState({ event: { ...event, ...e }})}
+            onCreate={this.createEvent}
+          />
           <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
         </div>
       }
