@@ -11,7 +11,7 @@ import Snackbar from '../components/Snack'
 
 import { fsEvents, fsQuestions, saveEvent, auth, login, logout } from '../lib/datastore'
 
-class EventEdit extends Component {
+class EventEditPage extends Component {
 
   static title = 'Edit Event'
 
@@ -39,7 +39,7 @@ class EventEdit extends Component {
     this.state = { ...this.props }
   }
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
 
     if (!this.state.id) return
 
@@ -50,17 +50,22 @@ class EventEdit extends Component {
       else if (this.unsubscribe)
         this.unsubscribe()
     })
-
-    if (this.state.user)
-      this.addDbListener()
   }
 
   addDbListener = () => {
+    if (!this.state.user) return
+    var ft = true
     this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
+      // Discard initial loading
+      if (ft && this.state.eventName) { ft = false; return}
+
       var event = doc.data()
       if (event && event.userId == this.state.user.uid) this.setState({ ...event })
     })
     this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
+      // Discard initial loading
+      if (ft && this.state.questions.length >  0) { ft = false; return}
+
       var questions = []
       for (var doc of snapshot.docs) {
         var data = doc.data()
@@ -157,4 +162,4 @@ class EventEdit extends Component {
   }
 }
 
-export default withPage(EventEdit)
+export default withPage(EventEditPage)

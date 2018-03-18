@@ -53,7 +53,11 @@ class EventView extends Component {
   }
 
   addDbListener = () => {
+    var ft = true
     this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
+      // Discard initial loading
+      if (ft && this.state.eventName) { ft = false; return}
+
       event = snapshot.docs[0].data()
       if (event) this.setState({ ...event })
       this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy('likes_count','desc').onSnapshot(async snapshot => {

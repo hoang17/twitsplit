@@ -60,13 +60,14 @@ class EventList extends Component {
       else if (this.unsubscribe)
         this.unsubscribe()
     })
-
-    if (this.state.user)
-      this.addDbListener()
   }
 
   addDbListener = () => {
+    var ft = true
     this.unsubscribe = fsEvents.ls().where('userId','==',this.state.user.uid).onSnapshot(snapshot => {
+      // Discard initial loading
+      if (ft && this.state.events.length > 0) { ft = false; return}
+
       var events = []
       snapshot.forEach(function(doc) {
         events.push(doc.data())
@@ -110,7 +111,6 @@ class EventList extends Component {
               </TableHead>
               <TableBody>
                 {
-                  events &&
                   events.map(n => {
                   return (
                     <TableRow key={n.id}>

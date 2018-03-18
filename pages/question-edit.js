@@ -33,13 +33,14 @@ class QuestionEdit extends Component {
       else if (this.unsubscribe)
         this.unsubscribe()
     })
-
-    if (this.state.user)
-      this.addDbListener()
   }
 
   addDbListener () {
+    var ft = true
     this.unsubscribe = fsQuestions.doc(this.state.id).onSnapshot(doc => {
+      // Discard initial loading
+      if (ft && this.state.text) { ft = false; return}
+
       var question = doc.data()
       this.setState({ ...question })
     })
