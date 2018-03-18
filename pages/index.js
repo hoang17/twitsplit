@@ -29,10 +29,6 @@ class JoinEvent extends Component {
     }
   }
 
-  componentDidMount = async () => {
-    init()
-  }
-
   joinEvent = async (e) => {
     try {
       var { eventCode } = this.state

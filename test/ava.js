@@ -5,9 +5,8 @@ import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, highli
 import Event from '../models/event'
 import Question from '../models/question'
 
-test.before(t => {
-	init()
-});
+// test.before(t => {
+// });
 
 test('Event should contain event name', t => {
 	const error = t.throws(() => {
