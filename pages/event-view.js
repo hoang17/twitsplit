@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import QuestionRow from '../components/QuestionRow'
-import Question from '../models/question'
 import jsCookie from 'js-cookie'
 import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import Snackbar from '../components/Snack'
 import QuestionAsk from '../components/QuestionAsk'
+import QuestionList from '../components/QuestionList'
 
 import { fsEvents, fsQuestions, saveQuestion, isLiked, auth, login, logout } from '../lib/datastore'
 
@@ -14,12 +13,12 @@ class EventView extends Component {
   static title = 'Questions'
 
   static async getInitialProps ({req, query: { code }}) {
+    var questions = []
     if (req){
       var user = req && req.session ? req.session.decodedToken : null
       var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
       var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
       var event = snapshot.docs[0].data()
-      var questions = []
       var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).orderBy('likes_count','desc').get()
       for (var doc of snapshot.docs) {
         var data = doc.data()
@@ -29,7 +28,7 @@ class EventView extends Component {
       return { eventCode: code, ...event, questions, userIP, user }
     }
     var userIP = jsCookie.get('userIP')
-    return { eventCode: code, questions: [], userIP }
+    return { eventCode: code, questions, userIP }
   }
 
   constructor (props) {
@@ -70,7 +69,7 @@ class EventView extends Component {
     })
   }
 
-  sort(sortField){
+  sort = (sortField) => {
     this.setState({sortField})
     if (this.unsubQuestions) this.unsubQuestions()
     this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy(sortField,'desc').onSnapshot(async snapshot => {
@@ -98,37 +97,27 @@ class EventView extends Component {
   }
 
   render () {
-    const { id, eventName, question, questions, userIP, userName, sortField, snack, msg } = this.state
+    const { eventName, question, questions, userIP, userName, sortField, snack, msg } = this.state
 
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
       <QuestionAsk
         question={question}
         userName={userName}
-        onSubmit={submitQuestion}
+        onSubmit={this.submitQuestion}
         onChange={e => this.setState(e)}
       />
       <p/>
-      <button className={sortField=='likes_count'?'active':''} onClick={e => this.sort('likes_count')}>popular</button>
-      <button className={sortField=='created'?'active':''} onClick={e => this.sort('created')}>created time</button>
-      <ul>
-        {
-          questions &&
-          questions.map(question =>
-            <QuestionRow key={question.id} userIP={userIP} {...question} />
-          )
-        }
-      </ul>
-      <style jsx>{`
-        ul {
-          padding:0;
-          text-align: left;
-        }
-        button.active {
-          color: white;
-          background-color:green;
-        }
-      `}</style>
+      <QuestionList
+        questions={questions}
+        userIP={userIP}
+        onSort={this.sort}
+        sortField={sortField}
+        sortMap={[
+          { id:'likes_count', name:'popular' },
+          { id:'created', name:'created time' }
+        ]}
+      />
       <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
     </div>
   }

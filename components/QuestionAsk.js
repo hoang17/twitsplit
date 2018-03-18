@@ -2,7 +2,7 @@ import TextareaAutosize from 'react-autosize-textarea'
 import TextField from 'material-ui/TextField'
 import Button from 'material-ui/Button'
 
-export default ( question, userName, onSubmit, onChange }) => {
+export default ({ question, userName, onSubmit, onChange }) => {
 
   return (
     <div>
@@ -24,7 +24,7 @@ export default ( question, userName, onSubmit, onChange }) => {
         placeholder="Your name (optional)"
       />
       <p/>
-      <Button variant="raised" color="secondary" onClick={this.onSubmit}>Send Question</Button>
+      <Button variant="raised" color="secondary" onClick={onSubmit}>Send Question</Button>
     </div>
   )
 }
