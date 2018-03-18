@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { configureStore, nextConnect } from '../store/configureStore'
+import { configureStore } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
 import { setUser } from '../actions/user'
-import { fetchEvents } from '../actions/event'
-import { fetchQuestions } from '../actions/question'
+import { fetchEvents, obsEvents } from '../actions/event'
 import Link from 'next/link'
 
 class Page extends React.Component {
@@ -22,26 +21,23 @@ class Page extends React.Component {
     return { isServer }
   }
 
+  componentDidMount () {
+    this.props.obsEvents(this.props.user.uid)
+  }
+
   render () {
     var { isServer, event, question } = this.props
-
-    // console.log('PROPS', this.props);
 
     return (
       <div>
         <div>All events: {isServer}</div>
         {
-          event.ids.map(id =>
+          event.byId.map(id =>
             <div key={id}>
-              <Link href={{pathname: '/reduk', query: { id: id }}}><a>{event.map[id].eventName}</a></Link>
+              <Link href={{pathname: '/reduk', query: { id: id }}}><a>{event.byHash[id].eventName}</a></Link>
             </div>
           )
         }
-        {/* {
-          question.questions.map(e =>
-            <div>{e.text}</div>
-          )
-        } */}
       </div>
     )
   }
@@ -49,11 +45,8 @@ class Page extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchEvents: bindActionCreators(fetchEvents, dispatch),
-    fetchQuestions: bindActionCreators(fetchQuestions, dispatch)
+    obsEvents: bindActionCreators(obsEvents, dispatch),
   }
 }
 
 export default withRedux(configureStore, (state) => state, mapDispatchToProps)(Page)
-
-// export default nextConnect((state) => state)(Page)

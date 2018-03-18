@@ -4,7 +4,6 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import { name, version } from '../package.json'
 import rootReducer from '../reducers'
 import createLogger from './logger'
-import nextConnectRedux from 'next-connect-redux'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -49,5 +48,3 @@ export function configureStore(initialState) {
 
   return store
 }
-
-// export const nextConnect = nextConnectRedux(configureStore)

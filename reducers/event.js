@@ -2,27 +2,41 @@ import keyBy from 'lodash/keyBy'
 
 import {
   FETCH_EVENTS,
+  OBSERVE_EVENTS,
   GET_EVENT,
   CREATE_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT
 } from '../constants'
 
-const reducer = (state = { ids: [], map: {} }, { type, events, event }) => {
+const reducer = (state = { byId: [], byHash: {} }, { type, events, event }) => {
   switch (type) {
     case FETCH_EVENTS:
-      var ids = events.map(e => e.id)
-      var map = keyBy(events, 'id')
+    case OBSERVE_EVENTS:
+      var byId = events.map(e => e.id)
+      var byHash = keyBy(events, 'id')
       return {
-        ids: [ ...ids],
-        map: map,
+        byId: [ ...byId],
+        byHash: byHash,
       }
     case GET_EVENT:
-      if (state.map[event.id]) return state
+    case CREATE_EVENT:
+      if (state.byHash[event.id]) return state
       return {
-        ids: [ ...state.ids, event.id],
-        map: { ...state.map, [event.id]: event }
+        byId: [ ...state.byId, event.id],
+        byHash: { ...state.byHash, [event.id]: event }
       }
+    case UPDATE_EVENT:
+      state.byHash[event.id] = { ...state.byHash[event.id], ...event }
+      return { ...state }
+    case DELETE_EVENT: {
+      const prunedIds = state.byId.filter(item => item !== event.id)
+      delete state.byHash[event.id]
+      return {
+        byId: prunedIds,
+        byHash: state.byHash
+      }
+    }
     default:
       return state
   }
