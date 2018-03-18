@@ -1,7 +1,7 @@
 import { TICK, ADD } from '../constants'
 
-export const serverRenderClock = (isServer) => dispatch => {
-  return dispatch({ type: TICK, light: !isServer, ts: Date.now() })
+export const setClock = () => dispatch => {
+  return dispatch({ type: TICK, light: false, ts: Date.now() })
 }
 
 export const startClock = () => dispatch => {
@@ -10,8 +10,4 @@ export const startClock = () => dispatch => {
 
 export const addCount = () => dispatch => {
   return dispatch({ type: ADD })
-}
-
-export const initStore = (initialState = exampleInitialState) => {
-  return createStore(reducer, initialState, composeWithDevTools(applyMiddleware(thunkMiddleware)))
 }

@@ -4,12 +4,16 @@ let store = configureStore({})
 
 import { VisibilityFilters } from '../constants'
 
-import {
-  addTodo,
-  toggleTodo,
-  setVisibilityFilter,
-} from '../actions/todo'
- 
+import { helloWorld, setMessage } from '../actions/hello'
+
+import { getJsonAPI } from '../actions/jsonAPI'
+
+import { setClock, startClock, addCount } from '../actions/next'
+
+import { setRuntimeVariable } from '../actions/runtime'
+
+import { addTodo, toggleTodo, setVisibilityFilter } from '../actions/todo'
+
 // Log the initial state
 console.log('INITIAL STATE', store.getState())
  
@@ -19,12 +23,21 @@ const unsubscribe = store.subscribe(() =>
 )
  
 // Dispatch some actions
-store.dispatch(addTodo('Learn about actions'))
-store.dispatch(addTodo('Learn about reducers'))
-store.dispatch(addTodo('Learn about store'))
-store.dispatch(toggleTodo(0))
-store.dispatch(toggleTodo(1))
-store.dispatch(setVisibilityFilter(VisibilityFilters.SHOW_COMPLETED))
+
+// store.dispatch(helloWorld())
+// store.dispatch(setMessage('Hi ya!'))
+store.dispatch(getJsonAPI())
+// store.dispatch(setClock())
+// store.dispatch(startClock())
+// store.dispatch(addCount())
+// store.dispatch(setRuntimeVariable())
+
+// store.dispatch(addTodo('Learn about actions'))
+// store.dispatch(addTodo('Learn about reducers'))
+// store.dispatch(addTodo('Learn about store'))
+// store.dispatch(toggleTodo(0))
+// store.dispatch(toggleTodo(1))
+// store.dispatch(setVisibilityFilter(VisibilityFilters.SHOW_COMPLETED))
  
 // Stop listening to state updates
 unsubscribe()
