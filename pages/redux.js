@@ -1,30 +1,54 @@
 import React from 'react'
-import store from '../store'
-// import { bindActionCreators } from 'redux'
-// import configureStore from '../store/configureStore'
-// import withRedux from 'next-redux-wrapper'
+// import store from '../store'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { configureStore, nextConnect } from '../store/configureStore'
+import withRedux from 'next-redux-wrapper'
+import { fetchEvents } from '../actions/event'
+import { fetchQuestions } from '../actions/question'
 
 class Page extends React.Component {
+  static async getInitialProps ({ store, isServer }) {
+    var event = await store.dispatch(fetchEvents())
+    var question = await store.dispatch(fetchQuestions())
+    return { isServer }
+  }
+
   render () {
+    var { isServer, event, question } = this.props
+
+    console.log(this.props);
+
     return (
-      <div>Hello Redux</div>
+      <div>
+        <div>Hello Redux {isServer}</div>
+        {/* {
+          event.events.map(e =>
+            <div>{e.eventName}</div>
+          )
+        }
+        {
+          question.questions.map(e =>
+            <li>{e.eventName}</li>
+          )
+        } */}
+      </div>
     )
   }
 }
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     // addCount: bindActionCreators(addCount, dispatch),
-//     // startClock: bindActionCreators(startClock, dispatch)
-//   }
-// }
-//
-// const mapStateToProps = state => {
-//   return {
-//     // todos: getVisibleTodos(state.todos, state.visibilityFilter)
-//   }
-// }
-//
-// export default withRedux(configureStore, null, mapDispatchToProps)(Page)
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchEvents: bindActionCreators(fetchEvents, dispatch),
+    fetchQuestions: bindActionCreators(fetchQuestions, dispatch)
+  }
+}
 
-export default Page
+// const mapStateToProps = state => {
+//   console.log(state);
+//   return state
+// }
+
+// export default withRedux(configureStore, (state) => state, mapDispatchToProps)(Page)
+
+export default nextConnect((state) => state)(Page)

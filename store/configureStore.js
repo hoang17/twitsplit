@@ -4,10 +4,11 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import { name, version } from '../package.json'
 import rootReducer from '../reducers'
 import createLogger from './logger'
+import nextConnectRedux from 'next-connect-redux'
 
 const isProd = process.env.NODE_ENV === 'production'
 
-export default function configureStore(initialState) {
+export function configureStore(initialState) {
   const middleware = [thunk]
 
   let enhancer
@@ -38,5 +39,15 @@ export default function configureStore(initialState) {
     })
   }
 
+  // Log the initial state
+  console.log('INITIAL STATE', store.getState())
+   
+  // Every time the state changes, log it
+  const unsubscribe = store.subscribe(() =>
+    console.log('SUBSCRIBE', store.getState())
+  )
+
   return store
 }
+
+export const nextConnect = nextConnectRedux(configureStore)
