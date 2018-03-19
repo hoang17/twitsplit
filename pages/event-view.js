@@ -19,15 +19,15 @@ class EventView extends Component {
     return { code }
   }
 
-  // constructor (props) {
-  //   super(props)
-  //   this.state = {
-  //     ...this.props,
-  //     question: '',
-  //     userName: this.props.user ? this.props.user.displayName : '',
-  //     sortField: 'likes_count',
-  //   }
-  // }
+  constructor (props) {
+    super(props)
+    var { app, setNewQuestion } =  props
+    var { user, newQuestion } = app
+    setNewQuestion({
+      text:'',
+      userName: user ? user.name : '',
+    })
+  }
 
   componentDidMount = async () => {
     var { app, code, obsEventsByCode, obsOrderedQuestions } = this.props
@@ -49,8 +49,8 @@ class EventView extends Component {
       var { app, events, updateQuestion, setNewQuestion, setSnack } =  this.props
       var { user, newQuestion } = app
       var userId = user ? user.uid : null
+      setNewQuestion({text:''})
       await updateQuestion({eventId: events.current, ...newQuestion, userId})
-      setNewQuestion()
       setSnack({ open: true, msg: 'Question has been sent successfully' })
     } catch (e) {
       setSnack({ open: true, msg: e.message })

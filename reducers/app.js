@@ -46,7 +46,7 @@ const reducer = (state = initialState, { type, user, info, newEvent, userIP, new
       state.newEvent = { ...state.newEvent, ...newEvent }
       return { ...state }
     case SET_NEW_QUESTION:
-      if (!newQuestion) newQuestion = emptyQuestion()
+      // if (!newQuestion) newQuestion = emptyQuestion(state)
       state.newQuestion = { ...state.newQuestion, ...newQuestion }
       return { ...state }
     default:
