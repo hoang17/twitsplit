@@ -6,10 +6,10 @@ import {
   GET_EVENT,
   CREATE_EVENT,
   UPDATE_EVENT,
-  DELETE_EVENT
+  DELETE_EVENT,
 } from '../constants'
 
-const reducer = (state = { byId: [], byHash: {} }, { type, events, event }) => {
+const reducer = (state = { byId: [], byHash: {} }, { type, events, event, newEvent }) => {
   switch (type) {
     case FETCH_EVENTS:
     case OBSERVE_EVENTS:

@@ -1,9 +1,8 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { configureStore } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
-import { setUser } from '../actions/user'
+import { setUser } from '../actions/app'
 import { fetchEvents, obsEvents } from '../actions/event'
 import Link from 'next/link'
 
@@ -13,28 +12,27 @@ class Page extends React.Component {
       const user = req && req.session ? req.session.decodedToken : null
       store.dispatch(setUser(user))
     }
-    var { user } = store.getState()
-    if (user){
-      await store.dispatch(fetchEvents(user.uid))
-      // await store.dispatch(fetchQuestions())
+    var { app } = store.getState()
+    if (app.user){
+      await store.dispatch(fetchEvents(app.user.uid))
     }
     return { isServer }
   }
 
   componentDidMount () {
-    this.props.obsEvents(this.props.user.uid)
+    this.props.obsEvents(this.props.app.user.uid)
   }
 
   render () {
-    var { isServer, event, question } = this.props
+    var { isServer, events } = this.props
 
     return (
       <div>
         <div>All events: {isServer}</div>
         {
-          event.byId.map(id =>
+          events.byId.map(id =>
             <div key={id}>
-              <Link href={{pathname: '/reduk', query: { id: id }}}><a>{event.byHash[id].eventName}</a></Link>
+              <Link href={{pathname: '/reduk', query: { id: id }}}><a>{events.byHash[id].eventName}</a></Link>
             </div>
           )
         }

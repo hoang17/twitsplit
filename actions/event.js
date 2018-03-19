@@ -6,11 +6,11 @@ import {
   GET_EVENT,
   CREATE_EVENT,
   UPDATE_EVENT,
-  DELETE_EVENT
+  DELETE_EVENT,
 } from '../constants'
 
 export function fetchEvents(userId) {
-  return async (dispatch, getState) => {
+  return async dispatch => {
     var res = await fsEvents.ls().where('userId','==',userId).get()
     var events = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_EVENTS, events })
@@ -18,8 +18,8 @@ export function fetchEvents(userId) {
 }
 
 export function obsEvents(userId) {
-  return (dispatch, getState) => {
-    fsEvents.ls().where('userId','==',userId).onSnapshot(snapshot => {
+  return dispatch => {
+    return fsEvents.ls().where('userId','==',userId).onSnapshot(snapshot => {
       snapshot.docChanges.forEach(function(change) {
           switch (change.type) {
             case 'added':
@@ -43,7 +43,7 @@ export function obsEvents(userId) {
 export function getEvent(id) {
   return async (dispatch, getState) => {
     var state = getState()
-    var event = state.event.byHash[id]
+    var event = state.events.byHash[id]
     if (!event)
       event = await fsEvents.data(id)
     return dispatch({ type: GET_EVENT, event })

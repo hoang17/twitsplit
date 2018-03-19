@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { configureStore, nextConnect } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
-import { setUser } from '../actions/user'
+import { setUser } from '../actions/app'
 import { getEvent } from '../actions/event'
 import { fetchQuestions } from '../actions/question'
 import Link from 'next/link'
@@ -20,9 +20,7 @@ class Page extends React.Component {
   }
 
   render () {
-    var { isServer, question } = this.props
-
-    // console.log('PROPS', this.props);
+    var { isServer, questions } = this.props
 
     return (
       <div>
@@ -31,8 +29,8 @@ class Page extends React.Component {
         </Link>
         <div>All questions: {isServer}</div>
         {
-          question.byId.map(id =>
-            <div key={id}>{question.byHash[id].text}</div>
+          questions.byId.map(id =>
+            <div key={id}>{questions.byHash[id].text}</div>
           )
         }
       </div>
