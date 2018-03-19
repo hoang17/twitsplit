@@ -11,7 +11,7 @@ class EventView extends Component {
 
   static title = 'Questions'
 
-  static async getInitialProps ({ store, req, query: { code } }) {
+  static async getInitialProps ({ store, query: { code } }) {
     if (code){
       var { event } = await store.dispatch(getEventByCode(code))
       var { id } = event

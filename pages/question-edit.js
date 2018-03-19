@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import TextareaAutosize from 'react-autosize-textarea'
 import withPage from '../lib/withPage'
+import withLogin from '../lib/withLogin'
+import TextareaAutosize from 'react-autosize-textarea'
 import Button from 'material-ui/Button'
 import { getQuestion } from '../actions/question'
-import { auth, login } from '../lib/datastore'
 
 class QuestionEdit extends Component {
 
@@ -20,7 +20,7 @@ class QuestionEdit extends Component {
   componentDidMount = async () => {
     if (!this.props.id) return
 
-    auth(user => {
+    this.props.auth(user => {
       if (user)
         this.unobs = this.props.obsQuestion(this.props.id)
       else if (this.unobs)
@@ -40,31 +40,22 @@ class QuestionEdit extends Component {
   }
 
   render () {
-    const { id, app, setQuestion, questions } = this.props
-    const { user } = app
+    const { id, setQuestion, questions } = this.props
     const question = questions.byHash[id]
 
     return <div>
-      {
-        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
-      }
-      {
-        user &&
-        <div>
-          <TextareaAutosize
-            onChange={e => setQuestion({ ...question, text: e.target.value})}
-            placeholder={'Enter question'}
-            value={question.text}
-            rows={5}
-            maxRows={10}
-            style={{width:'100%'}}
-            />
-          <p/>
-          <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
-        </div>
-      }
+      <TextareaAutosize
+        onChange={e => setQuestion({ ...question, text: e.target.value})}
+        placeholder={'Enter question'}
+        value={question.text}
+        rows={5}
+        maxRows={10}
+        style={{width:'100%'}}
+        />
+      <p/>
+      <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
     </div>
   }
 }
 
-export default withPage(QuestionEdit)
+export default withPage(withLogin(QuestionEdit))

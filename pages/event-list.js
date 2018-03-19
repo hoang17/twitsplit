@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import withPage from '../lib/withPage'
-import Button from 'material-ui/Button'
+import withLogin from '../lib/withLogin'
 import EventCreate from '../components/EventCreate'
 import EventList from '../components/EventList'
-import { auth, login } from '../lib/datastore'
 import { fetchEvents } from '../actions/event'
 
 class EventListPage extends Component {
 
   static title = 'Manage Events'
 
-  static async getInitialProps ({ store, req, query, isServer }) {
+  static async getInitialProps ({ store, query, isServer }) {
     var { app } = store.getState()
     if (app.user){
       await store.dispatch(fetchEvents(app.user.uid))
@@ -19,7 +18,7 @@ class EventListPage extends Component {
   }
 
   async componentDidMount () {
-    auth(user => {
+    this.props.auth(user => {
       if (user)
         this.unobs = this.props.obsEvents(user.uid)
       else if (this.unobs)
@@ -42,25 +41,17 @@ class EventListPage extends Component {
 
   render() {
     const { app, events, setNewEvent } = this.props
-    const { user, newEvent } = app
+    const { newEvent } = app
 
     return <div>
-      {
-        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
-      }
-      {
-        user &&
-        <div>
-          <EventList events={events} />
-          <EventCreate
-            event={newEvent}
-            onChange={setNewEvent}
-            onCreate={this.createNewEvent}
-          />
-        </div>
-      }
+      <EventList events={events} />
+      <EventCreate
+        event={newEvent}
+        onChange={setNewEvent}
+        onCreate={this.createNewEvent}
+      />
     </div>
   }
 }
 
-export default withPage(EventListPage)
+export default withPage(withLogin(EventListPage))
