@@ -30,13 +30,13 @@ class QuestionEdit extends Component {
 
   saveQuestion = async () => {
     try {
-      var { id, app, questions, updateQuestion, setSnack } =  this.props
+      var { id, app, questions, updateQuestion, openSnack } =  this.props
       var question = questions.byHash[id]
       console.log(questions.byHash);
       await updateQuestion(question)
-      setSnack({ open: true, msg: 'Question has been saved successfully' })
+      openSnack('Question has been saved successfully')
     } catch (e) {
-      setSnack({ open: true, msg: e.message })
+      openSnack(e.message)
     }
   }
 

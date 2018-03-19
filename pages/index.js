@@ -21,7 +21,7 @@ class JoinEvent extends Component {
       if (await validCode(eventCode))
         Router.push('/event-view?code='+eventCode)
     } catch (e) {
-      this.props.setSnack({ open: true, msg: e.message })
+      this.props.openSnack(e.message)
     }
   }
 

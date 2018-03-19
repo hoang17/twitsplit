@@ -29,19 +29,19 @@ class EventListPage extends Component {
 
   createNewEvent = async () => {
     try {
-      var { app, createEvent, setNewEvent, setSnack } = this.props
+      var { app, createEvent, setNewEvent, openSnack } = this.props
       var { newEvent } =  app
       newEvent.userId = app.user.uid
       await createEvent(newEvent)
       setNewEvent()
-      setSnack({ open: true, msg: 'Event has been created successfully' })
+      openSnack('Event has been created successfully')
     } catch (e) {
-      setSnack({ open: true, msg: e.message })
+      openSnack(e.message)
     }
   }
 
   render() {
-    const { app, events, setNewEvent, setSnack } = this.props
+    const { app, events, setNewEvent } = this.props
     const { user, newEvent } = app
 
     return <div>
@@ -54,7 +54,7 @@ class EventListPage extends Component {
           <EventList events={events} />
           <EventCreate
             event={newEvent}
-            onChange={e => setNewEvent(e)}
+            onChange={setNewEvent}
             onCreate={this.createNewEvent}
           />
         </div>

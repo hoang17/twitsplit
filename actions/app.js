@@ -13,6 +13,14 @@ export function setSnack(info) {
   }
 }
 
+export function openSnack(msg) {
+  return setSnack({ open:true, msg })
+}
+
+export function closeSnack() {
+  return setSnack({ open:false })
+}
+
 export function setUser(user) {
   return dispatch => {
     return dispatch({ type: SET_USER, user })

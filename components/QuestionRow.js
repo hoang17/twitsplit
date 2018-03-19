@@ -12,7 +12,7 @@ import { ListItemIcon, ListItemText } from 'material-ui/List'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { likeQuestion, highlightQuestion, deleteQuestion } from '../actions/question'
-import { setSnack } from '../actions/app'
+import { openSnack } from '../actions/app'
 
 class QuestionRow extends Component {
 
@@ -49,7 +49,7 @@ class QuestionRow extends Component {
       console.log(this.props.id);
       await this.props.highlightQuestion(this.props.id)
     } catch (e) {
-      this.props.setSnack({ open: true, msg: e.message })
+      this.props.openSnack(e.message)
     }
   }
 
@@ -158,7 +158,7 @@ const mapDispatchToProps = (dispatch) => {
     likeQuestion: bindActionCreators(likeQuestion, dispatch),
     highlightQuestion: bindActionCreators(highlightQuestion, dispatch),
     deleteQuestion: bindActionCreators(deleteQuestion, dispatch),
-    setSnack: bindActionCreators(setSnack, dispatch),
+    openSnack: bindActionCreators(openSnack, dispatch),
   }
 }
 

@@ -50,19 +50,19 @@ class EventView extends Component {
 
   submitQuestion = async () => {
     try {
-      var { app, updateQuestion, setNewQuestion, setSnack } =  this.props
+      var { app, updateQuestion, setNewQuestion, openSnack } =  this.props
       var { user, newQuestion } = app
       var userId = user ? user.uid : null
       setNewQuestion({text:''})
       await updateQuestion({eventId: this.state.id, ...newQuestion, userId})
-      setSnack({ open: true, msg: 'Question has been sent successfully' })
+      openSnack('Question has been sent successfully')
     } catch (e) {
-      setSnack({ open: true, msg: e.message })
+      openSnack(e.message)
     }
   }
 
   render () {
-    const { app, questions, events, setNewQuestion, setSnack } = this.props
+    const { app, questions, events, setNewQuestion } = this.props
     const { newQuestion, sortField } = app
     const { userName, text } = newQuestion
     const eventName = events.byHash[this.state.id].eventName

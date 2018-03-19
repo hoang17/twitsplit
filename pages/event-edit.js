@@ -45,30 +45,30 @@ class EventEditPage extends Component {
 
   saveEvent = async () =>  {
     try {
-      var { id, app, events, updateEvent, setSnack } =  this.props
+      var { id, app, events, updateEvent, openSnack } =  this.props
       var event = events.byHash[id]
       await updateEvent(event)
-      setSnack({ open: true, msg: 'Event has been saved successfully' })
+      openSnack('Event has been saved successfully')
     } catch (e) {
-      setSnack({ open: true, msg: e.message })
+      openSnack(e.message)
     }
   }
 
   removeEvent = async () =>  {
     if (confirm('Are you sure to delete this event?')){
       try {
-        var { id, events, deleteEvent, setSnack } =  this.props
+        var { id, events, deleteEvent, openSnack } =  this.props
         deleteEvent(id)
         Router.push('/event-list')
-        setSnack({ open: true, msg: 'Event has been deleted' })
+        openSnack('Event has been deleted')
       } catch (e) {
-        setSnack({ open: true, msg: e.message })
+        openSnack(e.message)
       }
     }
   }
 
   render() {
-    const { id, app, events, questions, setEvent, setSnack } = this.props
+    const { id, app, events, questions, setEvent } = this.props
     const { user } = app
     const event = events.byHash[id]
 
