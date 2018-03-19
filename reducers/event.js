@@ -40,8 +40,8 @@ const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events
       state.byHash[event.id] = { ...state.byHash[event.id], ...event }
       return { ...state, current: event.id }
     case DELETE_EVENT: {
-      const prunedIds = state.byId.filter(item => item !== event.id)
-      delete state.byHash[event.id]
+      const prunedIds = state.byId.filter(item => item !== id)
+      delete state.byHash[id]
       return {
         byId: prunedIds,
         byHash: state.byHash,

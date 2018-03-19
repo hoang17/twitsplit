@@ -32,7 +32,7 @@ export function obsEvents(userId) {
             dispatch({ type: UPDATE_EVENT, event })
             break;
           case 'removed':
-            dispatch({ type: DELETE_EVENT, event })
+            dispatch({ type: DELETE_EVENT, id: event.id })
             break;
           default:
         }

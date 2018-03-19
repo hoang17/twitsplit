@@ -46,6 +46,7 @@ class QuestionRow extends Component {
   markQuestion = async () => {
     this.closeMenu()
     try {
+      console.log(this.props.id);
       await this.props.highlightQuestion(this.props.id)
     } catch (e) {
       this.props.setSnack({ open: true, msg: e.message })

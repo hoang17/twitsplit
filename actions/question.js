@@ -47,7 +47,7 @@ export function obsQuestions(eventId) {
             dispatch({ type: UPDATE_QUESTION, question })
             break;
           case 'removed':
-            dispatch({ type: DELETE_QUESTION, question })
+            dispatch({ type: DELETE_QUESTION, id: question.id })
             break;
           default:
         }
@@ -111,9 +111,10 @@ export function deleteQuestion(id){
 }
 
 export function highlightQuestion(id){
+  console.log(id);
   return async (dispatch, getState) => {
     var { questions } = getState()
-    var { id, mark, eventId } = questions.byHash[id]
+    var { mark, eventId } = questions.byHash[id]
     mark = !mark
     var question = { id, mark, eventId }
     return updateHighlight(question)
