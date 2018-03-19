@@ -5,6 +5,7 @@ import {
   SET_NEW_EVENT,
   SET_NEW_QUESTION,
   SET_SORT_FIELD,
+  SET_PATH,
 } from '../constants'
 
 var emptyEvent = () => {
@@ -24,6 +25,8 @@ var emptyQuestion = () => {
 }
 
 var initialState = {
+  path: null,
+  prevPath: null,
   user: null,
   info: {open:false, msg: null},
   newEvent: emptyEvent(),
@@ -31,8 +34,11 @@ var initialState = {
   sortField: 'likes_count'
 }
 
-const reducer = (state = initialState, { type, user, info, newEvent, userIP, newQuestion, sortField }) => {
+const reducer = (state = initialState, { type, path, user, info, newEvent, userIP, newQuestion, sortField }) => {
   switch (type) {
+    case SET_PATH:
+      state.prevPath = state.path
+      return { ...state, path }
     case SET_USER:
       return { ...state, user }
     case SET_USER_IP:
@@ -46,7 +52,6 @@ const reducer = (state = initialState, { type, user, info, newEvent, userIP, new
       state.newEvent = { ...state.newEvent, ...newEvent }
       return { ...state }
     case SET_NEW_QUESTION:
-      // if (!newQuestion) newQuestion = emptyQuestion(state)
       state.newQuestion = { ...state.newQuestion, ...newQuestion }
       return { ...state }
     default:

@@ -42,7 +42,7 @@ class QuestionEdit extends Component {
   render () {
     const { id, setQuestion, questions } = this.props
     const question = questions.byHash[id]
-    
+
     return <div>
       <TextareaAutosize
         onChange={e => setQuestion({ ...question, text: e.target.value})}

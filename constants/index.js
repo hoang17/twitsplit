@@ -1,3 +1,4 @@
+export const SET_PATH        = 'SET_PATH'
 export const SET_USER       = 'SET_USER'
 export const SET_USER_IP    = 'SET_USER_IP'
 export const SET_SNACK      = 'SET_SNACK'

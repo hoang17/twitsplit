@@ -5,7 +5,14 @@ import {
   SET_NEW_EVENT,
   SET_NEW_QUESTION,
   SET_SORT_FIELD,
+  SET_PATH,
 } from '../constants'
+
+export function setPath(path) {
+  return dispatch => {
+    return dispatch({ type: SET_PATH, path })
+  }
+}
 
 export function setSnack(info) {
   return dispatch => {

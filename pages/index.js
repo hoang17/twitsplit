@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import { validCode } from '../lib/datastore'
 import withPage from '../lib/withPage'
+import Link from 'next/link'
 import Ty from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import TextField from 'material-ui/TextField'
 
-class JoinEvent extends Component {
+class HomePage extends Component {
 
   static title = 'Slido'
 
@@ -44,10 +45,12 @@ class JoinEvent extends Component {
       </form>
       <p/>
       <Ty variant="subheading" gutterBottom>
-        <a href="/event-list">Admin</a>
+        <Link href="/event-list">
+          <a>Admin</a>
+        </Link>
       </Ty>
     </div>
   }
 }
 
-export default withPage(JoinEvent)
+export default withPage(HomePage)
