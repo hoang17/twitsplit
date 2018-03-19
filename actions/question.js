@@ -1,4 +1,4 @@
-import { fsQuestions, saveQuestion, like, highlight } from '../lib/datastore'
+import { fsQuestions, saveQuestion, updateLike, updateHighlight } from '../lib/datastore'
 
 import {
   FETCH_QUESTIONS,
@@ -79,21 +79,59 @@ export function getQuestion(id) {
 }
 
 export function createQuestion(question){
-  return dispatch => saveQuestion(question)
+  return async dispatch => {
+    await saveQuestion(question)
+    return dispatch({ type: CREATE_QUESTION, question })
+  }
 }
 
 export function updateQuestion(question){
-  return dispatch => saveQuestion(question)
+  return async dispatch => {
+    await saveQuestion(question)
+    return dispatch({ type: UPDATE_QUESTION, question })
+  }
 }
 
 export function deleteQuestion(id){
-  return dispatch => fsQuestions.delete(id)
+  return async dispatch => {
+    await fsQuestions.delete(id)
+    return dispatch({ type: DELETE_QUESTION, id })
+  }
 }
 
-export function highlightQuestion({id, mark, eventId}){
-  return dispatch => highlight(id, mark, eventId)
+export function highlightQuestion(id){
+  return async (dispatch, getState) => {
+    var { questions } = getState()
+    var question = questions.byHash[id]
+    question.mark = !question.mark
+    await updateHighlight(question)
+    return dispatch({ type: HIGHLIGHT_QUESTION, question })
+  }
 }
 
-export function likeQuestion({id, userIP, liked, likes}){
-  return dispatch => like({id, userIP, liked, likes})
+export function likeQuestion(id){
+  return async (dispatch, getState) => {
+    var { app, questions } = getState()
+
+    var { userIP } = app
+    var { liked, likes } = questions.byHash[id]
+
+    liked = !liked
+
+    if (!likes) likes = {}
+
+    if (liked)
+      likes[userIP] = liked
+    else
+      delete likes[userIP]
+
+    var question = {
+      id,
+      likes,
+      likes_count: Object.keys(likes).length
+    }
+
+    await updateLike(question)
+    return dispatch({ type: LIKE_QUESTION, question })
+  }
 }

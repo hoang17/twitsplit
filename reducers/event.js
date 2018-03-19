@@ -24,7 +24,10 @@ const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events
     case OBSERVE_EVENT:
     case GET_EVENT:
     case CREATE_EVENT:
-      // if (state.byHash[event.id]) return { ...state, current: event.id }
+      if (state.byHash[event.id]){
+        state.byHash[event.id] = { ...state.byHash[event.id], ...event }
+        return { ...state, current: event.id }
+      }
       return {
         byId: [ ...state.byId, event.id],
         byHash: { ...state.byHash, [event.id]: event },

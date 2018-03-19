@@ -14,8 +14,8 @@ export default ({ questions, sortField, sortMap, onSort, admin = false }) => {
         {
           questions &&
           questions.byId.map(id => {
-            var e = questions.byHash[id]
-            return <QuestionRow key={id} admin={admin} {...e} />
+            var question = questions.byHash[id]
+            return <QuestionRow key={id} admin={admin} {...question} />
           })
         }
       </ul>

@@ -81,15 +81,24 @@ export function obsEventsByCode(code, callback) {
 }
 
 export function createEvent(event){
-  return dispatch => saveEvent(event)
+  return async dispatch => {
+    await saveEvent(event)
+    return dispatch({ type: CREATE_EVENT, event })
+  }
 }
 
 export function updateEvent(event){
-  return dispatch => saveEvent(event)
+  return async dispatch => {
+    await saveEvent(event)
+    return dispatch({ type: UPDATE_EVENT, event })
+  }
 }
 
 export function deleteEvent(id){
-  return dispatch => fsEvents.delete(id)
+  return async dispatch => {
+    await fsEvents.delete(id)
+    return dispatch({ type: DELETE_EVENT, id })
+  }
 }
 
 export function setEvent(event) {

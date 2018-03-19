@@ -161,5 +161,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-// export default withPage(EventView)
 export default withRedux(configureStore, state => state, mapDispatchToProps)(withPage(EventView))
