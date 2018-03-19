@@ -30,10 +30,10 @@ class EventView extends Component {
   // }
 
   componentDidMount = async () => {
-    var { code, obsEventsByCode, obsOrderedQuestions } = this.props
+    var { app, code, obsEventsByCode, obsOrderedQuestions } = this.props
 
     this.unobsE = obsEventsByCode(code, event => {
-      this.unobsQ = obsOrderedQuestions(event.id, 'likes_count')
+      this.unobsQ = obsOrderedQuestions(event.id, app.sortField)
     })
   }
 
