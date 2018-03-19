@@ -3,12 +3,14 @@ import { fsQuestions, saveQuestion, updateLike, updateHighlight } from '../lib/d
 import {
   FETCH_QUESTIONS,
   OBSERVE_QUESTIONS,
+  OBSERVE_QUESTION,
   GET_QUESTION,
   CREATE_QUESTION,
   UPDATE_QUESTION,
   DELETE_QUESTION,
   HIGHLIGHT_QUESTION,
   LIKE_QUESTION,
+  SET_QUESTION,
 } from '../constants'
 
 export function fetchQuestions(eventId) {
@@ -34,7 +36,7 @@ export function fetchOrderedQuestions(eventId, field, order = 'desc') {
 
 export function obsQuestions(eventId) {
   return (dispatch, getState) => {
-    fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
+    return fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
       snapshot.docChanges.forEach(change => {
         var question = change.doc.data()
         switch (change.type) {
@@ -68,10 +70,19 @@ export function obsOrderedQuestions(eventId, field, order = 'desc') {
   }
 }
 
+export function obsQuestion(id) {
+  return dispatch => {
+    return fsQuestions.doc(id).onSnapshot(doc => {
+      var question = doc.data()
+      dispatch({ type: OBSERVE_QUESTION, question })
+    })
+  }
+}
+
 export function getQuestion(id) {
   return async (dispatch, getState) => {
     var state = getState()
-    var question = state.question.map[id]
+    var question = state.questions.byHash[id]
     if (!question)
       question = await fsQuestions.data(id)
     return dispatch({ type: GET_QUESTION, question })
@@ -79,23 +90,23 @@ export function getQuestion(id) {
 }
 
 export function createQuestion(question){
-  return async dispatch => {
-    await saveQuestion(question)
-    return dispatch({ type: CREATE_QUESTION, question })
+  return dispatch => {
+    return saveQuestion(question)
+    // return dispatch({ type: CREATE_QUESTION, question })
   }
 }
 
 export function updateQuestion(question){
-  return async dispatch => {
-    await saveQuestion(question)
-    return dispatch({ type: UPDATE_QUESTION, question })
+  return dispatch => {
+    return saveQuestion(question)
+    // return dispatch({ type: UPDATE_QUESTION, question })
   }
 }
 
 export function deleteQuestion(id){
-  return async dispatch => {
-    await fsQuestions.delete(id)
-    return dispatch({ type: DELETE_QUESTION, id })
+  return dispatch => {
+    return fsQuestions.delete(id)
+    // return dispatch({ type: DELETE_QUESTION, id })
   }
 }
 
@@ -134,5 +145,11 @@ export function likeQuestion(id){
 
     await updateLike(question)
     return dispatch({ type: LIKE_QUESTION, question })
+  }
+}
+
+export function setQuestion(question) {
+  return dispatch => {
+    return dispatch({ type: SET_QUESTION, question })
   }
 }

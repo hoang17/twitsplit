@@ -20,8 +20,10 @@ const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events
       return {
         byId: [ ...byId],
         byHash: byHash,
+        current: state.current,
       }
     case OBSERVE_EVENT:
+      if (!event) return state
     case GET_EVENT:
     case CREATE_EVENT:
       if (state.byHash[event.id]){
@@ -42,7 +44,8 @@ const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events
       delete state.byHash[event.id]
       return {
         byId: prunedIds,
-        byHash: state.byHash
+        byHash: state.byHash,
+        current: null,
       }
     }
     default:

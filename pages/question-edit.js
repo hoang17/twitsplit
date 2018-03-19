@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
-
-import { fsQuestions, auth, login, logout } from '../lib/datastore'
+import { getQuestion } from '../actions/question'
+import { auth, login } from '../lib/datastore'
 
 class QuestionEdit extends Component {
 
@@ -11,58 +11,39 @@ class QuestionEdit extends Component {
 
   static async getInitialProps ({ store, req, query: { id }}) {
     var { app } = store.getState()
-    var question = {}
-    if (app.user) {
-      var doc = await req.fs.collection("questions").doc(id).get()
-      question = doc.data()
+    if (app.user){
+      var question = await store.dispatch(getQuestion(id))
     }
-    return { id, ...question }
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = { ...this.props, snack: false }
+    return { id }
   }
 
   componentDidMount = async () => {
+    if (!this.props.id) return
+
     auth(user => {
-      this.setState({ user: user })
       if (user)
-        this.addDbListener()
-      else if (this.unsubscribe)
-        this.unsubscribe()
-    })
-  }
-
-  addDbListener () {
-    var ft = true
-    this.unsubscribe = fsQuestions.doc(this.state.id).onSnapshot(doc => {
-      // Discard initial loading
-      if (ft && this.state.text) { ft = false; return}
-
-      var question = doc.data()
-      this.setState({ ...question })
+        this.unobs = this.props.obsQuestion(this.props.id)
+      else if (this.unobs)
+        this.unobs()
     })
   }
 
   saveQuestion = async () => {
     try {
-      var { id, text } = this.state
-      if (!text.trim()) {
-        this.setState({ snack: true, msg: 'Question can not empty' })
-        return
-      }
-      await fsQuestions.update(id, { text })
-      this.setState({ snack: true, msg: 'Question has been saved successfully' })
+      var { id, app, questions, updateQuestion, setSnack } =  this.props
+      var question = questions.byHash[id]
+      console.log(questions.byHash);
+      await updateQuestion(question)
+      setSnack({ open: true, msg: 'Question has been saved successfully' })
     } catch (e) {
-      this.setState({ snack: true, msg: e.message })
+      setSnack({ open: true, msg: e.message })
     }
   }
 
   render () {
-    const { id, text } = this.state
-    const { app } = this.props
+    const { id, app, setQuestion, questions } = this.props
     const { user } = app
+    const question = questions.byHash[id]
 
     return <div>
       {
@@ -72,9 +53,9 @@ class QuestionEdit extends Component {
         user &&
         <div>
           <TextareaAutosize
-            onChange={e => this.setState({text: e.target.value})}
+            onChange={e => setQuestion({ ...question, text: e.target.value})}
             placeholder={'Enter question'}
-            value={text}
+            value={question.text}
             rows={5}
             maxRows={10}
             style={{width:'100%'}}
