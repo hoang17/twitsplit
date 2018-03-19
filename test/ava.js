@@ -109,6 +109,9 @@ test('Question should be created', async t => {
 
 test('Question should have correct likes', async t => {
   var eventId = '3332'
+
+	await fsQuestions.deleteWhere('eventId','==',eventId)
+	
   var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
@@ -132,6 +135,9 @@ test('Question should have correct likes', async t => {
 
 test('Question can only be liked once for each user IP', async t => {
   var eventId = '3333'
+
+	await fsQuestions.deleteWhere('eventId','==',eventId)
+
   var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
@@ -151,6 +157,8 @@ test('Question can only be liked once for each user IP', async t => {
 test('Max 3 questions can be highlighted', async t => {
   var eventId = '3334'
   var questions = []
+
+	await fsQuestions.deleteWhere('eventId','==',eventId)
 
   for (var i = 1; i <= 4; i++) {
     var question = Question({eventId, text:'This is a test question ' + i})
