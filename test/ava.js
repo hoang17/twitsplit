@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, highlight, init } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, updateHighlight, init } from '../lib/datastore'
 
 import Event from '../models/event'
 import Question from '../models/question'
@@ -162,12 +162,12 @@ test('Max 3 questions can be highlighted', async t => {
 
   for (var i = 0; i < 3; i++) {
     var question = questions[i]
-    await highlight(question.id, true, question.eventId)
+    await updateHighlight({ ...question, mark:true })
   }
 
   var err = await t.throws(async () => {
     var question = questions[3]
-    await highlight(question.id, true, question.eventId)
+		await updateHighlight({ ...question, mark:true })
 	}, TypeError)
 
   t.is(err.message, 'Max 3 questions can be highlighted')
