@@ -29,10 +29,13 @@ class EventListPage extends Component {
   }
 
   async componentDidMount () {
+
     auth(user => {
       this.props.setUser(user)
       if (user)
-        this.props.obsEvents(user.uid)
+        this.unobs = this.props.obsEvents(user.uid)
+      else if (this.unobs)
+        this.unobs()
     })
   }
 
