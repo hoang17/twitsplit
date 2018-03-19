@@ -7,8 +7,8 @@ import EventList from '../components/EventList'
 import { bindActionCreators } from 'redux'
 import { configureStore } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
-import { setUser } from '../actions/user'
-import { fetchEvents, obsEvents } from '../actions/event'
+import { setUser, setNewEvent, setSnack } from '../actions/app'
+import { fetchEvents, obsEvents, createEvent } from '../actions/event'
 
 import { fsEvents, saveEvent, auth, login } from '../lib/datastore'
 
@@ -24,7 +24,6 @@ class EventListPage extends Component {
     //   snapshot.forEach(doc => events.push(doc.data()))
     // }
     // return { user, events }
-
     if (req){
       const user = req && req.session ? req.session.decodedToken : null
       store.dispatch(setUser(user))
@@ -54,7 +53,7 @@ class EventListPage extends Component {
   async componentDidMount () {
     auth(user => {
       // this.setState({ user: user })
-      this.props.dispatch(setUser(user))
+      this.props.setUser(user)
       if (user)
         this.props.obsEvents(user.uid)
         // this.addDbListener()
@@ -77,25 +76,25 @@ class EventListPage extends Component {
   //   })
   // }
 
-  createEvent = async () => {
+  createNewEvent = async () => {
     try {
-      var { app, event } = this.props
-      var { newEvent } =  event
+      var { app, createEvent, setNewEvent, setSnack } = this.props
+      var { newEvent } =  app
       // var { event } = this.state
       newEvent.userId = app.user.uid
       // await saveEvent(event)
-      await this.props.createEvent(newEvent)
-      this.setNewEvent()
-      this.setSnack({ open: true, msg: 'Event has been created successfully' })
+      await createEvent(newEvent)
+      setNewEvent()
+      setSnack({ open: true, msg: 'Event has been created successfully' })
     } catch (e) {
-      this.setSnack({ open: true, msg: e.message })
+      setSnack({ open: true, msg: e.message })
     }
   }
 
   render() {
     // const { user, event, events, snack, msg } = this.state
-    const { app, events } = this.props
-    const { user, snack, newEvent } = app
+    const { app, events, setNewEvent, setSnack } = this.props
+    const { user, info, newEvent } = app
 
     return <div>
       {
@@ -107,15 +106,25 @@ class EventListPage extends Component {
           <EventList events={events} />
           <EventCreate
             event={newEvent}
-            onChange={e => this.setNewEvent(e)}
-            onCreate={this.createEvent}
+            onChange={e => setNewEvent(e)}
+            onCreate={this.createNewEvent}
           />
-          <Snackbar open={snack.open} msg={snack.msg} onClose={ ()=> this.setSnack({open: false}) } />
+          <Snackbar open={info.open} msg={info.msg} onClose={ ()=>  setSnack({open: false}) } />
         </div>
       }
     </div>
   }
 }
 
+const mapDispatchToProps = dispatch => {
+  return {
+    obsEvents: bindActionCreators(obsEvents, dispatch),
+    createEvent: bindActionCreators(createEvent, dispatch),
+    setUser: bindActionCreators(setUser, dispatch),
+    setNewEvent: bindActionCreators(setNewEvent, dispatch),
+    setSnack: bindActionCreators(setSnack, dispatch),
+  }
+}
+
 // export default withPage(EventListPage)
-export default withRedux(configureStore, (state) => state, mapDispatchToProps)(withPage(EventListPage))
+export default withRedux(configureStore, state => state, mapDispatchToProps)(withPage(EventListPage))

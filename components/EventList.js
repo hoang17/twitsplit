@@ -37,19 +37,20 @@ class EventList extends Component {
           </TableHead>
           <TableBody>
             {
-              events.map(n => {
-              return (
-                <TableRow key={n.id}>
-                  <TableCell>
-                    <Link href={{pathname: '/event-edit', query: { id: n.id }}}>
-                      <a>{n.eventName}</a>
-                    </Link>
-                  </TableCell>
-                  <TableCell numeric>{n.eventCode}</TableCell>
-                  <TableCell numeric>{moment(n.startDate).format('L')}</TableCell>
-                  <TableCell numeric>{moment(n.endDate).format('L')}</TableCell>
-                </TableRow>
-              )
+              events.byId.map(id => {
+                var n = events.byHash[id]
+                return (
+                  <TableRow key={id}>
+                    <TableCell>
+                      <Link href={{pathname: '/event-edit', query: { id: id }}}>
+                        <a>{n.eventName}</a>
+                      </Link>
+                    </TableCell>
+                    <TableCell numeric>{n.eventCode}</TableCell>
+                    <TableCell numeric>{moment(n.startDate).format('L')}</TableCell>
+                    <TableCell numeric>{moment(n.endDate).format('L')}</TableCell>
+                  </TableRow>
+                )
             })}
           </TableBody>
         </Table>

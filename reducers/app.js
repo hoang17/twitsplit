@@ -13,7 +13,7 @@ var emptyEvent = () => {
   }
 }
 
-const reducer = (state = { user: null, info: null, newEvent: emptyEvent() }, { type, user, info, newEvent }) => {
+const reducer = (state = { user: null, info: {open:false, msg: null}, newEvent: emptyEvent() }, { type, user, info, newEvent }) => {
   switch (type) {
     case SET_USER:
       return { ...state, user }

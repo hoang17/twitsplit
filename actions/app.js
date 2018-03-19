@@ -16,8 +16,8 @@ export function setUser(user) {
   }
 }
 
-export function setNewEvent(event) {
+export function setNewEvent(newEvent) {
   return dispatch => {
-    return dispatch({ type: SET_NEW_EVENT, event })
+    return dispatch({ type: SET_NEW_EVENT, newEvent })
   }
 }
