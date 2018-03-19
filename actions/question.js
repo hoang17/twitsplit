@@ -21,8 +21,13 @@ export function fetchQuestions(eventId) {
 
 export function fetchOrderedQuestions(eventId, field, order = 'desc') {
   return async (dispatch, getState) => {
-    var res = await fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).get()
-    var questions = res.docs.map(e => e.data())
+    var snapshot = await fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).get()
+    var { app } = getState()
+    var questions = snapshot.docs.map(e => {
+      var question = e.data()
+      question.liked = question.likes && question.likes[app.userIP]
+      return question
+    })
     return dispatch({ type: FETCH_QUESTIONS, questions })
   }
 }
@@ -30,19 +35,20 @@ export function fetchOrderedQuestions(eventId, field, order = 'desc') {
 export function obsQuestions(eventId) {
   return (dispatch, getState) => {
     fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
-      snapshot.docChanges.forEach(function(change) {
-          switch (change.type) {
-            case 'added':
-              dispatch({ type: CREATE_QUESTION, question: change.doc.data() })
-              break;
-            case 'modified':
-              dispatch({ type: UPDATE_QUESTION, question: change.doc.data() })
-              break;
-            case 'removed':
-              dispatch({ type: DELETE_QUESTION, question: change.doc.data() })
-              break;
-            default:
-          }
+      snapshot.docChanges.forEach(change => {
+        var question = change.doc.data()
+        switch (change.type) {
+          case 'added':
+            dispatch({ type: CREATE_QUESTION, question })
+            break;
+          case 'modified':
+            dispatch({ type: UPDATE_QUESTION, question })
+            break;
+          case 'removed':
+            dispatch({ type: DELETE_QUESTION, question })
+            break;
+          default:
+        }
       })
     })
   }
@@ -51,22 +57,13 @@ export function obsQuestions(eventId) {
 export function obsOrderedQuestions(eventId, field, order = 'desc') {
   return (dispatch, getState) => {
     fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
-      var questions = snapshot.docs.map(e => e.data())
+      var { app } = getState()
+      var questions = snapshot.docs.map(e => {
+        var question = e.data()
+        question.liked = question.likes && question.likes[app.userIP]
+        return question
+      })
       dispatch({ type: OBSERVE_QUESTIONS, questions })
-      // snapshot.docChanges.forEach(function(change) {
-      //     switch (change.type) {
-      //       case 'added':
-      //         dispatch({ type: CREATE_QUESTION, question: change.doc.data() })
-      //         break;
-      //       case 'modified':
-      //         dispatch({ type: UPDATE_QUESTION, question: change.doc.data() })
-      //         break;
-      //       case 'removed':
-      //         dispatch({ type: DELETE_QUESTION, question: change.doc.data() })
-      //         break;
-      //       default:
-      //     }
-      // })
     })
   }
 }

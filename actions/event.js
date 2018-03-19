@@ -22,19 +22,20 @@ export function fetchEvents(userId) {
 export function obsEvents(userId) {
   return dispatch => {
     return fsEvents.ls().where('userId','==',userId).onSnapshot(snapshot => {
-      snapshot.docChanges.forEach(function(change) {
-          switch (change.type) {
-            case 'added':
-              dispatch({ type: CREATE_EVENT, event: change.doc.data() })
-              break;
-            case 'modified':
-              dispatch({ type: UPDATE_EVENT, event: change.doc.data() })
-              break;
-            case 'removed':
-              dispatch({ type: DELETE_EVENT, event: change.doc.data() })
-              break;
-            default:
-          }
+      snapshot.docChanges.forEach(change => {
+        var event = change.doc.data()
+        switch (change.type) {
+          case 'added':
+            dispatch({ type: CREATE_EVENT, event })
+            break;
+          case 'modified':
+            dispatch({ type: UPDATE_EVENT, event })
+            break;
+          case 'removed':
+            dispatch({ type: DELETE_EVENT, event })
+            break;
+          default:
+        }
       })
       // var events = snapshot.docs.map(e => e.data())
       // dispatch({ type: OBSERVE_EVENTS, events })
