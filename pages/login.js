@@ -14,7 +14,7 @@ class LoginPage extends Component {
 
   componentDidMount = () => {
     this.unsub = auth(user => {
-      if (user) Router.push(this.props.to)
+      if (user) window.location.href = this.props.to
     })
   }
 
