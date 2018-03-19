@@ -14,8 +14,9 @@ class JoinEvent extends Component {
     eventCode: ''
   }
 
-  joinEvent = async (e) => {
+  joinEvent = async e => {
     try {
+      e.preventDefault()
       var { eventCode } = this.state
       if (!eventCode.trim()) return
       if (await validCode(eventCode))
@@ -31,7 +32,7 @@ class JoinEvent extends Component {
     return <div>
       <Ty variant="display1" gutterBottom>Join Event</Ty>
       <Ty>Please enter event code</Ty>
-      <form onSubmit={(e)=>{e.preventDefault();this.joinEvent()}}>
+      <form onSubmit={this.joinEvent}>
         <TextField
           label="Event Code"
           value={eventCode}
