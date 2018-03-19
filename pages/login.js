@@ -13,9 +13,13 @@ class LoginPage extends Component {
   }
 
   componentDidMount = () => {
-    auth(user => {
+    this.unsub = auth(user => {
       if (user) Router.push(this.props.to)
     })
+  }
+
+  componentWillUnmount(){
+    this.unsub && this.unsub()
   }
 
   render() {

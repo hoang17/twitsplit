@@ -30,21 +30,24 @@ export function configureStore(initialState) {
 
   store.asyncReducers = {}
 
-  // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
-  if (!isProd && module.hot) {
-    module.hot.accept('../reducers', () => {
-      const m = require('../reducers').default
-      store.replaceReducer(m(store.asyncReducers))
-    })
-  }
+  if (!isProd) {
 
-  // Log the initial state
-  console.log('INITIAL STATE', store.getState())
-   
-  // Every time the state changes, log it
-  const unsubscribe = store.subscribe(() =>
-    console.log('SUBSCRIBE', store.getState())
-  )
+    // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
+    if (module.hot){
+      module.hot.accept('../reducers', () => {
+        const m = require('../reducers').default
+        store.replaceReducer(m(store.asyncReducers))
+      })
+    }
+
+    // Log the initial state
+    // console.log('INITIAL STATE', store.getState())
+     
+    // Every time the state changes, log it
+    // const unsubscribe = store.subscribe(() =>
+    //   console.log('SUBSCRIBE', store.getState())
+    // )
+  }
 
   return store
 }
