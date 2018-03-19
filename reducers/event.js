@@ -3,15 +3,15 @@ import keyBy from 'lodash/keyBy'
 import {
   FETCH_EVENTS,
   OBSERVE_EVENTS,
+  OBSERVE_EVENT,
   GET_EVENT,
-  CREATE_EVENT,
+  ADD_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
   SET_EVENT,
-  OBSERVE_EVENT,
 } from '../constants'
 
-const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events, event, id }) => {
+const reducer = (state = { byId: [], byHash: {} }, { type, events, event, id }) => {
   switch (type) {
     case FETCH_EVENTS:
     case OBSERVE_EVENTS:
@@ -20,32 +20,26 @@ const reducer = (state = { byId: [], byHash: {}, current: null }, { type, events
       return {
         byId: [ ...byId],
         byHash: byHash,
-        current: state.current,
       }
     case OBSERVE_EVENT:
       if (!event) return state
     case GET_EVENT:
-    case CREATE_EVENT:
+    case ADD_EVENT:
+    case SET_EVENT:
+    case UPDATE_EVENT:
       if (state.byHash[event.id]){
         state.byHash[event.id] = { ...state.byHash[event.id], ...event }
-        return { ...state, current: event.id }
+        return { ...state }
       }
       return {
         byId: [ ...state.byId, event.id],
         byHash: { ...state.byHash, [event.id]: event },
-        current: event.id
       }
-    case SET_EVENT:
-    case UPDATE_EVENT:
-      state.byHash[event.id] = { ...state.byHash[event.id], ...event }
-      return { ...state, current: event.id }
     case DELETE_EVENT: {
-      const prunedIds = state.byId.filter(item => item !== id)
       delete state.byHash[id]
       return {
-        byId: prunedIds,
+        byId: state.byId.filter(e => e !== id),
         byHash: state.byHash,
-        current: null,
       }
     }
     default:

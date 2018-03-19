@@ -14,13 +14,16 @@ class EventView extends Component {
   static async getInitialProps ({ store, req, query: { code } }) {
     if (code){
       var { event } = await store.dispatch(getEventByCode(code))
-      await store.dispatch(fetchOrderedQuestions(event.id, 'likes_count'))
+      var { id } = event
+      await store.dispatch(fetchOrderedQuestions(id, 'likes_count'))
+      return { code, id }
     }
     return { code }
   }
 
   constructor (props) {
     super(props)
+    this.state = { ...props }
     var { app, setNewQuestion } =  props
     var { user, newQuestion } = app
     setNewQuestion({
@@ -33,24 +36,25 @@ class EventView extends Component {
     var { app, code, obsEventsByCode, obsOrderedQuestions } = this.props
 
     this.unobsE = obsEventsByCode(code, event => {
+      this.state.id = event.id
       this.unobsQ = obsOrderedQuestions(event.id, app.sortField)
     })
   }
 
   handleSort = (sortField) => {
-    var { events, setSortField, obsOrderedQuestions } = this.props
+    var { setSortField, obsOrderedQuestions } = this.props
     setSortField(sortField)
     if (this.unobsQ) this.unobsQ()
-    this.unobsQ = obsOrderedQuestions(events.current, sortField)
+    this.unobsQ = obsOrderedQuestions(this.state.id, sortField)
   }
 
   submitQuestion = async () => {
     try {
-      var { app, events, updateQuestion, setNewQuestion, setSnack } =  this.props
+      var { app, updateQuestion, setNewQuestion, setSnack } =  this.props
       var { user, newQuestion } = app
       var userId = user ? user.uid : null
       setNewQuestion({text:''})
-      await updateQuestion({eventId: events.current, ...newQuestion, userId})
+      await updateQuestion({eventId: this.state.id, ...newQuestion, userId})
       setSnack({ open: true, msg: 'Question has been sent successfully' })
     } catch (e) {
       setSnack({ open: true, msg: e.message })
@@ -61,7 +65,7 @@ class EventView extends Component {
     const { app, questions, events, setNewQuestion, setSnack } = this.props
     const { newQuestion, sortField } = app
     const { userName, text } = newQuestion
-    const eventName = events.byHash[events.current].eventName
+    const eventName = events.byHash[this.state.id].eventName
 
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>

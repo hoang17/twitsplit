@@ -4,7 +4,7 @@ import {
   FETCH_EVENTS,
   OBSERVE_EVENTS,
   GET_EVENT,
-  CREATE_EVENT,
+  ADD_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
   SET_EVENT,
@@ -26,7 +26,7 @@ export function obsEvents(userId) {
         var event = change.doc.data()
         switch (change.type) {
           case 'added':
-            dispatch({ type: CREATE_EVENT, event })
+            dispatch({ type: ADD_EVENT, event })
             break;
           case 'modified':
             dispatch({ type: UPDATE_EVENT, event })
@@ -83,7 +83,7 @@ export function obsEventsByCode(code, callback) {
 export function createEvent(event){
   return dispatch => {
     return saveEvent(event)
-    // return dispatch({ type: CREATE_EVENT, event })
+    // return dispatch({ type: ADD_EVENT, event })
   }
 }
 

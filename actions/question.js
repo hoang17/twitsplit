@@ -5,7 +5,7 @@ import {
   OBSERVE_QUESTIONS,
   OBSERVE_QUESTION,
   GET_QUESTION,
-  CREATE_QUESTION,
+  ADD_QUESTION,
   UPDATE_QUESTION,
   DELETE_QUESTION,
   HIGHLIGHT_QUESTION,
@@ -41,7 +41,7 @@ export function obsQuestions(eventId) {
         var question = change.doc.data()
         switch (change.type) {
           case 'added':
-            dispatch({ type: CREATE_QUESTION, question })
+            dispatch({ type: ADD_QUESTION, question })
             break;
           case 'modified':
             dispatch({ type: UPDATE_QUESTION, question })
@@ -92,7 +92,7 @@ export function getQuestion(id) {
 export function createQuestion(question){
   return dispatch => {
     return saveQuestion(question)
-    // return dispatch({ type: CREATE_QUESTION, question })
+    // return dispatch({ type: ADD_QUESTION, question })
   }
 }
 
