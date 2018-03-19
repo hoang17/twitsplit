@@ -1,6 +1,9 @@
 export const SET_USER       = 'SET_USER'
+export const SET_USER_IP    = 'SET_USER_IP'
 export const SET_SNACK      = 'SET_SNACK'
 export const SET_NEW_EVENT  = 'SET_NEW_EVENT'
+export const SET_SORT_FIELD = 'SET_SORT_FIELD'
+export const SET_NEW_QUESTION = 'SET_NEW_QUESTION'
 
 export const FETCH_EVENTS   = 'FETCH_EVENTS'
 export const OBSERVE_EVENTS = 'OBSERVE_EVENTS'

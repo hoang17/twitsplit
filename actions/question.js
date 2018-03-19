@@ -19,6 +19,14 @@ export function fetchQuestions(eventId) {
   }
 }
 
+export function fetchOrderedQuestions(eventId, field, order = 'desc') {
+  return async (dispatch, getState) => {
+    var res = await fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).get()
+    var questions = res.docs.map(e => e.data())
+    return dispatch({ type: FETCH_QUESTIONS, questions })
+  }
+}
+
 export function obsQuestions(eventId) {
   return (dispatch, getState) => {
     fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
@@ -36,6 +44,29 @@ export function obsQuestions(eventId) {
             default:
           }
       })
+    })
+  }
+}
+
+export function obsOrderedQuestions(eventId, field, order = 'desc') {
+  return (dispatch, getState) => {
+    fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
+      var questions = snapshot.docs.map(e => e.data())
+      dispatch({ type: OBSERVE_QUESTIONS, questions })
+      // snapshot.docChanges.forEach(function(change) {
+      //     switch (change.type) {
+      //       case 'added':
+      //         dispatch({ type: CREATE_QUESTION, question: change.doc.data() })
+      //         break;
+      //       case 'modified':
+      //         dispatch({ type: UPDATE_QUESTION, question: change.doc.data() })
+      //         break;
+      //       case 'removed':
+      //         dispatch({ type: DELETE_QUESTION, question: change.doc.data() })
+      //         break;
+      //       default:
+      //     }
+      // })
     })
   }
 }

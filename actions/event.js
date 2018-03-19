@@ -8,7 +8,7 @@ import {
   UPDATE_EVENT,
   DELETE_EVENT,
   SET_EVENT,
-  OBSERVE_EVENT
+  OBSERVE_EVENT,
 } from '../constants'
 
 export function fetchEvents(userId) {
@@ -42,6 +42,14 @@ export function obsEvents(userId) {
   }
 }
 
+export function getEventByCode(code) {
+  return async dispatch => {
+    var snapshot = await fsEvents.ls().where('eventCode','==',code).limit(1).get()
+    var event = snapshot.docs[0].data()
+    return dispatch({ type: GET_EVENT, event })
+  }
+}
+
 export function getEvent(id) {
   return async (dispatch, getState) => {
     var state = getState()
@@ -57,6 +65,16 @@ export function obsEvent(id) {
     return fsEvents.doc(id).onSnapshot(doc => {
       var event = doc.data()
       dispatch({ type: OBSERVE_EVENT, event })
+    })
+  }
+}
+
+export function obsEventsByCode(code, callback) {
+  return dispatch => {
+    return fsEvents.ls().where('eventCode','==',code).limit(1).onSnapshot(snapshot => {
+      var event = snapshot.docs[0].data()
+      dispatch({ type: OBSERVE_EVENT, event })
+      callback(event)
     })
   }
 }
