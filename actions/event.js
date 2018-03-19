@@ -70,7 +70,7 @@ export function obsEvent(id) {
   }
 }
 
-export function obsEventsByCode(code, callback) {
+export function obsEventByCode(code, callback) {
   return dispatch => {
     return fsEvents.ls().where('eventCode','==',code).limit(1).onSnapshot(snapshot => {
       var event = snapshot.docs[0].data()

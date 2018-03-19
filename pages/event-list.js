@@ -18,12 +18,11 @@ class EventListPage extends Component {
   }
 
   async componentDidMount () {
-    this.props.auth(user => {
-      if (user)
-        this.unobs = this.props.obsEvents(user.uid)
-      else if (this.unobs)
-        this.unobs()
-    })
+    this.unobs = this.props.obsEvents(this.props.app.user.uid)
+  }
+
+  componentWillUnmount() {
+    this.unobs && this.unobs()
   }
 
   createNewEvent = async () => {

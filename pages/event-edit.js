@@ -20,26 +20,24 @@ class EventEditPage extends Component {
     return { id }
   }
 
-  componentDidMount = () => {
-    if (!this.props.id) return
-
-    this.props.auth(user => {
-      if (user)
-        this.observe()
-      else if (this.unobsEvent)
-        this.unobs()
-    })
+  componentDidMount() {
+    this.observe()
   }
 
-  observe = () => {
+  componentWillUnmount() {
+    this.unobs()
+  }
+
+  observe() {
     var { id, obsEvent, obsQuestions } = this.props
+    if (!id) return
     this.unobsEvent = obsEvent(id)
     this.unobsQuestions = obsQuestions(id)
   }
 
-  unobs = () => {
-    this.unobsEvent()
-    this.unobsQuestions()
+  unobs() {
+    this.unobsEvent && this.unobsEvent()
+    this.unobsQuestions && this.unobsQuestions()
   }
 
   saveEvent = async () =>  {

@@ -19,13 +19,11 @@ class QuestionEdit extends Component {
 
   componentDidMount = async () => {
     if (!this.props.id) return
+    this.unobs = this.props.obsQuestion(this.props.id)
+  }
 
-    this.props.auth(user => {
-      if (user)
-        this.unobs = this.props.obsQuestion(this.props.id)
-      else if (this.unobs)
-        this.unobs()
-    })
+  componentWillUnmount() {
+    this.unobs && this.unobs()
   }
 
   saveQuestion = async () => {

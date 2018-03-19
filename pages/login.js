@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import { auth, login } from '../lib/datastore'
 import Router from 'next/router'
 import withPage from '../lib/withPage'
-import Link from 'next/link'
-import Button from 'material-ui/Button'
-import Ty from 'material-ui/Typography'
+import Login from '../components/Login'
 
 class LoginPage extends Component {
 
@@ -21,17 +19,7 @@ class LoginPage extends Component {
   }
 
   render() {
-    return <div>
-      <Ty variant="display1" gutterBottom>Please Login</Ty>
-      <p/>
-      <Button variant="raised" color="secondary" onClick={login}>Login</Button>
-      <p/>
-      <Ty variant="subheading" gutterBottom>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-      </Ty>
-    </div>
+    return <Login login={login} />
   }
 }
 

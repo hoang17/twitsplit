@@ -33,19 +33,24 @@ class EventView extends Component {
   }
 
   componentDidMount = async () => {
-    var { app, code, obsEventsByCode, obsOrderedQuestions } = this.props
+    var { app, code, obsEventByCode, obsOrderedQuestions } = this.props
 
-    this.unobsE = obsEventsByCode(code, event => {
+    this.unobsEvent = obsEventByCode(code, event => {
       this.state.id = event.id
-      this.unobsQ = obsOrderedQuestions(event.id, app.sortField)
+      this.unobs = obsOrderedQuestions(event.id, app.sortField)
     })
+  }
+
+  componentWillUnmount() {
+    this.unobs && this.unobs()
+    this.unobsEvent && this.unobsEvent()
   }
 
   handleSort = (sortField) => {
     var { setSortField, obsOrderedQuestions } = this.props
     setSortField(sortField)
-    if (this.unobsQ) this.unobsQ()
-    this.unobsQ = obsOrderedQuestions(this.state.id, sortField)
+    if (this.unobs) this.unobs()
+    this.unobs = obsOrderedQuestions(this.state.id, sortField)
   }
 
   submitQuestion = async () => {
