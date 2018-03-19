@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
-import jsCookie from 'js-cookie'
 import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
-import Snackbar from '../components/Snack'
 import QuestionSubmit from '../components/QuestionSubmit'
 import QuestionList from '../components/QuestionList'
-import { bindActionCreators } from 'redux'
-import { configureStore } from '../store/configureStore'
-import withRedux from 'next-redux-wrapper'
+// import { bindActionCreators } from 'redux'
+// import { configureStore } from '../store/configureStore'
+// import withRedux from 'next-redux-wrapper'
 import { auth, login } from '../lib/datastore'
-import { setUser, setUserIP, setNewQuestion, setSnack, setSortField } from '../actions/app'
-import { getEventByCode, obsEventsByCode } from '../actions/event'
-import { fetchOrderedQuestions, obsOrderedQuestions, updateQuestion } from '../actions/question'
+import { getEventByCode } from '../actions/event'
+import { fetchOrderedQuestions } from '../actions/question'
 
 class EventView extends Component {
 
   static title = 'Questions'
 
-  static async getInitialProps ({ store, req, query: { code }, isServer }) {
+  static async getInitialProps ({ store, req, query: { code } }) {
     // var questions = []
     // if (req){
     //   var user = req && req.session ? req.session.decodedToken : null
@@ -35,15 +32,15 @@ class EventView extends Component {
     // var userIP = jsCookie.get('userIP')
     // return { eventCode: code, questions, userIP }
 
-    if (req){
-      const user = req && req.session ? req.session.decodedToken : null
-      var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
-      store.dispatch(setUser(user))
-      store.dispatch(setUserIP(userIP))
+    if (code){
+      // const user = req && req.session ? req.session.decodedToken : null
+      // var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
+      // store.dispatch(setUser(user))
+      // store.dispatch(setUserIP(userIP))
       var { event } = await store.dispatch(getEventByCode(code))
       await store.dispatch(fetchOrderedQuestions(event.id, 'likes_count'))
     }
-    return { code, isServer }
+    return { code }
   }
 
   // constructor (props) {
@@ -57,16 +54,11 @@ class EventView extends Component {
   // }
 
   componentDidMount = async () => {
-    var { code, setUser, obsEventsByCode, obsOrderedQuestions } = this.props
-    auth(user => {
-      setUser(user)
-    })
+    var { code, obsEventsByCode, obsOrderedQuestions } = this.props
 
     this.unobsE = obsEventsByCode(code, event => {
       this.unobsQ = obsOrderedQuestions(event.id, 'likes_count')
     })
-
-    // this.addDbListener()
   }
 
   // addDbListener = () => {
@@ -120,7 +112,7 @@ class EventView extends Component {
 
   render () {
     const { app, questions, events, setNewQuestion, setSnack } = this.props
-    const { newQuestion, info, sortField } = app
+    const { newQuestion, sortField } = app
     const { userName, text } = newQuestion
     const eventName = events.byHash[events.current].eventName
 
@@ -141,24 +133,20 @@ class EventView extends Component {
           { id:'created', name:'created time' }
         ]}
       />
-      <Snackbar open={info.open} msg={info.msg} onClose={ ()=> setSnack({open: false}) } />
     </div>
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getEventByCode: bindActionCreators(getEventByCode, dispatch),
-    obsEventsByCode: bindActionCreators(obsEventsByCode, dispatch),
-    fetchOrderedQuestions: bindActionCreators(fetchOrderedQuestions, dispatch),
-    obsOrderedQuestions: bindActionCreators(obsOrderedQuestions, dispatch),
-    updateQuestion: bindActionCreators(updateQuestion, dispatch),
-    setNewQuestion: bindActionCreators(setNewQuestion, dispatch),
-    setSortField: bindActionCreators(setSortField, dispatch),
-    setUser: bindActionCreators(setUser, dispatch),
-    setUserIP: bindActionCreators(setUserIP, dispatch),
-    setSnack: bindActionCreators(setSnack, dispatch),
-  }
-}
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     getEventByCode: bindActionCreators(getEventByCode, dispatch),
+//     obsEventsByCode: bindActionCreators(obsEventsByCode, dispatch),
+//     fetchOrderedQuestions: bindActionCreators(fetchOrderedQuestions, dispatch),
+//     obsOrderedQuestions: bindActionCreators(obsOrderedQuestions, dispatch),
+//     updateQuestion: bindActionCreators(updateQuestion, dispatch),
+//     setNewQuestion: bindActionCreators(setNewQuestion, dispatch),
+//     setSortField: bindActionCreators(setSortField, dispatch),
+//   }
+// }
 
-export default withRedux(configureStore, state => state, mapDispatchToProps)(withPage(EventView))
+export default withPage(EventView)

@@ -102,9 +102,10 @@ export function deleteQuestion(id){
 export function highlightQuestion(id){
   return async (dispatch, getState) => {
     var { questions } = getState()
-    var question = questions.byHash[id]
-    question.mark = !question.mark
-    await updateHighlight(question)
+    var { id, mark, eventId } = questions.byHash[id]
+    mark = !mark
+    var question = { id, mark, eventId }
+    return updateHighlight(question)
     return dispatch({ type: HIGHLIGHT_QUESTION, question })
   }
 }

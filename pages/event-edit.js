@@ -2,39 +2,33 @@ import React, { Component } from 'react'
 import Router from 'next/router'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
-import Snackbar from '../components/Snack'
 import EventEdit from '../components/EventEdit'
 import QuestionList from '../components/QuestionList'
-import { bindActionCreators } from 'redux'
-import { configureStore } from '../store/configureStore'
-import withRedux from 'next-redux-wrapper'
 import { auth, login } from '../lib/datastore'
-import { setUser, setSnack } from '../actions/app'
-import { getEvent, obsEvent, updateEvent, setEvent, deleteEvent } from '../actions/event'
-import { fetchQuestions, obsQuestions } from '../actions/question'
+import { getEvent } from '../actions/event'
+import { fetchQuestions } from '../actions/question'
 
 class EventEditPage extends Component {
 
   static title = 'Edit Event'
 
-  static async getInitialProps ({ store, req, query: { id }, isServer }) {
-    if (req){
-      const user = req && req.session ? req.session.decodedToken : null
-      store.dispatch(setUser(user))
-    }
+  static async getInitialProps ({ store, req, query: { id } }) {
+    // if (req){
+    //   const user = req && req.session ? req.session.decodedToken : null
+    //   store.dispatch(setUser(user))
+    // }
     var { app } = store.getState()
     if (app.user){
       var event = await store.dispatch(getEvent(id))
       await store.dispatch(fetchQuestions(id))
     }
-    return { id, isServer }
+    return { id }
   }
 
   componentDidMount = () => {
     if (!this.props.id) return
 
     auth(user => {
-      this.props.setUser(user)
       if (user)
         this.observe()
       else if (this.unobsEvent)
@@ -79,7 +73,7 @@ class EventEditPage extends Component {
 
   render() {
     const { id, app, events, questions, setEvent, setSnack } = this.props
-    const { user, info } = app
+    const { user } = app
     const event = events.byHash[events.current]
 
     return <div>
@@ -100,25 +94,24 @@ class EventEditPage extends Component {
             questions={questions}
             admin={true}
           />
-          <Snackbar open={info.open} msg={info.msg} onClose={ ()=> setSnack({open: false}) } />
         </div>
       }
     </div>
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getEvent: bindActionCreators(getEvent, dispatch),
-    obsEvent: bindActionCreators(obsEvent, dispatch),
-    updateEvent: bindActionCreators(updateEvent, dispatch),
-    setEvent: bindActionCreators(setEvent, dispatch),
-    deleteEvent: bindActionCreators(deleteEvent, dispatch),
-    fetchQuestions: bindActionCreators(fetchQuestions, dispatch),
-    obsQuestions: bindActionCreators(obsQuestions, dispatch),
-    setUser: bindActionCreators(setUser, dispatch),
-    setSnack: bindActionCreators(setSnack, dispatch),
-  }
-}
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     getEvent: bindActionCreators(getEvent, dispatch),
+//     obsEvent: bindActionCreators(obsEvent, dispatch),
+//     updateEvent: bindActionCreators(updateEvent, dispatch),
+//     setEvent: bindActionCreators(setEvent, dispatch),
+//     deleteEvent: bindActionCreators(deleteEvent, dispatch),
+//     fetchQuestions: bindActionCreators(fetchQuestions, dispatch),
+//     obsQuestions: bindActionCreators(obsQuestions, dispatch),
+//     setUser: bindActionCreators(setUser, dispatch),
+//     setSnack: bindActionCreators(setSnack, dispatch),
+//   }
+// }
 
-export default withRedux(configureStore, state => state, mapDispatchToProps)(withPage(EventEditPage))
+export default withPage(EventEditPage)

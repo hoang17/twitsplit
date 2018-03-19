@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
-import Snackbar from '../components/Snack'
 
 import { fsQuestions, auth, login, logout } from '../lib/datastore'
 
@@ -10,14 +9,14 @@ class QuestionEdit extends Component {
 
   static title = 'Edit Question'
 
-  static async getInitialProps ({req, query: { id }}) {
-    const user = req && req.session ? req.session.decodedToken : null
+  static async getInitialProps ({ store, req, query: { id }}) {
+    var { app } = store.getState()
     var question = {}
-    if (user) {
+    if (app.user) {
       var doc = await req.fs.collection("questions").doc(id).get()
       question = doc.data()
     }
-    return { user, id, ...question }
+    return { id, ...question }
   }
 
   constructor (props) {
@@ -61,7 +60,9 @@ class QuestionEdit extends Component {
   }
 
   render () {
-    const { user, id, text, snack, msg } = this.state
+    const { id, text } = this.state
+    const { app } = this.props
+    const { user } = app
 
     return <div>
       {
@@ -82,7 +83,6 @@ class QuestionEdit extends Component {
           <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
         </div>
       }
-      <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
     </div>
   }
 }
