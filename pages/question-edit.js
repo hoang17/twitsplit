@@ -9,10 +9,10 @@ class QuestionEdit extends Component {
 
   static title = 'Edit Question'
 
-  static async getInitialProps ({ store, req, query: { id }}) {
+  static async getInitialProps ({ store, query: { id }}) {
     var { app } = store.getState()
     if (app.user){
-      var question = await store.dispatch(getQuestion(id))
+      await store.dispatch(getQuestion(id))
     }
     return { id }
   }
@@ -42,7 +42,7 @@ class QuestionEdit extends Component {
   render () {
     const { id, setQuestion, questions } = this.props
     const question = questions.byHash[id]
-
+    
     return <div>
       <TextareaAutosize
         onChange={e => setQuestion({ ...question, text: e.target.value})}
