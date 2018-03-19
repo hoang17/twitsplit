@@ -1,12 +1,12 @@
 import {
   SET_USER,
-  SET_SNACKBAR,
+  SET_SNACK,
   SET_NEW_EVENT,
 } from '../constants'
 
 export function setSnack(info) {
   return dispatch => {
-    return dispatch({ type: SET_SNACKBAR, info })
+    return dispatch({ type: SET_SNACK, info })
   }
 }
 

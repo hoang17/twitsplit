@@ -1,6 +1,6 @@
 import {
   SET_USER,
-  SET_SNACKBAR,
+  SET_SNACK,
   SET_NEW_EVENT,
 } from '../constants'
 
@@ -17,7 +17,7 @@ const reducer = (state = { user: null, info: {open:false, msg: null}, newEvent: 
   switch (type) {
     case SET_USER:
       return { ...state, user }
-    case SET_SNACKBAR:
+    case SET_SNACK:
       return { ...state, info }
     case SET_NEW_EVENT:
       if (!newEvent) newEvent = emptyEvent()

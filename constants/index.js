@@ -1,5 +1,6 @@
-export const SET_USER     = 'SET_USER'
-export const SET_SNACKBAR = 'SET_SNACKBAR'
+export const SET_USER       = 'SET_USER'
+export const SET_SNACK      = 'SET_SNACK'
+export const SET_NEW_EVENT  = 'SET_NEW_EVENT'
 
 export const FETCH_EVENTS   = 'FETCH_EVENTS'
 export const OBSERVE_EVENTS = 'OBSERVE_EVENTS'
@@ -7,7 +8,6 @@ export const GET_EVENT      = 'GET_EVENT'
 export const CREATE_EVENT   = 'CREATE_EVENT'
 export const UPDATE_EVENT   = 'UPDATE_EVENT'
 export const DELETE_EVENT   = 'DELETE_EVENT'
-export const SET_NEW_EVENT  = 'SET_NEW_EVENT'
 
 export const FETCH_QUESTIONS    = 'FETCH_QUESTIONS'
 export const OBSERVE_QUESTIONS  = 'OBSERVE_QUESTIONS'
