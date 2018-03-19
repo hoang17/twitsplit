@@ -3,9 +3,6 @@ import withPage from '../lib/withPage'
 import Button from 'material-ui/Button'
 import EventCreate from '../components/EventCreate'
 import EventList from '../components/EventList'
-// import { bindActionCreators } from 'redux'
-// import { configureStore } from '../store/configureStore'
-// import withRedux from 'next-redux-wrapper'
 import { auth, login } from '../lib/datastore'
 import { fetchEvents } from '../actions/event'
 
@@ -14,10 +11,6 @@ class EventListPage extends Component {
   static title = 'Manage Events'
 
   static async getInitialProps ({ store, req, query, isServer }) {
-    // if (req){
-    //   const user = req && req.session ? req.session.decodedToken : null
-    //   store.dispatch(setUser(user))
-    // }
     var { app } = store.getState()
     if (app.user){
       await store.dispatch(fetchEvents(app.user.uid))
@@ -69,13 +62,5 @@ class EventListPage extends Component {
     </div>
   }
 }
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     obsEvents: bindActionCreators(obsEvents, dispatch),
-//     createEvent: bindActionCreators(createEvent, dispatch),
-//     setNewEvent: bindActionCreators(setNewEvent, dispatch),
-//   }
-// }
 
 export default withPage(EventListPage)

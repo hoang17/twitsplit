@@ -3,9 +3,6 @@ import withPage from '../lib/withPage'
 import Ty from 'material-ui/Typography'
 import QuestionSubmit from '../components/QuestionSubmit'
 import QuestionList from '../components/QuestionList'
-// import { bindActionCreators } from 'redux'
-// import { configureStore } from '../store/configureStore'
-// import withRedux from 'next-redux-wrapper'
 import { auth, login } from '../lib/datastore'
 import { getEventByCode } from '../actions/event'
 import { fetchOrderedQuestions } from '../actions/question'
@@ -15,28 +12,7 @@ class EventView extends Component {
   static title = 'Questions'
 
   static async getInitialProps ({ store, req, query: { code } }) {
-    // var questions = []
-    // if (req){
-    //   var user = req && req.session ? req.session.decodedToken : null
-    //   var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
-    //   var snapshot = await req.fs.collection("events").where('eventCode','==',code).limit(1).get()
-    //   var event = snapshot.docs[0].data()
-    //   var snapshot = await req.fs.collection("questions").where('eventId','==',event.id).orderBy('likes_count','desc').get()
-    //   for (var doc of snapshot.docs) {
-    //     var data = doc.data()
-    //     data.liked = data.likes && data.likes[userIP]
-    //     questions.push(data)
-    //   }
-    //   return { eventCode: code, ...event, questions, userIP, user }
-    // }
-    // var userIP = jsCookie.get('userIP')
-    // return { eventCode: code, questions, userIP }
-
     if (code){
-      // const user = req && req.session ? req.session.decodedToken : null
-      // var userIP = req ? req.headers['x-forwarded-for'] || req.connection.remoteAddress : null
-      // store.dispatch(setUser(user))
-      // store.dispatch(setUserIP(userIP))
       var { event } = await store.dispatch(getEventByCode(code))
       await store.dispatch(fetchOrderedQuestions(event.id, 'likes_count'))
     }
@@ -61,40 +37,11 @@ class EventView extends Component {
     })
   }
 
-  // addDbListener = () => {
-  //   var ft = true
-  //   this.unsubEvents = fsEvents.ls().where('eventCode','==',this.state.eventCode).onSnapshot(snapshot => {
-  //     // Discard initial loading
-  //     if (ft && this.state.eventName) { ft = false; return}
-  //
-  //     event = snapshot.docs[0].data()
-  //     if (event) this.setState({ ...event })
-  //     this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).orderBy('likes_count','desc').onSnapshot(async snapshot => {
-  //       var questions = []
-  //       for (var doc of snapshot.docs) {
-  //         var data = doc.data()
-  //         data.liked = data.likes && data.likes[this.state.userIP]
-  //         questions.push(data)
-  //       }
-  //       this.setState({ questions })
-  //     })
-  //   })
-  // }
-
   handleSort = (sortField) => {
     var { events, setSortField, obsOrderedQuestions } = this.props
     setSortField(sortField)
     if (this.unobsQ) this.unobsQ()
     this.unobsQ = obsOrderedQuestions(events.current, sortField)
-    // this.unobsQ = fsQuestions.ls().where('eventId','==',this.state.id).orderBy(sortField,'desc').onSnapshot(async snapshot => {
-    //   var questions = []
-    //   for (var doc of snapshot.docs) {
-    //     var data = doc.data()
-    //     data.liked = data.likes && data.likes[this.state.userIP]
-    //     questions.push(data)
-    //   }
-    //   this.setState({ questions })
-    // })
   }
 
   submitQuestion = async () => {
@@ -136,17 +83,5 @@ class EventView extends Component {
     </div>
   }
 }
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     getEventByCode: bindActionCreators(getEventByCode, dispatch),
-//     obsEventsByCode: bindActionCreators(obsEventsByCode, dispatch),
-//     fetchOrderedQuestions: bindActionCreators(fetchOrderedQuestions, dispatch),
-//     obsOrderedQuestions: bindActionCreators(obsOrderedQuestions, dispatch),
-//     updateQuestion: bindActionCreators(updateQuestion, dispatch),
-//     setNewQuestion: bindActionCreators(setNewQuestion, dispatch),
-//     setSortField: bindActionCreators(setSortField, dispatch),
-//   }
-// }
 
 export default withPage(EventView)

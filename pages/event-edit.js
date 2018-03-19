@@ -13,10 +13,6 @@ class EventEditPage extends Component {
   static title = 'Edit Event'
 
   static async getInitialProps ({ store, req, query: { id } }) {
-    // if (req){
-    //   const user = req && req.session ? req.session.decodedToken : null
-    //   store.dispatch(setUser(user))
-    // }
     var { app } = store.getState()
     if (app.user){
       var event = await store.dispatch(getEvent(id))
@@ -99,19 +95,5 @@ class EventEditPage extends Component {
     </div>
   }
 }
-
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     getEvent: bindActionCreators(getEvent, dispatch),
-//     obsEvent: bindActionCreators(obsEvent, dispatch),
-//     updateEvent: bindActionCreators(updateEvent, dispatch),
-//     setEvent: bindActionCreators(setEvent, dispatch),
-//     deleteEvent: bindActionCreators(deleteEvent, dispatch),
-//     fetchQuestions: bindActionCreators(fetchQuestions, dispatch),
-//     obsQuestions: bindActionCreators(obsQuestions, dispatch),
-//     setUser: bindActionCreators(setUser, dispatch),
-//     setSnack: bindActionCreators(setSnack, dispatch),
-//   }
-// }
 
 export default withPage(EventEditPage)
