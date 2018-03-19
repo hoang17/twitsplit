@@ -7,10 +7,9 @@ import EventList from '../components/EventList'
 import { bindActionCreators } from 'redux'
 import { configureStore } from '../store/configureStore'
 import withRedux from 'next-redux-wrapper'
+import { auth, login } from '../lib/datastore'
 import { setUser, setNewEvent, setSnack } from '../actions/app'
 import { fetchEvents, obsEvents, createEvent } from '../actions/event'
-
-import { fsEvents, saveEvent, auth, login } from '../lib/datastore'
 
 class EventListPage extends Component {
 
@@ -29,7 +28,6 @@ class EventListPage extends Component {
   }
 
   async componentDidMount () {
-
     auth(user => {
       this.props.setUser(user)
       if (user)

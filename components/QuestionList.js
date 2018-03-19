@@ -13,9 +13,10 @@ export default ({ questions, userIP, sortField, sortMap, onSort, admin = false }
       <ul>
         {
           questions &&
-          questions.map(e =>
-            <QuestionRow key={e.id} admin={admin} userIP={userIP} {...e} />
-          )
+          questions.byId.map(id => {
+            var e = questions.byHash[id]
+            return <QuestionRow key={id} admin={admin} userIP={userIP} {...e} />
+          })
         }
       </ul>
       <style jsx>{`

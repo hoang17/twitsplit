@@ -7,6 +7,8 @@ import {
   CREATE_EVENT,
   UPDATE_EVENT,
   DELETE_EVENT,
+  SET_EVENT,
+  OBSERVE_EVENT
 } from '../constants'
 
 export function fetchEvents(userId) {
@@ -50,6 +52,15 @@ export function getEvent(id) {
   }
 }
 
+export function obsEvent(id) {
+  return dispatch => {
+    return fsEvents.doc(id).onSnapshot(doc => {
+      var event = doc.data()
+      dispatch({ type: OBSERVE_EVENT, event })
+    })
+  }
+}
+
 export function createEvent(event){
   return dispatch => saveEvent(event)
 }
@@ -60,4 +71,10 @@ export function updateEvent(event){
 
 export function deleteEvent(id){
   return dispatch => fsEvents.delete(id)
+}
+
+export function setEvent(event) {
+  return dispatch => {
+    return dispatch({ type: SET_EVENT, event })
+  }
 }

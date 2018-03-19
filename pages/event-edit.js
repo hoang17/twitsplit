@@ -5,96 +5,82 @@ import Button from 'material-ui/Button'
 import Snackbar from '../components/Snack'
 import EventEdit from '../components/EventEdit'
 import QuestionList from '../components/QuestionList'
-
-import { fsEvents, fsQuestions, saveEvent, auth, login } from '../lib/datastore'
+import { bindActionCreators } from 'redux'
+import { configureStore } from '../store/configureStore'
+import withRedux from 'next-redux-wrapper'
+import { auth, login } from '../lib/datastore'
+import { setUser, setSnack } from '../actions/app'
+import { getEvent, obsEvent, updateEvent, setEvent, deleteEvent } from '../actions/event'
+import { fetchQuestions, obsQuestions } from '../actions/question'
 
 class EventEditPage extends Component {
 
   static title = 'Edit Event'
 
-  static async getInitialProps ({req, query: { id }}) {
-    const user = req && req.session ? req.session.decodedToken : null
-    var questions = []
-    var event = null
-    if (user) {
-      var doc = await req.fs.collection("events").doc(id).get()
-      if (!doc.exists) return {}
-      event = doc.data()
-      if (event.userId != user.uid) return {}
-
-      var snapshot = await req.fs.collection("questions").where('eventId','==',id).get()
-      for (var doc of snapshot.docs) {
-        var data = doc.data()
-        questions.push(data)
-      }
+  static async getInitialProps ({ store, req, query: { id }, isServer }) {
+    if (req){
+      const user = req && req.session ? req.session.decodedToken : null
+      store.dispatch(setUser(user))
     }
-    return { user, id, event, questions }
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = { ...this.props }
+    var { app } = store.getState()
+    if (app.user){
+      var event = await store.dispatch(getEvent(id))
+      await store.dispatch(fetchQuestions(id))
+    }
+    return { id, isServer }
   }
 
   componentDidMount = () => {
-
-    if (!this.state.id) return
+    if (!this.props.id) return
 
     auth(user => {
-      this.setState({ user: user })
+      this.props.setUser(user)
       if (user)
-        this.addDbListener()
-      else if (this.unsubscribe)
-        this.unsubscribe()
+        this.observe()
+      else if (this.unobsEvent)
+        this.unobs()
     })
   }
 
-  addDbListener = () => {
-    if (!this.state.user) return
-    var ft = true
-    this.unsubscribe = fsEvents.doc(this.state.id).onSnapshot(doc => {
-      // Discard initial loading
-      if (ft && this.state.event) { ft = false; return}
-
-      var event = doc.data()
-      if (event && event.userId == this.state.user.uid) this.setState({ event })
-    })
-    this.unsubQuestions = fsQuestions.ls().where('eventId','==',this.state.id).onSnapshot(async snapshot => {
-      // Discard initial loading
-      if (ft && this.state.questions.length >  0) { ft = false; return}
-
-      var questions = []
-      for (var doc of snapshot.docs) {
-        var data = doc.data()
-        questions.push(data)
-      }
-      this.setState({ questions })
-    })
+  observe = () => {
+    var { id, obsEvent, obsQuestions } = this.props
+    this.unobsEvent = obsEvent(id)
+    this.unobsQuestions = obsQuestions(id)
   }
 
-  updateEvent = async () =>  {
+  unobs = () => {
+    this.unobsEvent()
+    this.unobsQuestions()
+  }
+
+  saveEvent = async () =>  {
     try {
-      await saveEvent(this.state.event)
-      this.setState({ snack: true, msg: 'Event has been saved successfully' })
+      var { app, events, updateEvent, setSnack } =  this.props
+      var event = events.byHash[events.current]
+      await updateEvent(event)
+      setSnack({ open: true, msg: 'Event has been saved successfully' })
     } catch (e) {
-      this.setState({ snack: true, msg: e.message })
+      setSnack({ open: true, msg: e.message })
     }
   }
 
-  deleteEvent = async () =>  {
+  removeEvent = async () =>  {
     if (confirm('Are you sure to delete this event?')){
       try {
-        await fsEvents.delete(this.state.id)
+        var { events, deleteEvent, setSnack } =  this.props
+        await deleteEvent(events.current)
         Router.push('/event-list')
-        this.setState({ snack: true, msg: 'Event has been deleted' })
+        setSnack({ open: true, msg: 'Event has been deleted' })
       } catch (e) {
-        this.setState({ snack: true, msg: e.message })
+        setSnack({ open: true, msg: e.message })
       }
     }
   }
 
   render() {
-    const { user, event, questions, snack, msg } = this.state
+    const { id, app, events, questions, setEvent, setSnack } = this.props
+    const { user, info } = app
+    const event = events.byHash[events.current]
 
     return <div>
       {
@@ -105,20 +91,34 @@ class EventEditPage extends Component {
         <div>
           <EventEdit
             event={event}
-            onChange={e => this.setState({ event: { ...event, ...e }})}
-            onSave={this.updateEvent}
-            onDelete={this.deleteEvent}
+            onChange={e => setEvent({ ...event, ...e })}
+            onSave={this.saveEvent}
+            onDelete={this.removeEvent}
           />
           <p/>
           <QuestionList
             questions={questions}
             admin={true}
           />
-          <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
+          <Snackbar open={info.open} msg={info.msg} onClose={ ()=> setSnack({open: false}) } />
         </div>
       }
     </div>
   }
 }
 
-export default withPage(EventEditPage)
+const mapDispatchToProps = dispatch => {
+  return {
+    getEvent: bindActionCreators(getEvent, dispatch),
+    obsEvent: bindActionCreators(obsEvent, dispatch),
+    updateEvent: bindActionCreators(updateEvent, dispatch),
+    setEvent: bindActionCreators(setEvent, dispatch),
+    deleteEvent: bindActionCreators(deleteEvent, dispatch),
+    fetchQuestions: bindActionCreators(fetchQuestions, dispatch),
+    obsQuestions: bindActionCreators(obsQuestions, dispatch),
+    setUser: bindActionCreators(setUser, dispatch),
+    setSnack: bindActionCreators(setSnack, dispatch),
+  }
+}
+
+export default withRedux(configureStore, state => state, mapDispatchToProps)(withPage(EventEditPage))
