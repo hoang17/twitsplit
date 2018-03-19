@@ -56,7 +56,7 @@ export function obsQuestions(eventId) {
 
 export function obsOrderedQuestions(eventId, field, order = 'desc') {
   return (dispatch, getState) => {
-    fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
+    return fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
       var { app } = getState()
       var questions = snapshot.docs.map(e => {
         var question = e.data()
