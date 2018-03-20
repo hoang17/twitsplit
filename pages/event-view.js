@@ -75,6 +75,9 @@ class EventView extends Component {
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
       <QuestionSubmit
+        caption="Send a question"
+        placeholder="Type your question"
+        sendCaption="Send question"
         question={newQuestion}
         onSubmit={this.submitQuestion}
         onChange={setNewQuestion}

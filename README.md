@@ -2,7 +2,7 @@
 
 ### Overview
 
-This project is a fork/branch from my another project [Slido](https://github.com/hoang17/slido) (Both Slido and TwitSplit are my personal projects that I started and coded alone by myself)
+This project is a fork/branch from my another project [Slido](https://github.com/hoang17/twitsplit) (Both Slido and TwitSplit are my personal projects that I started and coded alone by myself)
 
 The project uses React.js and [Next](https://github.com/zeit/next.js) for front end and supporting server side rendering.
 
@@ -23,10 +23,10 @@ The easiest way to get started is to clone the repository:
 
 ```bash
 # Get the latest snapshot
-git clone https://github.com/hoang17/slido.git slido
+git clone https://github.com/hoang17/twitsplit.git twitsplit
 
 # Change directory
-cd slido
+cd twitsplit
 
 # Install NPM dependencies
 yarn
@@ -68,8 +68,8 @@ To run with Docker:
 
 ```bash
 # Build image
-docker build -t slido .
+docker build -t twitsplit .
 
 # Run on port 2000
-docker run -p 2000:3000 -d slido
+docker run -p 2000:3000 -d twitsplit
 ```
