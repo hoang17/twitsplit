@@ -9,7 +9,7 @@ import TextField from 'material-ui/TextField'
 
 class HomePage extends Component {
 
-  static title = 'Slido'
+  static title = 'Twitsplit'
 
   state = {
     eventCode: ''
