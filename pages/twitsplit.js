@@ -7,18 +7,16 @@ import { auth, login } from '../lib/datastore'
 import { getEventByCode } from '../actions/events'
 import { fetchOrderedQuestions } from '../actions/questions'
 
-class EventView extends Component {
+class TwitSplit extends Component {
 
-  static title = 'Questions'
+  static title = 'TwitSplit'
 
-  static async getInitialProps ({ store, query: { code } }) {
-    if (code){
-      var { event } = await store.dispatch(getEventByCode(code))
-      var { id } = event
-      await store.dispatch(fetchOrderedQuestions(id, 'likes_count'))
-      return { code, id }
-    }
-    return { code }
+  static async getInitialProps ({ store }) {
+    var code = 'twitsplit'
+    var { event } = await store.dispatch(getEventByCode(code))
+    var { id } = event
+    await store.dispatch(fetchOrderedQuestions(id, 'likes_count'))
+    return { code, id }
   }
 
   constructor (props) {
@@ -75,6 +73,9 @@ class EventView extends Component {
     return <div>
       <Ty variant="display1" gutterBottom>{eventName}</Ty>
       <QuestionSubmit
+        caption="Send a message"
+        placeholder="Type your message"
+        sendCaption="Send message"
         question={newQuestion}
         onSubmit={this.submitQuestion}
         onChange={setNewQuestion}
@@ -93,4 +94,4 @@ class EventView extends Component {
   }
 }
 
-export default withPage(EventView)
+export default withPage(TwitSplit)

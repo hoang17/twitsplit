@@ -1,13 +1,12 @@
 import test from 'ava'
 
-import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, highlight, init } from '../lib/datastore'
+import { fsEvents, fsQuestions, saveEvent, saveQuestion, validCode, like, updateHighlight, init } from '../lib/datastore'
 
 import Event from '../models/event'
 import Question from '../models/question'
 
-test.before(t => {
-	init()
-});
+// test.before(t => {
+// });
 
 test('Event should contain event name', t => {
 	const error = t.throws(() => {
@@ -110,6 +109,9 @@ test('Question should be created', async t => {
 
 test('Question should have correct likes', async t => {
   var eventId = '3332'
+
+	await fsQuestions.deleteWhere('eventId','==',eventId)
+	
   var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
@@ -133,6 +135,9 @@ test('Question should have correct likes', async t => {
 
 test('Question can only be liked once for each user IP', async t => {
   var eventId = '3333'
+
+	await fsQuestions.deleteWhere('eventId','==',eventId)
+
   var question = Question({eventId, text:'This is a test question'})
   await saveQuestion(question)
   var savedQuestion = await fsQuestions.data(question.id)
@@ -153,6 +158,8 @@ test('Max 3 questions can be highlighted', async t => {
   var eventId = '3334'
   var questions = []
 
+	await fsQuestions.deleteWhere('eventId','==',eventId)
+
   for (var i = 1; i <= 4; i++) {
     var question = Question({eventId, text:'This is a test question ' + i})
     await saveQuestion(question)
@@ -163,12 +170,12 @@ test('Max 3 questions can be highlighted', async t => {
 
   for (var i = 0; i < 3; i++) {
     var question = questions[i]
-    await highlight(question.id, true, question.eventId)
+    await updateHighlight({ ...question, mark:true })
   }
 
   var err = await t.throws(async () => {
     var question = questions[3]
-    await highlight(question.id, true, question.eventId)
+		await updateHighlight({ ...question, mark:true })
 	}, TypeError)
 
   t.is(err.message, 'Max 3 questions can be highlighted')

@@ -1,90 +1,59 @@
 import React, { Component } from 'react'
-import TextareaAutosize from 'react-autosize-textarea'
 import withPage from '../lib/withPage'
+import withLogin from '../lib/withLogin'
+import TextareaAutosize from 'react-autosize-textarea'
 import Button from 'material-ui/Button'
-import Snackbar from '../components/Snack'
-
-import { fsQuestions, auth, login, logout } from '../lib/datastore'
+import { getQuestion } from '../actions/questions'
 
 class QuestionEdit extends Component {
 
   static title = 'Edit Question'
 
-  static async getInitialProps ({req, query: { id }}) {
-    const user = req && req.session ? req.session.decodedToken : null
-    var question = {}
-    if (user) {
-      var doc = await req.fs.collection("questions").doc(id).get()
-      question = doc.data()
+  static async getInitialProps ({ store, query: { id }}) {
+    var { app } = store.getState()
+    if (app.user){
+      await store.dispatch(getQuestion(id))
     }
-    return { user, id, ...question }
-  }
-
-  constructor (props) {
-    super(props)
-    this.state = { ...this.props, snack: false }
+    return { id }
   }
 
   componentDidMount = async () => {
-    auth(user => {
-      this.setState({ user: user })
-      if (user)
-        this.addDbListener()
-      else if (this.unsubscribe)
-        this.unsubscribe()
-    })
+    if (!this.props.id) return
+    this.unobs = this.props.obsQuestion(this.props.id)
   }
 
-  addDbListener () {
-    var ft = true
-    this.unsubscribe = fsQuestions.doc(this.state.id).onSnapshot(doc => {
-      // Discard initial loading
-      if (ft && this.state.text) { ft = false; return}
-
-      var question = doc.data()
-      this.setState({ ...question })
-    })
+  componentWillUnmount() {
+    this.unobs && this.unobs()
   }
 
   saveQuestion = async () => {
     try {
-      var { id, text } = this.state
-      if (!text.trim()) {
-        this.setState({ snack: true, msg: 'Question can not empty' })
-        return
-      }
-      await fsQuestions.update(id, { text })
-      this.setState({ snack: true, msg: 'Question has been saved successfully' })
+      var { id, app, questions, updateQuestion, openSnack } =  this.props
+      var question = questions.byHash[id]
+      await updateQuestion(question)
+      openSnack('Question has been saved successfully')
     } catch (e) {
-      this.setState({ snack: true, msg: e.message })
+      openSnack(e.message)
     }
   }
 
   render () {
-    const { user, id, text, snack, msg } = this.state
+    const { id, setQuestion, questions } = this.props
+    const question = questions.byHash[id]
 
     return <div>
-      {
-        !user && <Button variant="raised" color="secondary" onClick={login}>Login</Button>
-      }
-      {
-        user &&
-        <div>
-          <TextareaAutosize
-            onChange={e => this.setState({text: e.target.value})}
-            placeholder={'Enter question'}
-            value={text}
-            rows={5}
-            maxRows={10}
-            style={{width:'100%'}}
-            />
-          <p/>
-          <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
-        </div>
-      }
-      <Snackbar open={snack} msg={msg} onClose={ ()=> this.setState({snack: false}) } />
+      <TextareaAutosize
+        onChange={e => setQuestion({ ...question, text: e.target.value})}
+        placeholder={'Enter question'}
+        value={question.text}
+        rows={5}
+        maxRows={10}
+        style={{width:'100%'}}
+        />
+      <p/>
+      <Button variant="raised" color="secondary" onClick={this.saveQuestion}>Save Question</Button>
     </div>
   }
 }
 
-export default withPage(QuestionEdit)
+export default withPage(withLogin(QuestionEdit))

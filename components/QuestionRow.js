@@ -9,14 +9,15 @@ import EditIcon from 'material-ui-icons/Edit'
 import DeleteIcon from 'material-ui-icons/Delete'
 import HighlightIcon from 'material-ui-icons/Highlight'
 import { ListItemIcon, ListItemText } from 'material-ui/List'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { likeQuestion, highlightQuestion, deleteQuestion } from '../actions/questions'
+import { openSnack } from '../actions/app'
 
-import { like, highlight, fsQuestions } from '../lib/datastore'
+class QuestionRow extends Component {
 
-export default class QuestionRow extends Component {
-
-  constructor (props) {
-    super(props)
-    this.state = { ...this.props, anchorEl: null }
+  state = {
+    anchorEl: null
   }
 
   openMenu = (event) => {
@@ -27,41 +28,35 @@ export default class QuestionRow extends Component {
     this.setState({ anchorEl: null })
   }
 
-  componentWillReceiveProps(newProps){
-    this.setState({ ...newProps })
-  }
-
   toggleLike = () => {
-    this.state.liked = !this.state.liked
-    var likes = like(this.state)
-    this.setState({ liked:this.state.liked, likes_count: Object.keys(likes).length, likes })
+    this.props.likeQuestion(this.props.id)
   }
 
   editQuestion = () => {
-    Router.push('/question-edit?id='+this.state.id)
+    Router.push('/question-edit?id='+this.props.id)
     this.closeMenu()
   }
 
   deleteQuestion = () => {
     if (confirm('Are you sure to delete this question?'))
-      fsQuestions.delete(this.state.id)
+      this.props.deleteQuestion(this.props.id)
     this.closeMenu()
   }
 
   markQuestion = async () => {
     this.closeMenu()
-    var { id, mark, eventId } = this.state
-    mark = !mark
     try {
-      await highlight(id, mark, eventId)
-      this.setState({ mark })
+      console.log(this.props.id);
+      await this.props.highlightQuestion(this.props.id)
     } catch (e) {
-      alert(e.message)
+      this.props.openSnack(e.message)
     }
   }
 
   render () {
-    const { id, text, likes_count, liked, mark, userName, created, anchorEl } = this.state
+    const { anchorEl } = this.state
+    const { id, text, likes_count, liked, mark, userName, created } = this.props
+
     return (
       <li key={id} className={mark ? 'highlight':''}>
         <div className='question'>
@@ -157,3 +152,14 @@ export default class QuestionRow extends Component {
     )
   }
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    likeQuestion: bindActionCreators(likeQuestion, dispatch),
+    highlightQuestion: bindActionCreators(highlightQuestion, dispatch),
+    deleteQuestion: bindActionCreators(deleteQuestion, dispatch),
+    openSnack: bindActionCreators(openSnack, dispatch),
+  }
+}
+
+export default connect(state => state, mapDispatchToProps)(QuestionRow)

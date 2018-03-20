@@ -1,6 +1,6 @@
 import QuestionRow from '../components/QuestionRow'
 
-export default ({ questions, userIP, sortField, sortMap, onSort, admin = false }) => {
+export default ({ questions, sortField, sortMap, onSort, admin = false }) => {
 
   return (
     <div>
@@ -13,9 +13,10 @@ export default ({ questions, userIP, sortField, sortMap, onSort, admin = false }
       <ul>
         {
           questions &&
-          questions.map(e =>
-            <QuestionRow key={e.id} admin={admin} userIP={userIP} {...e} />
-          )
+          questions.byId.map(id => {
+            var question = questions.byHash[id]
+            return <QuestionRow key={id} admin={admin} {...question} />
+          })
         }
       </ul>
       <style jsx>{`
