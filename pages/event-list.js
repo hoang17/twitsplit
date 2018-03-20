@@ -3,7 +3,7 @@ import withPage from '../lib/withPage'
 import withLogin from '../lib/withLogin'
 import EventCreate from '../components/EventCreate'
 import EventList from '../components/EventList'
-import { fetchEvents } from '../actions/event'
+import { fetchEvents } from '../actions/events'
 
 class EventListPage extends Component {
 

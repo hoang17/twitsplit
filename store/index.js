@@ -1,5 +1,5 @@
-import { fetchEvents } from '../actions/event'
-import { fetchQuestions } from '../actions/question'
+import { fetchEvents } from '../actions/events'
+import { fetchQuestions } from '../actions/questions'
 
 import configureStore from './configureStore'
 

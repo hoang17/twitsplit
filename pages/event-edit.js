@@ -4,8 +4,8 @@ import withPage from '../lib/withPage'
 import withLogin from '../lib/withLogin'
 import EventEdit from '../components/EventEdit'
 import QuestionList from '../components/QuestionList'
-import { getEvent } from '../actions/event'
-import { fetchQuestions } from '../actions/question'
+import { getEvent } from '../actions/events'
+import { fetchQuestions } from '../actions/questions'
 
 class EventEditPage extends Component {
 

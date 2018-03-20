@@ -3,7 +3,7 @@ import withPage from '../lib/withPage'
 import withLogin from '../lib/withLogin'
 import TextareaAutosize from 'react-autosize-textarea'
 import Button from 'material-ui/Button'
-import { getQuestion } from '../actions/question'
+import { getQuestion } from '../actions/questions'
 
 class QuestionEdit extends Component {
 

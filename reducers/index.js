@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import app from './app'
-import events from './event'
-import questions from './question'
+import events from './events'
+import questions from './questions'
 
 export const makeRootReducer = (asyncReducers) => {
   return combineReducers({

@@ -11,7 +11,7 @@ import HighlightIcon from 'material-ui-icons/Highlight'
 import { ListItemIcon, ListItemText } from 'material-ui/List'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { likeQuestion, highlightQuestion, deleteQuestion } from '../actions/question'
+import { likeQuestion, highlightQuestion, deleteQuestion } from '../actions/questions'
 import { openSnack } from '../actions/app'
 
 class QuestionRow extends Component {

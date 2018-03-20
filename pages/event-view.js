@@ -4,8 +4,8 @@ import Ty from 'material-ui/Typography'
 import QuestionSubmit from '../components/QuestionSubmit'
 import QuestionList from '../components/QuestionList'
 import { auth, login } from '../lib/datastore'
-import { getEventByCode } from '../actions/event'
-import { fetchOrderedQuestions } from '../actions/question'
+import { getEventByCode } from '../actions/events'
+import { fetchOrderedQuestions } from '../actions/questions'
 
 class EventView extends Component {
 
