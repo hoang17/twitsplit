@@ -1,14 +1,16 @@
-# Slido
+# TwitSplit
 
 ### Overview
 
-This project use React.js and [Next](https://github.com/zeit/next.js) for front end rendering and supporting server side rendering.
+This project is a fork/branch from my another project [Slido](https://github.com/hoang17/slido) (Both Slido and TwitSplit are my personal projects that I started and coded alone by myself)
+
+The project uses React.js and [Next](https://github.com/zeit/next.js) for front end and supporting server side rendering.
 
 Backend using node.js and Firebase is for real time database.
 
 [Ava](https://github.com/avajs/ava) is used for testing framework.
 
-Redux support has beed added and in the `redux` branch
+Redux support has beed added and in the `redux` branch (now merged with `master`)
 
 I tried to test all logic of the application in the `test` directory.
 
