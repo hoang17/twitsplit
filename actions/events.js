@@ -13,7 +13,8 @@ import {
 
 export function fetchEvents(userId) {
   return async dispatch => {
-    var res = await fsEvents.where('userId','==',userId).get()
+    // var res = await fsEvents.where('userId','==',userId).get()
+    var res = await fsEvents.ls().get()
     var events = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_EVENTS, events })
   }

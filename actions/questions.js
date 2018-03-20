@@ -1,4 +1,4 @@
-import { fsQuestions, saveQuestion, updateLike, updateHighlight } from '../lib/datastore'
+import { fsQuestions, addQuestion, saveQuestion, updateLike, updateHighlight } from '../lib/datastore'
 
 import {
   FETCH_QUESTIONS,
@@ -91,15 +91,13 @@ export function getQuestion(id) {
 
 export function createQuestion(question){
   return dispatch => {
-    return saveQuestion(question)
-    // return dispatch({ type: ADD_QUESTION, question })
+    return addQuestion(question)
   }
 }
 
 export function updateQuestion(question){
   return dispatch => {
     return saveQuestion(question)
-    // return dispatch({ type: UPDATE_QUESTION, question })
   }
 }
 

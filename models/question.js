@@ -19,6 +19,6 @@ module.exports = ({id, eventId, text, userId, userName}) => {
     mark: false,
     userId: userId ? userId : null,
     userName: userName ? userName : null,
-    created: FieldValue.serverTimestamp()
+    created: new Date()
   }
 }

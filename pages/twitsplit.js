@@ -53,11 +53,11 @@ class TwitSplit extends Component {
 
   submitQuestion = async () => {
     try {
-      var { app, updateQuestion, setNewQuestion, openSnack } =  this.props
+      var { app, createQuestion, setNewQuestion, openSnack } =  this.props
       var { user, newQuestion } = app
       var userId = user ? user.uid : null
       setNewQuestion({text:''})
-      await updateQuestion({eventId: this.state.id, ...newQuestion, userId})
+      await createQuestion({eventId: this.state.id, ...newQuestion, userId})
       openSnack('Question has been sent successfully')
     } catch (e) {
       openSnack(e.message)
