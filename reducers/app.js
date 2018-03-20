@@ -6,6 +6,7 @@ import {
   SET_NEW_QUESTION,
   SET_SORT_FIELD,
   SET_PATH,
+  SET_VAR
 } from '../constants'
 
 var emptyEvent = () => {
@@ -34,8 +35,10 @@ var initialState = {
   sortField: 'likes_count'
 }
 
-const reducer = (state = initialState, { type, path, user, info, newEvent, userIP, newQuestion, sortField }) => {
+const reducer = (state = initialState, { type, path, user, info, newEvent, userIP, newQuestion, sortField, obj }) => {
   switch (type) {
+    case SET_VAR:
+      return { ...state, ...obj }
     case SET_PATH:
       state.prevPath = state.path
       return { ...state, path }
