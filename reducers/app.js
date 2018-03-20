@@ -35,10 +35,11 @@ var initialState = {
   sortField: 'likes_count'
 }
 
-const reducer = (state = initialState, { type, path, user, snack, newEvent, userIP, newQuestion, sortField, obj }) => {
+const reducer = (state = initialState, action) => {
+  var { type, path, user, snack, newEvent, userIP, newQuestion, sortField, obj } = action
   switch (type) {
     case SET_VAR:
-      return { ...state, ...obj }
+      return { ...state, ...action.var }
     case SET_PATH:
       state.prevPath = state.path
       return { ...state, path }

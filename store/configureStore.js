@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import { name, version } from '../package.json'
-import rootReducer from '../reducers'
+import makeRootReducer from '../reducers'
 import createLogger from './logger'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -26,7 +26,7 @@ export function configureStore(initialState) {
     enhancer = applyMiddleware(...middleware)
   }
 
-  const store = createStore(rootReducer(), initialState, enhancer)
+  const store = createStore(makeRootReducer(), initialState, enhancer)
 
   store.asyncReducers = {}
 
