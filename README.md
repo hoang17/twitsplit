@@ -8,6 +8,8 @@ Backend using node.js and Firebase is for real time database.
 
 [Ava](https://github.com/avajs/ava) is used for testing framework.
 
+Redux support has beed added and in the `redux` branch
+
 I tried to test all logic of the application in the `test` directory.
 
 ### Installation
