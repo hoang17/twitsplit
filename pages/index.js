@@ -15,6 +15,10 @@ class HomePage extends Component {
     eventCode: ''
   }
 
+  componentDidMount(){
+    this.props.setVar({ 'CURRENT_PATH': this.props.app.path })
+  }
+
   joinEvent = async e => {
     try {
       e.preventDefault()

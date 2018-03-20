@@ -29,13 +29,13 @@ var initialState = {
   path: null,
   prevPath: null,
   user: null,
-  info: {open:false, msg: null},
+  snack: {open:false, msg: null},
   newEvent: emptyEvent(),
   newQuestion: emptyQuestion(),
   sortField: 'likes_count'
 }
 
-const reducer = (state = initialState, { type, path, user, info, newEvent, userIP, newQuestion, sortField, obj }) => {
+const reducer = (state = initialState, { type, path, user, snack, newEvent, userIP, newQuestion, sortField, obj }) => {
   switch (type) {
     case SET_VAR:
       return { ...state, ...obj }
@@ -47,7 +47,7 @@ const reducer = (state = initialState, { type, path, user, info, newEvent, userI
     case SET_USER_IP:
       return { ...state, userIP }
     case SET_SNACK:
-      return { ...state, info }
+      return { ...state, snack }
     case SET_SORT_FIELD:
       return { ...state, sortField }
     case SET_NEW_EVENT:

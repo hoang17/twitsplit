@@ -9,10 +9,6 @@ import {
   SET_VAR,
 } from '../constants'
 
-export function setVar(obj) {
-  return { type: SET_VAR, obj }
-}
-
 function makeActionCreator(type, ...argNames) {
   return function (...args) {
     let action = { type }
@@ -24,8 +20,9 @@ function makeActionCreator(type, ...argNames) {
   }
 }
 
+export const setVar = makeActionCreator(SET_VAR, 'var')
 export const setPath = makeActionCreator(SET_PATH, 'path')
-export const setSnack = makeActionCreator(SET_SNACK, 'info')
+export const setSnack = makeActionCreator(SET_SNACK, 'snack')
 export const setUser = makeActionCreator(SET_USER, 'user')
 export const setUserIP = makeActionCreator(SET_USER_IP, 'userIP')
 export const setNewEvent = makeActionCreator(SET_NEW_EVENT, 'newEvent')
@@ -43,41 +40,5 @@ export function closeSnack() {
 // export function setPath(path) {
 //   return dispatch => {
 //     return dispatch({ type: SET_PATH, path })
-//   }
-// }
-
-// export function setSnack(info) {
-//   return dispatch => {
-//     return dispatch({ type: SET_SNACK, info })
-//   }
-// }
-
-// export function setUser(user) {
-//   return dispatch => {
-//     return dispatch({ type: SET_USER, user })
-//   }
-// }
-
-// export function setUserIP(userIP) {
-//   return dispatch => {
-//     return dispatch({ type: SET_USER_IP, userIP })
-//   }
-// }
-//
-// export function setNewEvent(newEvent) {
-//   return dispatch => {
-//     return dispatch({ type: SET_NEW_EVENT, newEvent })
-//   }
-// }
-//
-// export function setNewQuestion(newQuestion) {
-//   return dispatch => {
-//     return dispatch({ type: SET_NEW_QUESTION, newQuestion })
-//   }
-// }
-//
-// export function setSortField(sortField) {
-//   return dispatch => {
-//     return dispatch({ type: SET_SORT_FIELD, sortField })
 //   }
 // }
