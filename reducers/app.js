@@ -1,3 +1,5 @@
+import { createActions, handleActions, combineActions } from 'redux-actions'
+
 import {
   SET_USER,
   SET_SNACK,
@@ -35,32 +37,44 @@ var initialState = {
   sortField: 'likes_count'
 }
 
-const reducer = (state = initialState, action) => {
-  var { type, path, user, snack, newEvent, userIP, newQuestion, sortField, obj } = action
-  switch (type) {
-    case SET_VAR:
-      return { ...state, ...action.var }
-    case SET_PATH:
-      state.prevPath = state.path
-      return { ...state, path }
-    case SET_USER:
-      return { ...state, user }
-    case SET_USER_IP:
-      return { ...state, userIP }
-    case SET_SNACK:
-      return { ...state, snack }
-    case SET_SORT_FIELD:
-      return { ...state, sortField }
-    case SET_NEW_EVENT:
-      if (!newEvent) newEvent = emptyEvent()
-      state.newEvent = { ...state.newEvent, ...newEvent }
-      return { ...state }
-    case SET_NEW_QUESTION:
-      state.newQuestion = { ...state.newQuestion, ...newQuestion }
-      return { ...state }
-    default:
-      return state
-  }
+const handlers = {
+  [SET_VAR]: (state, action) => {
+    return { ...state, ...action.var }
+  },
+
+  [SET_PATH]: (state, { path }) => {
+    state.prevPath = state.path
+    return { ...state, path }
+  },
+
+  [SET_USER]: (state, { user }) => {
+    return { ...state, user }
+  },
+
+  [SET_USER_IP]: (state, { userIP }) => {
+    return { ...state, userIP }
+  },
+
+  [SET_SNACK]: (state, { snack }) => {
+    return { ...state, snack }
+  },
+
+  [SET_SORT_FIELD]: (state, { sortField }) => {
+    return { ...state, sortField }
+  },
+
+  [SET_NEW_EVENT]: (state, { newEvent }) => {
+    if (!newEvent) newEvent = emptyEvent()
+    state.newEvent = { ...state.newEvent, ...newEvent }
+    return { ...state }
+  },
+
+  [SET_NEW_QUESTION]: (state, { newQuestion }) => {
+    state.newQuestion = { ...state.newQuestion, ...newQuestion }
+    return { ...state }
+  },
 }
+
+const reducer = handleActions(handlers, initialState)
 
 export default reducer
