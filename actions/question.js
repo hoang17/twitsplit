@@ -15,7 +15,7 @@ import {
 
 export function fetchQuestions(eventId) {
   return async (dispatch, getState) => {
-    var res = await fsQuestions.ls().where('eventId','==',eventId).get()
+    var res = await fsQuestions.where('eventId','==',eventId).get()
     var questions = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_QUESTIONS, questions })
   }
@@ -23,7 +23,7 @@ export function fetchQuestions(eventId) {
 
 export function fetchOrderedQuestions(eventId, field, order = 'desc') {
   return async (dispatch, getState) => {
-    var snapshot = await fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).get()
+    var snapshot = await fsQuestions.where('eventId','==',eventId).orderBy(field, order).get()
     var { app } = getState()
     var questions = snapshot.docs.map(e => {
       var question = e.data()
@@ -36,7 +36,7 @@ export function fetchOrderedQuestions(eventId, field, order = 'desc') {
 
 export function obsQuestions(eventId) {
   return (dispatch, getState) => {
-    return fsQuestions.ls().where('eventId','==',eventId).onSnapshot(snapshot => {
+    return fsQuestions.where('eventId','==',eventId).onSnapshot(snapshot => {
       snapshot.docChanges.forEach(change => {
         var question = change.doc.data()
         switch (change.type) {
@@ -58,7 +58,7 @@ export function obsQuestions(eventId) {
 
 export function obsOrderedQuestions(eventId, field, order = 'desc') {
   return (dispatch, getState) => {
-    return fsQuestions.ls().where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
+    return fsQuestions.where('eventId','==',eventId).orderBy(field, order).onSnapshot(snapshot => {
       var { app } = getState()
       var questions = snapshot.docs.map(e => {
         var question = e.data()

@@ -13,7 +13,7 @@ import {
 
 export function fetchEvents(userId) {
   return async dispatch => {
-    var res = await fsEvents.ls().where('userId','==',userId).get()
+    var res = await fsEvents.where('userId','==',userId).get()
     var events = res.docs.map(e => e.data())
     return dispatch({ type: FETCH_EVENTS, events })
   }
@@ -21,7 +21,7 @@ export function fetchEvents(userId) {
 
 export function obsEvents(userId) {
   return dispatch => {
-    return fsEvents.ls().where('userId','==',userId).onSnapshot(snapshot => {
+    return fsEvents.where('userId','==',userId).onSnapshot(snapshot => {
       snapshot.docChanges.forEach(change => {
         var event = change.doc.data()
         switch (change.type) {
@@ -45,8 +45,7 @@ export function obsEvents(userId) {
 
 export function getEventByCode(code) {
   return async dispatch => {
-    var snapshot = await fsEvents.ls().where('eventCode','==',code).limit(1).get()
-    var event = snapshot.docs[0].data()
+    var event = await fsEvents.one('eventCode','==',code)
     return dispatch({ type: GET_EVENT, event })
   }
 }
@@ -72,7 +71,7 @@ export function obsEvent(id) {
 
 export function obsEventByCode(code, callback) {
   return dispatch => {
-    return fsEvents.ls().where('eventCode','==',code).limit(1).onSnapshot(snapshot => {
+    return fsEvents.where('eventCode','==',code).limit(1).onSnapshot(snapshot => {
       var event = snapshot.docs[0].data()
       dispatch({ type: OBSERVE_EVENT, event })
       callback(event)
