@@ -57,7 +57,8 @@ export function getEvent(id) {
     var event = state.events.byHash[id]
     if (!event)
       event = await fsEvents.data(id)
-    return dispatch({ type: GET_EVENT, event })
+    if (event)
+      return dispatch({ type: GET_EVENT, event })
   }
 }
 

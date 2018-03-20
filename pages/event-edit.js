@@ -15,6 +15,7 @@ class EventEditPage extends Component {
     var { app } = store.getState()
     if (app.user){
       var event = await store.dispatch(getEvent(id))
+      if (!event) return {}
       await store.dispatch(fetchQuestions(id))
     }
     return { id }
@@ -68,21 +69,24 @@ class EventEditPage extends Component {
     const { id, events, questions, setEvent } = this.props
     const event = events.byHash[id]
 
-    return ( event &&
-      <div>
-        <EventEdit
-          event={event}
-          onChange={e => setEvent({ ...event, ...e })}
-          onSave={this.saveEvent}
-          onDelete={this.removeEvent}
-        />
-        <p/>
-        <QuestionList
-          questions={questions}
-          admin={true}
-        />
-      </div>
-    )
+    return <div>
+      {
+        event &&
+        <div>
+          <EventEdit
+            event={event}
+            onChange={e => setEvent({ ...event, ...e })}
+            onSave={this.saveEvent}
+            onDelete={this.removeEvent}
+          />
+          <p/>
+          <QuestionList
+            questions={questions}
+            admin={true}
+          />
+        </div>
+      }
+    </div>
   }
 }
 

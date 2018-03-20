@@ -21,7 +21,6 @@ function makeActionCreator(type, ...argNames) {
 }
 
 export const setVar = makeActionCreator(SET_VAR, 'var')
-export const setPath = makeActionCreator(SET_PATH, 'path')
 export const setSnack = makeActionCreator(SET_SNACK, 'snack')
 export const setUser = makeActionCreator(SET_USER, 'user')
 export const setUserIP = makeActionCreator(SET_USER_IP, 'userIP')

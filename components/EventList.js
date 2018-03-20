@@ -49,6 +49,7 @@ class EventList extends Component {
                     <TableCell numeric>{n.eventCode}</TableCell>
                     <TableCell numeric>{moment(n.startDate).format('L')}</TableCell>
                     <TableCell numeric>{moment(n.endDate).format('L')}</TableCell>
+                    <TableCell numeric>{n.userName}</TableCell>
                   </TableRow>
                 )
             })}

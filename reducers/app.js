@@ -20,20 +20,13 @@ var emptyEvent = () => {
   }
 }
 
-var emptyQuestion = () => {
-  return {
-    text: '',
-    userName: ''
-  }
-}
-
 var initialState = {
   path: null,
   prevPath: null,
   user: null,
   snack: {open:false, msg: null},
   newEvent: emptyEvent(),
-  newQuestion: emptyQuestion(),
+  newQuestion: {},
   sortField: 'likes_count'
 }
 

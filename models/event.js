@@ -1,7 +1,7 @@
 var objectid = require('bson-objectid')
 var moment = require('moment')
 
-module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
+module.exports = ({id, userId, userName, eventName, eventCode, startDate, endDate}) => {
   if (!eventName || !eventName.trim())
     throw new TypeError('Event name can not be empty')
 
@@ -21,10 +21,11 @@ module.exports = ({id, userId, eventName, eventCode, startDate, endDate}) => {
 
   return {
     id,
+    userId,
+    userName,
     eventName,
     eventCode,
     startDate: start.toDate(),
     endDate: end.toDate(),
-    userId,
   }
 }

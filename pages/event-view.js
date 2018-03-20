@@ -28,7 +28,8 @@ class EventView extends Component {
     var { user, newQuestion } = app
     setNewQuestion({
       text:'',
-      userName: user ? user.name : '',
+      userName: user ? user.name || user.displayName : '',
+      ...newQuestion
     })
   }
 

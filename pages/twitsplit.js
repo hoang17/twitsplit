@@ -26,7 +26,8 @@ class TwitSplit extends Component {
     var { user, newQuestion } = app
     setNewQuestion({
       text:'',
-      userName: user ? user.name : '',
+      userName: user ? user.name || user.displayName : '',
+      ...newQuestion
     })
   }
 
@@ -58,7 +59,7 @@ class TwitSplit extends Component {
       var userId = user ? user.uid : null
       setNewQuestion({text:''})
       await createQuestion({eventId: this.state.id, ...newQuestion, userId})
-      openSnack('Question has been sent successfully')
+      openSnack('Message has been sent successfully')
     } catch (e) {
       openSnack(e.message)
     }

@@ -30,6 +30,7 @@ class EventListPage extends Component {
       var { app, createEvent, setNewEvent, openSnack } = this.props
       var { newEvent } =  app
       newEvent.userId = app.user.uid
+      newEvent.userName = app.user.displayName || app.user.name,
       await createEvent(newEvent)
       setNewEvent()
       openSnack('Event has been created successfully')
